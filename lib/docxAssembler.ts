@@ -38,7 +38,7 @@ function coverParagraph(
       }),
     ],
     alignment: opts.align ?? AlignmentType.CENTER,
-    spacing: { after: opts.spacingAfter ?? 240 },
+    spacing: { after: opts.spacingAfter ?? 320 },
   });
 }
 
@@ -51,12 +51,12 @@ function buildCoverPageParagraphs(logoBuffer: Buffer | null): Paragraph[] {
         children: [
           new ImageRun({
             data: logoBuffer,
-            transformation: { width: 200, height: 60 },
+            transformation: { width: 280, height: 84 },
             type: "png",
           }),
         ],
         alignment: AlignmentType.CENTER,
-        spacing: { after: 800 },
+        spacing: { after: 1400 },
       })
     );
   }
@@ -65,11 +65,11 @@ function buildCoverPageParagraphs(logoBuffer: Buffer | null): Paragraph[] {
     coverParagraph(env("HOCHSCHULE", "FOM Hochschule für Oekonomie & Management"), {
       bold: true,
       size: 28,
-      spacingAfter: 200,
+      spacingAfter: 240,
     }),
-    coverParagraph(env("MODUL_NAME", "Modul"), { size: 24, spacingAfter: 800 }),
-    coverParagraph("Seminararbeit", { bold: true, size: 36, spacingAfter: 600 }),
-    coverParagraph("vorgelegt von", { size: 22, spacingAfter: 200 }),
+    coverParagraph(env("MODUL_NAME", "Modul"), { size: 24, spacingAfter: 1200 }),
+    coverParagraph("Seminararbeit", { bold: true, size: 36, spacingAfter: 900 }),
+    coverParagraph("vorgelegt von", { size: 22, spacingAfter: 240 }),
     coverParagraph(env("STUDENT_NAME", "Vorname Nachname"), { bold: true, size: 28, spacingAfter: 200 }),
     coverParagraph(
       `Matrikelnummer: ${env("STUDENT_MATRIKELNUMMER", "000000")}`,
@@ -121,7 +121,7 @@ function blockToParagraphs(
             ? [new FootnoteReferenceRun(block.fussnoteNummer)]
             : []),
         ],
-        spacing: { after: 200 },
+        spacing: { line: 360, lineRule: "auto", after: 280 },
       }),
     ];
   }
@@ -143,7 +143,7 @@ function blockToParagraphs(
           }),
         ],
         heading: headingMap[block.type],
-        spacing: { before: 300, after: 120 },
+        spacing: { before: 480, after: 160 },
       }),
     ];
   }
@@ -160,7 +160,7 @@ function blockToParagraphs(
           }),
         ],
         indent: { left: 720 },
-        spacing: { before: 200, after: 200 },
+        spacing: { line: 360, lineRule: "auto", before: 280, after: 280 },
       }),
     ];
   }
@@ -176,7 +176,7 @@ function blockToParagraphs(
           size: fontSize,
         }),
       ],
-      spacing: { after: 200 },
+      spacing: { line: 360, lineRule: "auto", after: 280 },
     }),
   ];
 }

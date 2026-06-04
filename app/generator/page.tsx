@@ -13,6 +13,7 @@ import type {
   ParsedSource,
   SectionContent,
   ReviewResult,
+  ReviewChange,
   DocumentContent,
   GeneratorPhase,
   OutlineSection,
@@ -343,16 +344,18 @@ export default function GeneratorPage() {
 
         if (!reviewRes.ok) throw new Error("Fehler beim Review");
 
-        const { finalDocument: reviewedDoc, reviewLog: log } =
+        const { finalDocument: reviewedDoc, reviewLog: log, reviewChanges: changes } =
           await reviewRes.json() as {
             finalDocument: DocumentContent;
             reviewLog: ReviewResult[];
+            reviewChanges: ReviewChange[];
           };
         setReviewLog(log);
 
         const result: SessionResult = {
           finalDocument: reviewedDoc,
           reviewLog: log,
+          reviewChanges: changes ?? [],
           leitfadenRules: rules,
         };
         sessionStorage.setItem("generatorResult", JSON.stringify(result));

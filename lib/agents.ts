@@ -217,10 +217,18 @@ JSON-Schema für die Antwort:
   try {
     return JSON.parse(stripJsonFences(fullText)) as SectionContent;
   } catch {
+    // Second attempt: extract the outermost JSON object from the response
+    const start = fullText.indexOf("{");
+    const end = fullText.lastIndexOf("}");
+    if (start !== -1 && end > start) {
+      try {
+        return JSON.parse(fullText.slice(start, end + 1)) as SectionContent;
+      } catch { /* fall through */ }
+    }
     return {
       sectionNummer: input.section.nummer,
       sectionTitel: input.section.titel,
-      blocks: [{ type: "paragraph", text: stripJsonFences(fullText) || input.section.blueprint }],
+      blocks: [{ type: "paragraph", text: input.section.blueprint }],
       wordCount: 0,
     };
   }

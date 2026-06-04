@@ -1,11 +1,9 @@
-// @ts-expect-error - pdf-parse uses CommonJS export=; loaded natively via serverExternalPackages
-import pdfParse from "pdf-parse";
-
 export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
-  // pdfParse is the callable function from the CJS module
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const data = await (pdfParse as any)(buffer) as { text: string };
-  return data.text;
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { PDFParse } = require("pdf-parse");
+  const parser = new PDFParse({ data: buffer });
+  const result = await parser.getText() as { text: string };
+  return result.text;
 }
 
 export function chunkText(text: string, chunkSize = 1000): string[] {

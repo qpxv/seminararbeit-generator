@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { HEADER, OUTPUT_PAGE } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import type { SessionResult } from "@/lib/types";
+import type { SessionResult, ReviewChange } from "@/lib/types";
 
 export default function OutputPage() {
   const router = useRouter();
@@ -162,6 +162,11 @@ export default function OutputPage() {
                 <span className="bg-fom-grey-50 text-fom-grey-600 text-xs rounded-fom-sm px-2 py-0.5">
                   {result.reviewLog.length} {OUTPUT_PAGE.iterationLabel}
                 </span>
+                {result.reviewChanges?.length > 0 && (
+                  <span className="bg-fom-yellow/20 text-fom-grey-700 text-xs rounded-fom-sm px-2 py-0.5">
+                    {result.reviewChanges.length} überarbeitet
+                  </span>
+                )}
               </div>
               {isReviewOpen ? (
                 <ChevronDown className="w-4 h-4 text-fom-grey-400" />
@@ -196,6 +201,44 @@ export default function OutputPage() {
                     )}
                   </div>
                 ))}
+
+                {result.reviewChanges?.length > 0 && (
+                  <div className="p-4 space-y-4">
+                    <p className="text-xs font-medium text-fom-grey-600 uppercase tracking-wide">
+                      Überarbeitete Abschnitte
+                    </p>
+                    {result.reviewChanges.map((change: ReviewChange, i: number) => (
+                      <div key={i} className="rounded-fom-sm overflow-hidden border border-fom-grey-100 text-xs">
+                        <div className="bg-fom-grey-97 px-3 py-2 flex items-center gap-2 border-b border-fom-grey-100">
+                          <span className="font-mono text-fom-grey-400">{change.sectionNummer}</span>
+                          <span className="font-medium text-fom-grey-700">{change.sectionTitel}</span>
+                        </div>
+                        {/* Yellow: critique */}
+                        <div className="bg-fom-yellow/10 border-b border-fom-yellow/30 px-3 py-2 space-y-1">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <span className="bg-fom-yellow/40 text-fom-grey-800 font-medium rounded px-1.5 py-0.5 text-[10px] uppercase tracking-wide">Kritik</span>
+                          </div>
+                          <p className="text-fom-grey-700 font-medium">{change.problem}</p>
+                          <p className="text-fom-grey-600">{change.verbesserungsvorschlag}</p>
+                          {change.originalPreview && (
+                            <p className="text-fom-grey-400 italic mt-1 line-clamp-2">{change.originalPreview}…</p>
+                          )}
+                        </div>
+                        {/* Green: revision */}
+                        <div className="bg-fom-primary-bg px-3 py-2 space-y-1">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <span className="bg-fom-primary/20 text-fom-primary-darker font-medium rounded px-1.5 py-0.5 text-[10px] uppercase tracking-wide">KI-Revision</span>
+                          </div>
+                          {change.revisedPreview ? (
+                            <p className="text-fom-grey-700 line-clamp-2">{change.revisedPreview}…</p>
+                          ) : (
+                            <p className="text-fom-grey-400 italic">Abschnitt wurde überarbeitet.</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

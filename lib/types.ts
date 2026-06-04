@@ -127,8 +127,18 @@ export interface SessionInput {
   quellenFiles: { name: string; base64: string }[];
 }
 
+export interface ReviewChange {
+  sectionNummer: string;
+  sectionTitel: string;
+  problem: string;
+  verbesserungsvorschlag: string;
+  originalPreview: string;
+  revisedPreview: string;
+}
+
 export interface SessionResult {
   finalDocument: DocumentContent;
   reviewLog: ReviewResult[];
+  reviewChanges: ReviewChange[];
   leitfadenRules: LeitfadenRules;
 }

@@ -133,8 +133,12 @@ function UploadZone({
 
 export default function HomePage() {
   const router = useRouter();
-  const [forschungsfrage, setForschungsfrage] = useState("");
-  const [gliederung, setGliederung] = useState("");
+  const [forschungsfrage, setForschungsfrage] = useState(() =>
+    typeof window !== "undefined" ? (localStorage.getItem("form_forschungsfrage") ?? "") : ""
+  );
+  const [gliederung, setGliederung] = useState(() =>
+    typeof window !== "undefined" ? (localStorage.getItem("form_gliederung") ?? "") : ""
+  );
   const [leitfadenFiles, setLeitfadenFiles] = useState<File[]>([]);
   const [quellenFiles, setQuellenFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -216,6 +220,7 @@ export default function HomePage() {
                   value={forschungsfrage}
                   onChange={(e) => {
                     setForschungsfrage(e.target.value);
+                    localStorage.setItem("form_forschungsfrage", e.target.value);
                     if (errors.forschungsfrage)
                       setErrors((p) => ({ ...p, forschungsfrage: "" }));
                   }}
@@ -238,6 +243,7 @@ export default function HomePage() {
                   value={gliederung}
                   onChange={(e) => {
                     setGliederung(e.target.value);
+                    localStorage.setItem("form_gliederung", e.target.value);
                     if (errors.gliederung)
                       setErrors((p) => ({ ...p, gliederung: "" }));
                   }}
