@@ -1,0 +1,120 @@
+{
+  "deckblatt": {
+    "zeigeMatrikelnummer": true,
+    "zeigeStudiengang": true,
+    "zeigeBetreuer": true,
+    "zeigeAbgabedatum": true,
+    "titelFettgedruckt": true,
+    "reihenfolge": ["logo", "hochschule", "studiengang", "abschlussart", "titel", "autor", "betreuer", "matrikelnummer", "datum"]
+  },
+  "schrift": {
+    "art": "Times New Roman",
+    "groesse": 12,
+    "zeilenabstand": 1.5,
+    "absatzAbstand": 6,
+    "absatzAbstandVor": 0,
+    "ueberschriftAbstandVor": 12,
+    "ueberschriftAbstandNach": 6,
+    "fussnotenGroesse": 10,
+    "fussnotenZeilenabstand": 1.0,
+    "richtwertZeichenProSeite": 2200,
+    "richtwertZeilenProSeite": 37,
+    "richtwertZeichenProZeile": 60
+  },
+  "seitenraender": {
+    "oben": 4.0,
+    "unten": 2.0,
+    "links": 4.0,
+    "rechts": 2.0,
+    "kopfzeileAbstandVomRand": 2.0,
+    "fusszeileAbstandVomRand": 2.0,
+    "textbreiteRichtwert": "140mm"
+  },
+  "seitenzahlen": {
+    "vorspannFormat": "roemisch",
+    "format": "arabisch",
+    "arabischStartwert": 1,
+    "position": "symmetrisch-aussen"
+  },
+  "gliederung": {
+    "maxEbenen": 4,
+    "nummerierungsstil": "dekadisch",
+    "inhaltsverzeichnisErforderlich": true,
+    "abbildungsverzeichnisErforderlich": false,
+    "tabellenverzeichnisErforderlich": false,
+    "verzeichnisseOhneGliederungsnummer": true,
+    "verzeichnisseImInhaltsverzeichnis": true,
+    "anhangNummerierung": "roemisch-gross",
+    "mindestensZweiUnterabschnitteBeiUntergliederung": true
+  },
+  "zitierung": {
+    "stileErlaubt": ["Fussnote", "IEEE", "Harvard", "APA"],
+    "fussnoten": true,
+    "quellenImText": true,
+    "seitenzahlImmerErforderlich": true,
+    "stilMussEinheitlichSein": true,
+    "wortlicheZitateSparsamVerwenden": true,
+    "vglBeiSinngemaesenZitaten": true,
+    "fussnotenNummerierungFortlaufendArabisch": true,
+    "zitatBezugSatz": "vor-schlusszeichen",
+    "zitatBezugAbsatz": "nach-schlusszeichen"
+  },
+  "literaturverzeichnis": {
+    "ueberschrift": "Literatur",
+    "haengenderEinzug": true,
+    "alphabetischSortiert": true,
+    "ohneGliederungsnummer": true,
+    "imInhaltsverzeichnis": true
+  },
+  "abbildungen": {
+    "beschriftungPosition": "unter",
+    "nummerierungFortlaufend": true,
+    "referenzImTextErforderlich": true,
+    "referenzVorOderAufSelberSeite": true,
+    "keinRahmen": true,
+    "quelleNachBeschriftung": true,
+    "kiGeneriertKennzeichnungErforderlich": true
+  },
+  "tabellen": {
+    "beschriftungPosition": "ueber",
+    "nummerierungFortlaufend": true,
+    "referenzImTextErforderlich": true,
+    "referenzVorOderAufSelberSeite": true,
+    "quelleNachTitel": true,
+    "kiGeneriertKennzeichnungErforderlich": true
+  },
+  "textgestaltung": {
+    "ausrichtung": "Blocksatz",
+    "silbentrennung": true,
+    "maxAufeinanderfolgendeTraennungen": 3,
+    "keinIchWir": true,
+    "bevorzugteZeitform": "Praesens",
+    "keineSelbstbezueglichkeit": true,
+    "hervorhebungenNurAusnahmsweise": true
+  },
+  "abgabe": {
+    "digitalesFormat": "PDF",
+    "schriftartenEingebettet": true,
+    "keinPasswortschutz": true,
+    "keinKopierschutz": true,
+    "keinDurchsuchschutz": true,
+    "pdfStandardEmpfehlung": "PDF/A",
+    "druckPapiergewichtGm2": 80,
+    "druckMinAufloesungDpi": 600
+  },
+  "sonstiges": {
+    "sprache": "de",
+    "eigenstaendigkeitserklaerungErforderlich": true,
+    "eigenstaendigkeitserklaerungOhneSeitenzahl": true,
+    "eigenstaendigkeitserklaerungNichtImInhaltsverzeichnis": true,
+    "seitenformatDinA4": true,
+    "quellenMindestanzahl": 0,
+    "kiNutzungBelegen": true,
+    "kiVerzeichnisErforderlichWennGenutzt": true,
+    "kiPromptsInAnhang": true,
+    "sperrvermerkMoeglich": true,
+    "sperrvermerkOhneSeitenzahl": true,
+    "abkuerzungenAlphabetischSortiert": true,
+    "abkuerzungenVorErsterVerwendungEinfuehren": true
+  }
+}

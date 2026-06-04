@@ -64,6 +64,7 @@ ${pdfText.substring(0, 15000)}`,
 export async function generateOutline(input: {
   forschungsfrage: string;
   gliederung: string;
+  zielWortanzahl: number;
   quellenListe: string[];
   leitfadenRules: LeitfadenRules;
 }): Promise<ExpandedOutline> {
@@ -86,8 +87,11 @@ Antworte NUR mit validem JSON, KEIN Text davor oder danach, KEINE Markdown-Backt
 Gliederung vom Nutzer:
 ${input.gliederung}
 
+ZIEL-WORTANZAHL: ${input.zielWortanzahl} Wörter (Gesamtarbeit, ohne Deckblatt & Literaturverzeichnis)
+Verteile die Wörter sinnvoll auf die Abschnitte. Die Summe aller geschaetzteWorte MUSS exakt ${input.zielWortanzahl} ergeben.
+
 Verfügbare Quellen (Dateinamen):
-${input.quellenListe.join("\n")}
+${input.quellenListe.join("\n") || "Keine Quellen hochgeladen — schreibe auf Basis des Blueprints."}
 
 Leitfaden-Regeln:
 ${JSON.stringify(input.leitfadenRules, null, 2)}
@@ -97,7 +101,7 @@ Erstelle jetzt die Expanded Outline als JSON. Schema:
   "forschungsfrage": string,
   "hauptthese": string,
   "abschnitte": [{ "nummer": string, "titel": string, "ebene": 1|2|3, "blueprint": string, "geschaetzteWorte": number, "verwendeteQuellen": string[] }],
-  "gesamtWortanzahlZiel": number
+  "gesamtWortanzahlZiel": ${input.zielWortanzahl}
 }`,
       },
     ],

@@ -107,7 +107,7 @@ export default function OutputPage() {
           <button
             onClick={handleDownload}
             disabled={isDownloading}
-            className="w-full bg-fom-primary text-fom-black font-bold rounded-fom-sm py-4 text-lg hover:bg-fom-primary-dark transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+            className="w-full bg-fom-primary text-white font-bold rounded-fom-sm py-4 text-lg hover:bg-fom-primary-dark transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3"
           >
             <Download className="w-5 h-5" />
             {isDownloading ? OUTPUT_PAGE.downloading : OUTPUT_PAGE.downloadButton}

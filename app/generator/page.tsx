@@ -263,6 +263,7 @@ export default function GeneratorPage() {
   const [sections, setSections] = useState<SectionContent[]>([]);
   const [currentSectionTitel, setCurrentSectionTitel] = useState("");
   const [reviewLog, setReviewLog] = useState<ReviewResult[]>([]);
+  const [reviewChanges, setReviewChanges] = useState<ReviewChange[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [expandedSectionId, setExpandedSectionId] = useState<string | null>(null);
   const [pipelineInput, setPipelineInput] = useState<SessionInput | null>(null);
@@ -351,6 +352,7 @@ export default function GeneratorPage() {
             reviewChanges: ReviewChange[];
           };
         setReviewLog(log);
+        setReviewChanges(changes ?? []);
 
         const result: SessionResult = {
           finalDocument: reviewedDoc,
@@ -390,16 +392,10 @@ export default function GeneratorPage() {
 
     async function runPrePipeline() {
       try {
-        // Step 1: Parse Leitfaden
+        // Step 1: Load Leitfaden rules from lib/leitfaden-format.json
         setPhase("parsing_leitfaden");
-        const leitfadenBlob = base64ToBlob(input.leitfadenFile.base64);
-        const leitfadenFormData = new FormData();
-        leitfadenFormData.append("file", leitfadenBlob, input.leitfadenFile.name);
-        const rulesRes = await fetch("/api/parse-leitfaden", {
-          method: "POST",
-          body: leitfadenFormData,
-        });
-        if (!rulesRes.ok) throw new Error("Fehler beim Lesen des Leitfadens");
+        const rulesRes = await fetch("/api/leitfaden-rules");
+        if (!rulesRes.ok) throw new Error("Fehler beim Laden der Leitfaden-Regeln");
         const rules = (await rulesRes.json()) as LeitfadenRules;
         setLeitfadenRules(rules);
 
@@ -427,6 +423,7 @@ export default function GeneratorPage() {
           body: JSON.stringify({
             forschungsfrage: input.forschungsfrage,
             gliederung: input.gliederung,
+            zielWortanzahl: input.zielWortanzahl,
             quellenListe: parsedSources.map((s) => s.dateiname),
             leitfadenRules: rules,
           }),
@@ -496,7 +493,7 @@ export default function GeneratorPage() {
           <div className="p-4 border-t border-fom-grey-100 flex gap-3">
             <button
               onClick={handleConfirmOutline}
-              className="flex-1 bg-fom-primary text-fom-black font-bold rounded-fom-sm py-2.5 text-sm hover:bg-fom-primary-dark transition-colors"
+              className="flex-1 bg-fom-primary text-white font-bold rounded-fom-sm py-2.5 text-sm hover:bg-fom-primary-dark transition-colors"
             >
               {GENERATOR_PAGE.confirmButton}
             </button>
@@ -535,7 +532,7 @@ export default function GeneratorPage() {
               </span>
             )}
           </div>
-          <div className="bg-fom-grey-97 min-h-64 max-h-[600px] overflow-y-auto p-8 font-fom space-y-1">
+          <div className="bg-fom-grey-97 h-[calc(100vh-10rem)] overflow-y-auto p-8 font-fom space-y-1">
             {pipelineInput && (
               <h1 className="text-2xl font-bold text-fom-black mb-6 pb-4 border-b border-fom-grey-200">
                 {pipelineInput.forschungsfrage}
@@ -547,6 +544,37 @@ export default function GeneratorPage() {
             {phase === "writing_section" && (
               <div className="flex items-center gap-2 text-fom-grey-400 text-sm mt-4">
                 <div className="w-2 h-4 bg-fom-primary animate-pulse rounded-sm" />
+              </div>
+            )}
+            {reviewChanges.length > 0 && (
+              <div className="mt-8 pt-6 border-t-2 border-fom-grey-200 space-y-4">
+                <p className="text-xs font-semibold text-fom-grey-500 uppercase tracking-widest">
+                  KI-Überarbeitung — {reviewChanges.length} Abschnitt{reviewChanges.length !== 1 ? "e" : ""} überarbeitet
+                </p>
+                {reviewChanges.map((change, i) => (
+                  <div key={i} className="rounded-fom-sm overflow-hidden border border-fom-grey-100 text-xs">
+                    <div className="bg-fom-grey-50 px-3 py-2 flex items-center gap-2 border-b border-fom-grey-100">
+                      <span className="font-mono text-fom-grey-400">{change.sectionNummer}</span>
+                      <span className="font-medium text-fom-grey-700">{change.sectionTitel}</span>
+                    </div>
+                    <div className="bg-fom-yellow/10 border-b border-fom-yellow/30 px-3 py-2 space-y-1">
+                      <span className="inline-block bg-fom-yellow/40 text-fom-grey-800 font-semibold rounded px-1.5 py-0.5 text-[10px] uppercase tracking-wide mb-1">Kritik</span>
+                      <p className="text-fom-grey-700 font-medium">{change.problem}</p>
+                      <p className="text-fom-grey-600">{change.verbesserungsvorschlag}</p>
+                      {change.originalPreview && (
+                        <p className="text-fom-grey-400 italic mt-1 line-clamp-2">{change.originalPreview}…</p>
+                      )}
+                    </div>
+                    <div className="bg-fom-primary-bg px-3 py-2 space-y-1">
+                      <span className="inline-block bg-fom-primary/20 text-fom-primary-darker font-semibold rounded px-1.5 py-0.5 text-[10px] uppercase tracking-wide mb-1">KI-Revision</span>
+                      {change.revisedPreview ? (
+                        <p className="text-fom-grey-700 line-clamp-2">{change.revisedPreview}…</p>
+                      ) : (
+                        <p className="text-fom-grey-400 italic">Abschnitt wurde überarbeitet.</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -563,8 +591,8 @@ export default function GeneratorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-fom-grey-97 flex flex-col">
-      <header className="bg-fom-primary h-16 flex items-center px-6 shrink-0 sticky top-0 z-10">
+    <div className="h-screen bg-fom-grey-97 flex flex-col overflow-hidden">
+      <header className="bg-fom-primary h-16 flex items-center px-6 shrink-0">
         <img src="/fom-logo.png" alt={HEADER.logoAlt} className="h-8 mr-4" />
         <span className="text-white font-medium text-base">{HEADER.appName}</span>
       </header>

@@ -139,7 +139,9 @@ export default function HomePage() {
   const [gliederung, setGliederung] = useState(() =>
     typeof window !== "undefined" ? (localStorage.getItem("form_gliederung") ?? "") : ""
   );
-  const [leitfadenFiles, setLeitfadenFiles] = useState<File[]>([]);
+  const [zielWortanzahl, setZielWortanzahl] = useState(() =>
+    typeof window !== "undefined" ? (localStorage.getItem("form_zielWortanzahl") ?? "2000") : "2000"
+  );
   const [quellenFiles, setQuellenFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -150,10 +152,8 @@ export default function HomePage() {
       errs.forschungsfrage = FORM_PAGE.validation.forschungsfrageRequired;
     if (!gliederung.trim())
       errs.gliederung = FORM_PAGE.validation.gliederungRequired;
-    if (leitfadenFiles.length === 0)
-      errs.leitfaden = FORM_PAGE.validation.leitfadenRequired;
-    if (quellenFiles.length === 0)
-      errs.quellen = FORM_PAGE.validation.quellenRequired;
+    if (!zielWortanzahl || Number(zielWortanzahl) < 100)
+      errs.zielWortanzahl = "Bitte gib eine Wortanzahl von mindestens 100 ein.";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
@@ -163,16 +163,12 @@ export default function HomePage() {
     if (!validate()) return;
     setIsSubmitting(true);
     try {
-      const leitfadenBase64 = await fileToBase64(leitfadenFiles[0]);
       const quellenBase64 = await Promise.all(quellenFiles.map(fileToBase64));
 
       const sessionInput: SessionInput = {
         forschungsfrage: forschungsfrage.trim(),
         gliederung: gliederung.trim(),
-        leitfadenFile: {
-          name: leitfadenFiles[0].name,
-          base64: leitfadenBase64,
-        },
+        zielWortanzahl: Number(zielWortanzahl),
         quellenFiles: quellenFiles.map((f, i) => ({
           name: f.name,
           base64: quellenBase64[i],
@@ -255,19 +251,29 @@ export default function HomePage() {
                 )}
               </div>
 
-              <UploadZone
-                multiple={false}
-                files={leitfadenFiles}
-                onFilesAdd={(files) => {
-                  setLeitfadenFiles(files);
-                  if (errors.leitfaden)
-                    setErrors((p) => ({ ...p, leitfaden: "" }));
-                }}
-                onFileRemove={() => setLeitfadenFiles([])}
-                label={FORM_PAGE.leitfadenLabel}
-                description={FORM_PAGE.leitfadenDescription}
-                error={errors.leitfaden}
-              />
+              <div>
+                <label className="block text-sm font-medium text-fom-grey-700 mb-1">
+                  {FORM_PAGE.zielWortanzahlLabel}
+                </label>
+                <p className="text-xs text-fom-grey-600 mb-2">{FORM_PAGE.zielWortanzahlDescription}</p>
+                <input
+                  type="number"
+                  min={100}
+                  step={100}
+                  value={zielWortanzahl}
+                  onChange={(e) => {
+                    setZielWortanzahl(e.target.value);
+                    localStorage.setItem("form_zielWortanzahl", e.target.value);
+                    if (errors.zielWortanzahl)
+                      setErrors((p) => ({ ...p, zielWortanzahl: "" }));
+                  }}
+                  placeholder={FORM_PAGE.zielWortanzahlPlaceholder}
+                  className="w-full border border-fom-grey-200 rounded-fom-sm px-3 py-2 text-sm text-fom-black placeholder:text-fom-grey-400 focus:outline-none focus:border-fom-primary focus:ring-1 focus:ring-fom-primary transition-colors"
+                />
+                {errors.zielWortanzahl && (
+                  <p className="text-fom-red text-sm mt-1">{errors.zielWortanzahl}</p>
+                )}
+              </div>
 
               <UploadZone
                 multiple
@@ -298,7 +304,7 @@ export default function HomePage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-fom-primary text-fom-black font-bold rounded-fom-sm py-3 text-base hover:bg-fom-primary-dark transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full bg-fom-primary text-white font-bold rounded-fom-sm py-3 text-base hover:bg-fom-primary-dark transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

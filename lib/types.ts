@@ -11,6 +11,7 @@ export interface LeitfadenRules {
   };
   zitierweise: string;
   fussnoten: boolean;
+  bibliographieTitel?: string;
   pflichtabschnitte: string[];
   sonstigeRegeln: string[];
 }
@@ -123,7 +124,7 @@ export interface ParsedSource {
 export interface SessionInput {
   forschungsfrage: string;
   gliederung: string;
-  leitfadenFile: { name: string; base64: string };
+  zielWortanzahl: number;
   quellenFiles: { name: string; base64: string }[];
 }
 

@@ -6,6 +6,7 @@ export async function POST(request: Request) {
     const body = await request.json() as {
       forschungsfrage: string;
       gliederung: string;
+      zielWortanzahl: number;
       quellenListe: string[];
       leitfadenRules: LeitfadenRules;
     };

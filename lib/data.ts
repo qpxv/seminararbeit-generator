@@ -15,12 +15,15 @@ export const FORM_PAGE = {
   gliederungLabel: "Gliederung",
   gliederungPlaceholder:
     "1. Einleitung\n1.1 Problemstellung\n1.2 Zielsetzung\n2. Theoretischer Rahmen\n2.1 Grundlagen\n3. Analyse\n4. Fazit",
+  zielWortanzahlLabel: "Ziel-Wortanzahl",
+  zielWortanzahlPlaceholder: "z.B. 2000",
+  zielWortanzahlDescription: "Gesamtwortanzahl der Arbeit (ohne Deckblatt & Literaturverzeichnis)",
   leitfadenLabel: "Leitfaden (PDF)",
   leitfadenDescription:
     "Lade den Bewertungsleitfaden deiner Hochschule hoch (PDF)",
-  quellenLabel: "Quellen (PDFs)",
+  quellenLabel: "Quellen (PDFs) — optional",
   quellenDescription:
-    "Lade deine wissenschaftlichen Quellen hoch (mehrere PDFs möglich)",
+    "Lade deine wissenschaftlichen Quellen hoch (mehrere PDFs möglich). Ohne Quellen schreibt die KI auf Basis des Blueprints.",
   uploadZoneText: "PDF hierher ziehen oder klicken zum Auswählen",
   uploadZoneTextMultiple: "PDFs hierher ziehen oder klicken zum Auswählen",
   submitButton: "Seminararbeit generieren",

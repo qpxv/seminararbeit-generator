@@ -1,5 +1,6 @@
 import {
   Document,
+  Footer,
   Paragraph,
   TextRun,
   ImageRun,
@@ -7,6 +8,9 @@ import {
   FootnoteReferenceRun,
   HeadingLevel,
   AlignmentType,
+  PageNumber,
+  LeaderType,
+  TabStopType,
 } from "docx";
 import type { DocumentContent, LiteraturEintrag, LeitfadenRules, ContentBlock } from "./types";
 
@@ -191,6 +195,72 @@ function formatBibliography(eintrag: LiteraturEintrag): string {
   return parts.filter(Boolean).join(". ");
 }
 
+function buildManualToc(
+  content: DocumentContent,
+  bibTitel: string,
+  fontFamily: string,
+  fontSize: number
+): Paragraph[] {
+  const WORDS_PER_PAGE = 380;
+  const TAB_POS = 8500; // ~150 mm text width in twips (A4 with 4+2 cm margins)
+  const tabStops = [{ position: TAB_POS, type: TabStopType.RIGHT, leader: LeaderType.DOT }];
+
+  const paras: Paragraph[] = [
+    new Paragraph({
+      children: [new TextRun({ text: "Inhaltsverzeichnis", bold: true })],
+      heading: HeadingLevel.HEADING_1,
+      spacing: { after: 400 },
+    }),
+  ];
+
+  let page = 3; // cover(1) + toc(2) = content starts at 3
+
+  for (const section of content.abschnitte) {
+    const dots = (section.sectionNummer.match(/\./g) ?? []).length;
+    const indent = dots === 0 ? 0 : dots === 1 ? 360 : 720;
+    const bold = dots === 0;
+
+    paras.push(
+      new Paragraph({
+        children: [
+          new TextRun({ text: `${section.sectionNummer}  ${section.sectionTitel}`, font: fontFamily, size: fontSize, bold }),
+          new TextRun({ text: `\t${page}`, font: fontFamily, size: fontSize }),
+        ],
+        tabStops,
+        indent: { left: indent },
+        spacing: { after: 80 },
+      })
+    );
+
+    page += Math.max(1, Math.round((section.wordCount || 300) / WORDS_PER_PAGE));
+  }
+
+  paras.push(
+    new Paragraph({
+      children: [
+        new TextRun({ text: bibTitel, font: fontFamily, size: fontSize }),
+        new TextRun({ text: `\t${page}`, font: fontFamily, size: fontSize }),
+      ],
+      tabStops,
+      spacing: { after: 80 },
+    }),
+    new Paragraph({ children: [new PageBreak()] })
+  );
+
+  return paras;
+}
+
+function buildPageFooter(fontFamily: string, fontSize: number): Footer {
+  return new Footer({
+    children: [
+      new Paragraph({
+        children: [new TextRun({ children: [PageNumber.CURRENT], font: fontFamily, size: fontSize })],
+        alignment: AlignmentType.CENTER,
+      }),
+    ],
+  });
+}
+
 export function buildDocument(
   content: DocumentContent,
   rules: LeitfadenRules,
@@ -220,7 +290,7 @@ export function buildDocument(
   contentParagraphs.push(
     new Paragraph({ children: [new PageBreak()] }),
     new Paragraph({
-      children: [new TextRun({ text: "Literaturverzeichnis", bold: true })],
+      children: [new TextRun({ text: rules.bibliographieTitel ?? "Literaturverzeichnis", bold: true })],
       heading: HeadingLevel.HEADING_1,
       spacing: { after: 400 },
     })
@@ -260,16 +330,28 @@ export function buildDocument(
   }
 
   const coverParagraphs = buildCoverPageParagraphs(logoBuffer);
+  const bibTitel = rules.bibliographieTitel ?? "Literaturverzeichnis";
+  const tocParagraphs = buildManualToc(content, bibTitel, fontFamily, fontSize);
 
   return new Document({
     footnotes,
+    features: { updateFields: true },
     styles: {
       default: {
         document: {
-          run: {
-            font: fontFamily,
-            size: fontSize,
-          },
+          run: { font: fontFamily, size: fontSize },
+        },
+        heading1: {
+          run: { color: "121212", bold: true, size: fontSize + 4 },
+          paragraph: { spacing: { before: 480, after: 160 } },
+        },
+        heading2: {
+          run: { color: "121212", bold: true, size: fontSize + 2 },
+          paragraph: { spacing: { before: 400, after: 120 } },
+        },
+        heading3: {
+          run: { color: "121212", bold: false, size: fontSize },
+          paragraph: { spacing: { before: 320, after: 100 } },
         },
       },
     },
@@ -280,8 +362,17 @@ export function buildDocument(
             size: { width: 11906, height: 16838 },
             margin: margins,
           },
+          titlePage: true,
         },
-        children: [...coverParagraphs, ...contentParagraphs],
+        footers: {
+          default: buildPageFooter(fontFamily, fontSize),
+          first: new Footer({ children: [new Paragraph({ children: [] })] }),
+        },
+        children: [
+          ...coverParagraphs,
+          ...tocParagraphs,
+          ...contentParagraphs,
+        ],
       },
     ],
   });
