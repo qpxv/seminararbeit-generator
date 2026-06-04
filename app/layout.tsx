@@ -11,6 +11,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "KI Seminararbeiten-Generator",
   description: "Generiere vollständige Seminararbeiten mit KI-Unterstützung",
+  icons: { icon: "/fom-logo.png" },
 };
 
 export default function RootLayout({
