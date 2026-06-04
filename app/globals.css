@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* FOM Primär (Teal) */
+  --color-fom-primary: #00c6b2;
+  --color-fom-primary-dark: #009f8f;
+  --color-fom-primary-darker: #00776b;
+  --color-fom-primary-light: #ccf3ef;
+  --color-fom-primary-bg: #e5f9f7;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* FOM Sekundär (Blau) */
+  --color-fom-blue: #0071de;
+  --color-fom-blue-dark: #004486;
+  --color-fom-blue-deeper: #003a72;
+  --color-fom-blue-light: #cce3f8;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Grautöne */
+  --color-fom-black: #121212;
+  --color-fom-grey-900: #121212;
+  --color-fom-grey-800: #303030;
+  --color-fom-grey-700: #4b4b4b;
+  --color-fom-grey-600: #6d6d6d;
+  --color-fom-grey-400: #9a9a9a;
+  --color-fom-grey-200: #cdcdcd;
+  --color-fom-grey-100: #e6e6e6;
+  --color-fom-grey-50: #f2f0f0;
+  --color-fom-grey-97: #f7f7f7;
+
+  /* Akzente */
+  --color-fom-yellow: #f9cb00;
+  --color-fom-red: #e81818;
+  --color-fom-green: #77b502;
+  --color-fom-white: #ffffff;
+
+  /* Typografie — overridden at runtime by next/font/google via HTML class */
+  --font-fom: system-ui, Helvetica, Arial, sans-serif;
+
+  /* Border Radius */
+  --radius-fom-sm: 4px;
+  --radius-fom-md: 8px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-fom);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #121212;
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@utility animate-fade-in {
+  animation: fadeIn 0.3s ease-out both;
 }
