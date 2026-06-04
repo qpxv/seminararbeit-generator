@@ -202,14 +202,18 @@ function buildManualToc(
   fontSize: number
 ): Paragraph[] {
   const WORDS_PER_PAGE = 380;
-  const TAB_POS = 8500; // ~150 mm text width in twips (A4 with 4+2 cm margins)
-  const tabStops = [{ position: TAB_POS, type: TabStopType.RIGHT, leader: LeaderType.DOT }];
+  const DOT_TAB = [{ position: 8500, type: TabStopType.RIGHT, leader: LeaderType.DOT }];
+  // Left tab after section number (title start), then right dot tab for page number
+  const tocTabs = (numPos: number) => [
+    { position: numPos, type: TabStopType.LEFT },
+    ...DOT_TAB,
+  ];
 
   const paras: Paragraph[] = [
     new Paragraph({
       children: [new TextRun({ text: "Inhaltsverzeichnis", bold: true })],
       heading: HeadingLevel.HEADING_1,
-      spacing: { after: 400 },
+      spacing: { after: 480 },
     }),
   ];
 
@@ -217,18 +221,19 @@ function buildManualToc(
 
   for (const section of content.abschnitte) {
     const dots = (section.sectionNummer.match(/\./g) ?? []).length;
-    const indent = dots === 0 ? 0 : dots === 1 ? 360 : 720;
-    const bold = dots === 0;
+    const tocStyle = dots === 0 ? "TOC1" : dots === 1 ? "TOC2" : "TOC3";
+    // title tab position accounts for paragraph indent + number width
+    const titleTab = dots === 0 ? 720 : dots === 1 ? 900 : 1080;
 
     paras.push(
       new Paragraph({
+        style: tocStyle,
+        tabStops: tocTabs(titleTab),
         children: [
-          new TextRun({ text: `${section.sectionNummer}  ${section.sectionTitel}`, font: fontFamily, size: fontSize, bold }),
-          new TextRun({ text: `\t${page}`, font: fontFamily, size: fontSize }),
+          new TextRun({ text: section.sectionNummer, font: fontFamily, size: fontSize }),
+          new TextRun({ text: "\t" + section.sectionTitel, font: fontFamily, size: fontSize }),
+          new TextRun({ text: "\t" + page, font: fontFamily, size: fontSize }),
         ],
-        tabStops,
-        indent: { left: indent },
-        spacing: { after: 80 },
       })
     );
 
@@ -237,12 +242,12 @@ function buildManualToc(
 
   paras.push(
     new Paragraph({
+      style: "TOC1",
+      tabStops: DOT_TAB,
       children: [
         new TextRun({ text: bibTitel, font: fontFamily, size: fontSize }),
-        new TextRun({ text: `\t${page}`, font: fontFamily, size: fontSize }),
+        new TextRun({ text: "\t" + page, font: fontFamily, size: fontSize }),
       ],
-      tabStops,
-      spacing: { after: 80 },
     }),
     new Paragraph({ children: [new PageBreak()] })
   );
@@ -279,11 +284,27 @@ export function buildDocument(
   const footnoteMap = new Map<number, string>();
   const contentParagraphs: Paragraph[] = [];
 
+  const HEADING_TYPES = new Set(["h1", "h2", "h3"]);
+
   for (const section of content.abschnitte) {
-    for (const block of section.blocks) {
-      contentParagraphs.push(
-        ...blockToParagraphs(block, footnoteMap, fontFamily, fontSize)
-      );
+    const dots = (section.sectionNummer.match(/\./g) ?? []).length;
+    const headingType = (["h1", "h2", "h3"][Math.min(dots, 2)]) as ContentBlock["type"];
+
+    // Always inject the heading from section metadata — never trust the AI to include it
+    contentParagraphs.push(
+      ...blockToParagraphs(
+        { type: headingType, text: `${section.sectionNummer}  ${section.sectionTitel}` },
+        footnoteMap, fontFamily, fontSize
+      )
+    );
+
+    // Skip any leading heading block the AI may have included to avoid duplicates
+    const blocks = HEADING_TYPES.has(section.blocks[0]?.type ?? "")
+      ? section.blocks.slice(1)
+      : section.blocks;
+
+    for (const block of blocks) {
+      contentParagraphs.push(...blockToParagraphs(block, footnoteMap, fontFamily, fontSize));
     }
   }
 
@@ -354,6 +375,26 @@ export function buildDocument(
           paragraph: { spacing: { before: 320, after: 100 } },
         },
       },
+      paragraphStyles: [
+        {
+          id: "TOC1",
+          name: "TOC 1",
+          run: { font: fontFamily, size: fontSize, bold: true },
+          paragraph: { spacing: { before: 120, after: 120 } },
+        },
+        {
+          id: "TOC2",
+          name: "TOC 2",
+          run: { font: fontFamily, size: fontSize },
+          paragraph: { indent: { left: 360 }, spacing: { after: 80 } },
+        },
+        {
+          id: "TOC3",
+          name: "TOC 3",
+          run: { font: fontFamily, size: fontSize },
+          paragraph: { indent: { left: 720 }, spacing: { after: 80 } },
+        },
+      ],
     },
     sections: [
       {
