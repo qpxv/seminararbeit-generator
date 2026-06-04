@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KI Seminararbeiten-Generator
+
+A fully automated German academic paper generator built for FOM students. Enter a research question, outline, and word count — optionally upload source PDFs — and the app runs a multi-agent Claude pipeline that produces a formatted, ready-to-submit `.docx` Seminararbeit.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+cp .env.local.example .env.local
+# fill in your API key and personal details
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create `.env.local` from `.env.local.example`:
 
-## Learn More
+```
+ANTHROPIC_API_KEY=sk-ant-...
 
-To learn more about Next.js, take a look at the following resources:
+# Cover page
+STUDENT_NAME=
+STUDENT_MATRIKELNUMMER=
+STUDENT_STUDIENGANG=
+STUDENT_SEMESTER=
+PROFESSOR_NAME=
+MODUL_NAME=
+HOCHSCHULE=
+ABGABEDATUM=
+STADT=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Set to false to skip the AI review/rewrite step during testing
+REVIEW_STEP=true
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## User Flow
 
-## Deploy on Vercel
+1. **`/`** — Enter Forschungsfrage, Gliederung, and Ziel-Wortanzahl. Optionally upload source PDFs. Form fields persist to `localStorage`.
+2. **`/generator`** — Live pipeline dashboard. Pre-pipeline runs automatically (load Leitfaden rules → parse sources → generate expanded outline). User reviews and confirms the outline, then the writing pipeline starts (SSE-streamed section writing → AI review → redirect).
+3. **`/output`** — Download `.docx`. Expand the Review-Protokoll to see which sections were critiqued (yellow) and how they were revised (green).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Leitfaden Formatting
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Formatting rules live in `lib/leitfaden-format.json` — no PDF upload needed. The file currently contains FOM-specific rules (4/2/4/2 cm margins, Times New Roman 12pt, 1.5× line spacing, footnote citations, bibliography titled "Literatur").
+
+To update the rules for a different Leitfaden, use the prompt in `docs/leitfaden-extraction-prompt.md`: paste it into any AI along with your Leitfaden PDF text, save the JSON output as `lib/leitfaden-format.json`, and restart the dev server.
+
+## Stack
+
+- **Next.js 16.2.7** — App Router, Turbopack
+- **Tailwind CSS v4** — tokens in `@theme {}` in `globals.css`, no `tailwind.config.ts`
+- **Anthropic SDK** — `claude-sonnet-4-6`, streaming via `client.messages.stream()`
+- **docx 9.7.1** — server-side DOCX assembly
+- **pdf-parse 2.x** — server-side PDF text extraction (class-based API: `new PDFParse({ data: buffer }).getText()`)
+- **lucide-react** — all icons
