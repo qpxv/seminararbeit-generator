@@ -80,8 +80,7 @@ function buildCoverPageParagraphs(logoBuffer: Buffer | null): Paragraph[] {
       { size: 22, spacingAfter: 120 }
     ),
     coverParagraph(env("STUDENT_STUDIENGANG", "Studiengang"), { size: 22, spacingAfter: 120 }),
-    coverParagraph(env("STUDENT_SEMESTER", "Semester"), { size: 22, spacingAfter: 120 }),
-    coverParagraph(env("STUDENT_EMAIL", ""), { size: 20, spacingAfter: 600 }),
+    coverParagraph(env("STUDENT_SEMESTER", "Semester"), { size: 22, spacingAfter: 600 }),
     coverParagraph(`Betreuer: ${env("PROFESSOR_NAME", "Prof. Dr. Muster")}`, {
       size: 22,
       spacingAfter: 200,

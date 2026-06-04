@@ -22,6 +22,10 @@ export async function POST(request: Request) {
     const reviewChanges: ReviewChange[] = [];
     let currentDoc = { ...documentContent, abschnitte: [...documentContent.abschnitte] };
 
+    if (process.env.REVIEW_STEP === "false") {
+      return Response.json({ finalDocument: currentDoc, reviewLog, reviewChanges });
+    }
+
     for (let iteration = 1; iteration <= 3; iteration++) {
       const result = await reviewDocument({
         documentContent: currentDoc,
