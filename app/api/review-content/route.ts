@@ -36,24 +36,36 @@ export async function POST(request: Request) {
 
       reviewLog.push(result);
 
-      if (result.success || iteration === 3) break;
-
+      const kritikBySection = new Map<string, { problems: string[]; vorschlaege: string[] }>();
       for (const kritik of result.kritikpunkte) {
+        const existing = kritikBySection.get(kritik.sectionNummer) ?? { problems: [], vorschlaege: [] };
+        kritikBySection.set(kritik.sectionNummer, {
+          problems: [...existing.problems, kritik.problem],
+          vorschlaege: [...existing.vorschlaege, kritik.verbesserungsvorschlag],
+        });
+      }
+
+      for (const [sectionNummer, { problems, vorschlaege }] of kritikBySection) {
         const sectionIndex = currentDoc.abschnitte.findIndex(
-          (s) => s.sectionNummer === kritik.sectionNummer
+          (s) => s.sectionNummer === sectionNummer
         );
         if (sectionIndex === -1) continue;
 
         const outlineSection = expandedOutline.abschnitte.find(
-          (s) => s.nummer === kritik.sectionNummer
+          (s) => s.nummer === sectionNummer
         );
         if (!outlineSection) continue;
 
         const relevantChunks = getRelevantChunks(sources, outlineSection);
         const runningSummary = currentDoc.abschnitte
           .slice(0, sectionIndex)
-          .map((s) => `Abschnitt ${s.sectionNummer} "${s.sectionTitel}"`)
-          .join(", ");
+          .map((s) => {
+            const firstPara = s.blocks
+              .find((b) => b.type === "paragraph")?.text
+              .slice(0, 200) ?? "";
+            return `Abschnitt ${s.sectionNummer} "${s.sectionTitel}": ${firstPara}`;
+          })
+          .join("\n\n");
 
         const original = currentDoc.abschnitte[sectionIndex];
         const revised = await writeSection({
@@ -61,19 +73,21 @@ export async function POST(request: Request) {
           relevantChunks,
           runningSummary,
           leitfadenRules,
-          critique: kritik.verbesserungsvorschlag,
+          critique: `- ${vorschlaege.join("\n- ")}`,
         });
 
         reviewChanges.push({
-          sectionNummer: kritik.sectionNummer,
+          sectionNummer,
           sectionTitel: original.sectionTitel,
-          problem: kritik.problem,
-          verbesserungsvorschlag: kritik.verbesserungsvorschlag,
+          problem: problems.join(" / "),
+          verbesserungsvorschlag: vorschlaege.join(" / "),
           originalPreview: original.blocks.find((b) => b.type === "paragraph")?.text.slice(0, 300) ?? "",
           revisedPreview: revised.blocks.find((b) => b.type === "paragraph")?.text.slice(0, 300) ?? "",
         });
         currentDoc.abschnitte[sectionIndex] = revised;
       }
+
+      if (result.success || iteration === 3) break;
     }
 
     return Response.json({ finalDocument: currentDoc, reviewLog, reviewChanges });

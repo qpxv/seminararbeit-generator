@@ -70,7 +70,7 @@ export async function generateOutline(input: {
 }): Promise<ExpandedOutline> {
   const response = await client.messages.create({
     model: MODEL,
-    max_tokens: 4096,
+    max_tokens: 8192,
     system: `Du bist ein erfahrener deutscher Akademiker und Experte für wissenschaftliche Seminararbeiten.
 Deine Aufgabe: Erstelle eine erweiterte Gliederung (Expanded Outline) für eine deutsche Seminararbeit.
 Für jeden Abschnitt schreibst du 2–3 präzise Sätze die beschreiben:
@@ -256,6 +256,7 @@ Prüfe insbesondere:
 - Werden Quellen korrekt zitiert?
 - Ist der Schreibstil akademisch und präzise?
 - Werden alle Leitfaden-Regeln eingehalten?
+- Gibt es inhaltliche Redundanzen zwischen Abschnitten? (z.B. wenn ein Einleitungsabschnitt und seine Unterabschnitte denselben Inhalt wiederholen)
 Antworte NUR mit validem JSON, KEIN Text davor oder danach.`,
     messages: [
       {
@@ -270,7 +271,7 @@ ${JSON.stringify(input.leitfadenRules, null, 2)}
 
 EINGEREICHTE ARBEIT (Abschnitte zur Bewertung):
 ${JSON.stringify(
-  input.documentContent.abschnitte.slice(0, 4).map((s) => ({
+  input.documentContent.abschnitte.map((s) => ({
     sectionNummer: s.sectionNummer,
     sectionTitel: s.sectionTitel,
     wordCount: s.wordCount,
@@ -279,7 +280,7 @@ ${JSON.stringify(
       .slice(0, 2)
       .map((b) => b.text)
       .join(" ")
-      .substring(0, 300),
+      .substring(0, 150),
   })),
   null,
   2
@@ -294,7 +295,7 @@ Bewerte die Arbeit und gib Feedback als JSON:
   "positivesHervorheben": string[]
 }
 
-Setze success: true nur wenn die Arbeit wirklich gut ist. Bei Iteration 3 setze success immer auf true.`,
+Setze success: true nur wenn die Arbeit wirklich gut ist.`,
       },
     ],
   });
