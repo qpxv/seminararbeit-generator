@@ -1,8 +1,7 @@
 export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { PDFParse } = require("pdf-parse");
+  const { PDFParse } = await import("pdf-parse");
   const parser = new PDFParse({ data: buffer });
-  const result = await parser.getText() as { text: string };
+  const result = await parser.getText();
   return result.text;
 }
 
