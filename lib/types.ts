@@ -23,7 +23,7 @@ export interface OutlineSection {
   blueprint: string;
   geschaetzteWorte: number;
   verwendeteQuellen: string[];
-  sectionType: "einleitung" | "fazit" | "hauptteil";
+  sectionType: "einleitung" | "fazit" | "hauptteil" | "kapitelkopf";
 }
 
 export interface ExpandedOutline {

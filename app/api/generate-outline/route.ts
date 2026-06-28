@@ -24,6 +24,18 @@ export async function POST(request: Request) {
       sectionType: s.sectionType ?? inferSectionType(s.titel),
     }));
 
+    // Second pass: detect chapter-header sections (ebene 1 with small target and subsections)
+    // These should write only a 1-2 sentence intro, not full content.
+    outline.abschnitte = outline.abschnitte.map((s, idx, arr) => {
+      if (s.sectionType !== "hauptteil") return s;
+      const nextSection = arr[idx + 1];
+      const hasSubsections = nextSection?.nummer.startsWith(s.nummer + ".");
+      if (s.ebene === 1 && s.geschaetzteWorte <= 60 && hasSubsections) {
+        return { ...s, sectionType: "kapitelkopf" as const };
+      }
+      return s;
+    });
+
     log("INFO", "generate-outline POST done", {
       sections: outline.abschnitte.map((s) => ({ nummer: s.nummer, titel: s.titel, words: s.geschaetzteWorte, type: s.sectionType })),
     });

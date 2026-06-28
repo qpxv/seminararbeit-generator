@@ -306,7 +306,11 @@ PFLICHT-STRUKTUR FÜR FAZIT:
 1. Beginne mit einer kompakten Zusammenfassung der wichtigsten Befunde — benenne KONKRETE Ergebnisse und Zahlen, niemals Formulierungen wie "diese Arbeit hat untersucht, ob...".
 2. Diskutiere 1–2 wesentliche Limitationen der Arbeit ehrlich und präzise.
 3. Schließe mit einem konkreten Ausblick: offene Forschungsfragen oder praktische Implikationen.
-Alles als zusammenhängender akademischer Fließtext — KEIN Aufzählungsformat.`;
+Alles als zusammenhängender akademischer Fließtext — KEIN Aufzählungsformat.
+WORTLIMIT: Alle drei Punkte zusammen in maximal ${section.geschaetzteWorte} Wörtern. Sei prägnant.`;
+  }
+  if (section.sectionType === "kapitelkopf") {
+    return `\nACHTUNG KAPITELKOPF: Schreibe GENAU ${section.geschaetzteWorte}–${Math.round(section.geschaetzteWorte * 1.1)} Wörter. Nur 1–2 einleitende Sätze die dieses Kapitel ankündigen. KEIN vollständiger Inhalt — die Unterabschnitte tragen den eigentlichen Inhalt. Beginne direkt mit dem Sachinhalt, keine Selbstbeschreibung.`;
   }
   return "";
 }
@@ -339,7 +343,7 @@ function buildSectionPrompt(input: {
 Nummer: ${input.section.nummer}
 Titel: ${input.section.titel}
 Blueprint: ${input.section.blueprint}
-Ziel-Wortanzahl: ${input.section.geschaetzteWorte} Wörter (±10%). Unterschreite dieses Ziel nicht. Nutze jeden Satz für inhaltlichen Mehrwert — keine Füllsätze.${sectionTypeInstruction}
+Ziel-Wortanzahl: ${input.section.geschaetzteWorte} Wörter — STRIKT EINHALTEN. Schreibe zwischen ${Math.round(input.section.geschaetzteWorte * 0.9)} und ${Math.round(input.section.geschaetzteWorte * 1.15)} Wörtern. Weder kürzer noch länger. Nutze jeden Satz für inhaltlichen Mehrwert — keine Füllsätze.${sectionTypeInstruction}
 
 BISHERIGE ARBEIT — KONTEXT:
 ${input.runningSummary || "Dies ist der erste Abschnitt."}${antiRedundancy}
@@ -406,9 +410,12 @@ async function writeSectionAttempt(
   retryNote: string
 ): Promise<SectionContent> {
   const userContent = retryNote + buildSectionPrompt(input);
-  // Floor at 1500: JSON structure + German word tokenization overhead means
-  // 2.2× is far too low for short sections (30 words → 66 tokens, not enough even for the JSON wrapper).
-  const maxTokens = Math.min(8192, Math.max(1500, Math.ceil(input.section.geschaetzteWorte * 4)));
+  // kapitelkopf sections need very few tokens (1-2 sentences); other sections
+  // floor at 1500 because JSON structure + German tokenization needs headroom.
+  const isKapitelkopf = input.section.sectionType === "kapitelkopf";
+  const maxTokens = isKapitelkopf
+    ? Math.max(300, Math.ceil(input.section.geschaetzteWorte * 6))
+    : Math.min(8192, Math.max(1500, Math.ceil(input.section.geschaetzteWorte * 4)));
 
   const stream = client.messages.stream({
     model: MODEL,
