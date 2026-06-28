@@ -84,10 +84,11 @@ export async function POST(request: Request) {
             );
           }
 
-          // Word count check
+          // Word count check — strip [[CITE:...]] tags so we count only prose words,
+          // matching what Claude counted when deciding its own word limit.
           const allParaText = sectionContent.blocks
             .filter((b) => b.type === "paragraph")
-            .map((b) => b.text)
+            .map((b) => b.text.replace(/\[\[CITE:[^\]]*\]\]/g, ""))
             .join(" ");
           const actualWords = countWords(allParaText);
           const target = section.geschaetzteWorte;

@@ -36,7 +36,7 @@ function parseCiteTags(
   let match: RegExpExecArray | null;
 
   while ((match = regex.exec(text)) !== null) {
-    const before = text.slice(lastIndex, match.index);
+    const before = text.slice(lastIndex, match.index).trimEnd();
     if (before) parts.push({ text: before });
     parts.push({
       text: "",

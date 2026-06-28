@@ -172,7 +172,7 @@ Fixed: `Math.min(8192, Math.max(1500, Math.ceil(words * 4)))`
 - Floor of **1500** ensures even tiny sections get enough tokens for structure + content
 - `× 4` multiplier accounts for German word tokenization overhead (German compound words tokenize to more tokens than words) and Chicago citation fullRef strings
 - Same fix applied to `extendSection`: `Math.min(4096, Math.max(1000, Math.ceil(delta * 4)))`
-- **Exception — `"kapitelkopf"` sections**: `Math.max(300, Math.ceil(words * 6))` — physically caps the output so Claude cannot write long paragraphs even if it ignores the prompt instruction
+- **Exception — `"kapitelkopf"` sections**: `Math.max(500, Math.ceil(words * 8))` — raised from 300/×6 after discovering that full-author citation strings in even a single footnote were truncating the JSON mid-token at the lower limit. The prompt also now forbids citations in kapitelkopf entirely (`"Füge KEINE [[CITE:...]]-Tags ein"`) so the extra headroom is a safety net only.
 
 ---
 
@@ -200,8 +200,51 @@ Fixed: `Math.min(8192, Math.max(1500, Math.ceil(words * 4)))`
 `buildSectionPrompt` branches by `section.sectionType`:
 - `"einleitung"`: injected instruction for concrete Einstieg → Forschungsfrage → Aufbau structure
 - `"fazit"`: injected instruction for Kernbefunde → Limitationen → Ausblick + explicit `WORTLIMIT: maximal N Wörtern` to prevent the three-part structure from inflating past the target
-- `"kapitelkopf"`: injected instruction to write only 1–2 transitional sentences (the subsections carry all content); max_tokens capped at `Math.max(300, ceil(words * 6))` instead of the normal 1500 floor
+- `"kapitelkopf"`: injected instruction to write only 1–2 transitional sentences (the subsections carry all content), **explicitly forbidden from inserting any `[[CITE:...]]` tags** (transitional sentences don't need citations, and citations in a tiny section were blowing the JSON budget at old token limits); max_tokens raised to `Math.max(500, ceil(words * 8))` as safety net
 - `"hauptteil"`: no additional instruction
+
+---
+
+## Citation System — Accuracy Fixes
+
+### ShortRef Normalization in `CitationManager`
+
+The AI sometimes generates inconsistent shortRef variants for the same source: `"Pendry/Vandagriff 2019"`, `"Pendry & Vandagriff 2019"`, `"Pendry et al. 2019"`. Without normalization, each becomes a separate key in `seenSources` → the bibliography lists the same paper multiple times.
+
+`CitationManager` now internally normalizes shortRefs before Map key lookups:
+```typescript
+private normalizeShortRef(shortRef: string): string {
+  return shortRef
+    .replace(/\s*[\/&,]\s*/g, " ")      // unify / & , separators
+    .replace(/\s+et\s+al\.?/i, "")       // drop "et al."
+    .replace(/\s+u\.\s*a\.?/i, "")       // drop "u. a."
+    .toLowerCase().replace(/\s+/g, " ").trim();
+}
+```
+
+The normalized form is used as the Map key (`seenSources`, `canonicalShortRef`). The original shortRef from the first occurrence is stored in `canonicalShortRef` and used for display in `buildBibliography` and `getAllCitations`. This means the bibliography deduplicated correctly regardless of which variant Claude used.
+
+### Word Count Accuracy — Strip Citation Tags
+
+`countWords()` in `generate-content/route.ts` previously counted the full `[[CITE:shortRef:fullRef]]` tag text, including the long fullRef string (author names, journal titles, year, pages — typically 20–50 words per citation). Claude counts only the prose words. This mismatch caused sections to appear 40–60% over target when they were actually within bounds.
+
+Fix: strip citation tags before counting:
+```typescript
+const allParaText = sectionContent.blocks
+  .filter((b) => b.type === "paragraph")
+  .map((b) => b.text.replace(/\[\[CITE:[^\]]*\]\]/g, ""))
+  .join(" ");
+```
+
+### Trailing Whitespace Before Punctuation in DOCX
+
+`parseCiteTags` (in `lib/docxAssembler.ts`) splits paragraph text on `[[CITE:...]]` boundaries. When the AI writes `"Stressintervention [[CITE:...]]."`, the segment before the citation is `"Stressintervention "` (with trailing space). Word renders this as `Stressintervention ¹.` — a visible space between the word and the footnote superscript.
+
+Fix: `trimEnd()` the before-segment:
+```typescript
+const before = text.slice(lastIndex, match.index).trimEnd();
+```
+This is correct Chicago style — the footnote superscript appears directly after the last character, no space.
 
 ---
 

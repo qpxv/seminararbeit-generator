@@ -55,21 +55,35 @@ function fixTextValues(json: string): string {
 
 export class CitationManager {
   private nextId = 1;
-  // shortRef → fullRef of first occurrence (for short-note and bibliography)
+  // normalized key → fullRef of first occurrence (for short-note and bibliography)
   private seenSources = new Map<string, string>();
+  // normalized key → canonical shortRef (first-seen variant, for display)
+  private canonicalShortRef = new Map<string, string>();
   private occurrences: Array<{ id: number; footnoteText: string }> = [];
 
+  private normalizeShortRef(shortRef: string): string {
+    return shortRef
+      .replace(/\s*[\/&,]\s*/g, " ")
+      .replace(/\s+et\s+al\.?/i, "")
+      .replace(/\s+u\.\s*a\.?/i, "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
   addCitation(shortRef: string, fullRef: string): number {
-    const isFirst = !this.seenSources.has(shortRef);
+    const key = this.normalizeShortRef(shortRef);
+    const isFirst = !this.seenSources.has(key);
 
     const id = this.nextId++;
     let footnoteText: string;
 
     if (isFirst) {
       footnoteText = fullRef;
-      this.seenSources.set(shortRef, fullRef);
+      this.seenSources.set(key, fullRef);
+      this.canonicalShortRef.set(key, shortRef);
     } else {
-      footnoteText = this.buildShortNote(shortRef, fullRef);
+      footnoteText = this.buildShortNote(key, fullRef);
     }
 
     this.occurrences.push({ id, footnoteText });
@@ -81,11 +95,11 @@ export class CitationManager {
   }
 
   getAllCitations(): CitationRegistry {
-    return Array.from(this.seenSources.entries()).map(([shortRef, fullRef], i) => ({
+    return Array.from(this.seenSources.entries()).map(([key, fullRef], i) => ({
       id: i + 1,
-      shortRef,
+      shortRef: this.canonicalShortRef.get(key) ?? key,
       fullRef,
-      shortNote: this.buildShortNote(shortRef, fullRef),
+      shortNote: this.buildShortNote(key, fullRef),
       usedInSections: [],
     }));
   }
@@ -99,17 +113,17 @@ export class CitationManager {
       );
     });
 
-    return sources.map(([shortRef, fullRef], i) => ({
+    return sources.map(([key, fullRef], i) => ({
       id: `bib-${i + 1}`,
       autor: this.extractSortName(fullRef),
       jahr: this.extractYear(fullRef),
-      titel: shortRef,
+      titel: this.canonicalShortRef.get(key) ?? key,
       formattedRef: this.buildBibEntry(fullRef),
     }));
   }
 
-  private buildShortNote(shortRef: string, currentFullRef: string): string {
-    const firstFullRef = this.seenSources.get(shortRef) ?? currentFullRef;
+  private buildShortNote(key: string, currentFullRef: string): string {
+    const firstFullRef = this.seenSources.get(key) ?? currentFullRef;
     const lastName = this.extractSortName(firstFullRef);
     const shortTitle = this.extractShortTitle(firstFullRef);
     const page = this.extractPage(currentFullRef);
@@ -305,7 +319,7 @@ Alles als zusammenhängender akademischer Fließtext — KEIN Aufzählungsformat
 WORTLIMIT: Alle drei Punkte zusammen in maximal ${section.geschaetzteWorte} Wörtern. Sei prägnant.`;
   }
   if (section.sectionType === "kapitelkopf") {
-    return `\nACHTUNG KAPITELKOPF: Schreibe GENAU ${section.geschaetzteWorte}–${Math.round(section.geschaetzteWorte * 1.1)} Wörter. Nur 1–2 einleitende Sätze die dieses Kapitel ankündigen. KEIN vollständiger Inhalt — die Unterabschnitte tragen den eigentlichen Inhalt. Beginne direkt mit dem Sachinhalt, keine Selbstbeschreibung.`;
+    return `\nACHTUNG KAPITELKOPF: Schreibe GENAU ${section.geschaetzteWorte}–${Math.round(section.geschaetzteWorte * 1.1)} Wörter. Nur 1–2 einleitende Sätze die dieses Kapitel ankündigen. KEIN vollständiger Inhalt — die Unterabschnitte tragen den eigentlichen Inhalt. Beginne direkt mit dem Sachinhalt, keine Selbstbeschreibung. Füge KEINE [[CITE:...]]-Tags ein — Kapitelköpfe brauchen keine Zitate.`;
   }
   return "";
 }
@@ -410,7 +424,7 @@ async function writeSectionAttempt(
   // floor at 1500 because JSON structure + German tokenization needs headroom.
   const isKapitelkopf = input.section.sectionType === "kapitelkopf";
   const maxTokens = isKapitelkopf
-    ? Math.max(300, Math.ceil(input.section.geschaetzteWorte * 6))
+    ? Math.max(500, Math.ceil(input.section.geschaetzteWorte * 8))
     : Math.min(8192, Math.max(1500, Math.ceil(input.section.geschaetzteWorte * 4)));
 
   const stream = client.messages.stream({
