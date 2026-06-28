@@ -330,7 +330,7 @@ function buildSectionTypeInstruction(section: OutlineSection, topLevelChapterCou
 PFLICHT-STRUKTUR FÜR EINLEITUNG:
 1. Beginne mit einem konkreten Beispiel, einer aktuellen Statistik oder der gesellschaftlichen Relevanz des Themas — echter akademischer Fließtext, KEINE Ankündigungen.
 2. Leite organisch zur Forschungsfrage über und formuliere sie explizit.
-3. Erkläre den Aufbau der Arbeit in 2–3 Sätzen als Fließtext: Die Arbeit gliedert sich in ${chapterWord} Kapitel — benenne die Hauptkapitel kurz.
+3. Erkläre den Aufbau der Arbeit in 2–3 Sätzen als Fließtext: Die Arbeit gliedert sich in ${chapterWord} Kapitel — nenne die Hauptkapitel mit ihren exakten Titeln aus der Gliederung (nicht paraphrasiert, nicht zusammengefasst).
 Alle drei Punkte als kontinuierlicher Fließtext — KEIN Aufzählungsformat.`;
   }
   if (section.sectionType === "fazit") {
@@ -411,6 +411,7 @@ ABSOLUTE PFLICHTREGELN:
    "Die folgende Analyse..." — jeder Satz der den eigenen Text ankündigt statt Inhalt zu liefern ist ein FEHLER.
 3. Zitiere ausschließlich aus den bereitgestellten Quellenausschnitten. Niemals aus dem Gedächtnis.
 3b. PFLICHT-BELEGUNG: Jede benannte Studie, jedes konkrete Forschungsergebnis und jede spezifische Zahl MUSS mit einem [[CITE:]]-Tag belegt sein. Schreibe KEINE Fakten ohne direkten Quellenbeleg — lieber allgemeiner formulieren als unbelegt behaupten.
+NIEMALS interne Platzhalter oder Erklärungen in den fullRef schreiben (z.B. „Angaben nicht verfügbar" oder „Quellenausschnitte liegen ohne vollständige bibliographische Angaben vor"). Wenn bibliographische Daten fehlen, gib die Quelle so vollständig wie möglich mit den verfügbaren Informationen an.
 4. Antworte NUR mit validem JSON, KEIN Text davor oder danach.
 5. KRITISCH FÜR JSON-GÜLTIGKEIT: Verwende ÜBERALL im JSON — in "text"-Feldern UND in allen fullRef-Teilen von [[CITE:]]-Tags — AUSSCHLIESSLICH deutsche Anführungszeichen: „ (U+201E) zum Öffnen, " (U+201C) zum Schließen. NIEMALS ASCII-" (U+0022) verwenden. Falsch: „Animal Visitation Program" — Richtig: „Animal Visitation Program". ASCII-" zerstört das JSON.
 6. Verwende für biochemische Marker und Neurotransmitter die international übliche wissenschaftliche Schreibweise: „Cortisol" (nicht „Kortisol"), „Oxytocin" (nicht „Oxytozin"), „Dopamin" etc.
@@ -427,6 +428,7 @@ Beispiele:
   Wörtlich:   "„Chronic stress leads to measurable cognitive impairment"[[CITE:Schmidt 2020:Schmidt, Julia, Arbeitsstress und Kognition (Berlin: Springer, 2020), S. 112.]]."
 
 KurzRef-Format: Nachname (et al.) Jahr — z.B. "Barker et al. 2012", "Allen 2003"
+KRITISCH zum KurzRef: (1) Nur Nachname der Primärquelle + Jahr — NIEMALS den Werktitel, NIEMALS „zitiert in" oder sekundäre Quellenangaben. (2) Die Abkürzung lautet immer „et al." (mit „et" und Punkt nach „al") — niemals nur „al." oder „al".
 KRITISCH: Im fullRef IMMER alle Autorennamen vollständig ausschreiben — NIEMALS „u. a." oder „et al." im fullRef verwenden. Nur der KurzRef darf „et al." enthalten.
 "Vgl." nur bei sinngemäßen Übernahmen, entfällt bei wörtlichen Zitaten.
 Bei Monographien: Vorname Nachname, Titel (Ort: Verlag, Jahr), S. XX.
@@ -701,7 +703,7 @@ PRÜFKRITERIEN:
 3. PFLICHT-BELEGUNG: Enthält jeder Satz mit einem konkreten Studienergebnis, einer benannten Studie oder einer spezifischen Zahl ein [[CITE:shortRef]]-Tag?
 4. Zitierposition: Steht das [[CITE:]]-Tag unmittelbar vor dem abschließenden Satzpunkt — nicht danach?
 5. Wissenschaftliche Schreibweise: Wird „Cortisol" (nicht „Kortisol"), „Oxytocin" (nicht „Oxytozin"), „Dopamin" etc. durchgehend einheitlich verwendet?
-6. Meta-Sprache: Enthält ein Abschnitt Selbstbeschreibungen statt Inhalt? („Dieser Abschnitt...", „Im Folgenden wird...", „Das Fazit fasst...", „Ziel dieses Abschnitts...") AUSNAHME: In der Einleitung ist die Aufbaubeschreibung PFLICHT und kein Verstoß — Sätze wie „Die Arbeit gliedert sich in N Kapitel..." sind korrekt und dürfen NICHT als Meta-Sprache gewertet werden.
+6. Meta-Sprache: Enthält ein Abschnitt Selbstbeschreibungen statt Inhalt? („Dieser Abschnitt...", „Im Folgenden wird...", „Das Fazit fasst...", „Ziel dieses Abschnitts...") AUSNAHME: In der Einleitung ist die Aufbaubeschreibung PFLICHT und kein Verstoß — Sätze wie „Die Arbeit gliedert sich in N Kapitel..." sind korrekt und dürfen NICHT als Meta-Sprache gewertet werden. Ebenso sind sehr kurze Kapitelkopf-Abschnitte (Ebene 1, ~40–80 Wörter, mit Unterkapiteln) von dieser Regel vollständig ausgenommen — ihr Zweck ist die kurze Überleitung zu den Unterabschnitten. Übergangssätze die auf ein nachfolgendes Kapitel verweisen (z.B. „...bildet die konzeptuelle Grundlage für Kapitel 3...") sind kein Verstoß — das ist normales akademisches Schreiben.
 7. Redundanzen: Gibt es inhaltliche Wiederholungen zwischen Abschnitten?
 8. Zahlenkonsistenz (Fazit): Stimmen alle Zahlen und Prozentwerte im Fazit exakt mit denen im Hauptteil überein? Kein eigenmächtiges Runden oder Paraphrasieren.
 9. Studiendesign-Begriffe (Fazit): Werden im Fazit nur Methodenbegriffe verwendet die im Hauptteil für diese Studien stehen? (Kein „Querschnittsdesign" wenn Studien als Feldstudien oder RCTs beschrieben sind)

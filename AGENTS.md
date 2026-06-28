@@ -189,7 +189,8 @@ Fixed: `Math.min(8192, Math.max(3000, Math.ceil(words * 6)))`
 - Rule 1: Academic German
 - Rule 2: **VERBOTEN** — no meta-language (explicit list of banned openers)
 - Rule 3: Cite only from provided source chunks, never from memory
-- Rule 3b: **PFLICHT-BELEGUNG** — every named study, concrete research finding, or specific number MUST have a `[[CITE:]]` tag; prefer general phrasing over an uncited specific claim
+- Rule 3b: **PFLICHT-BELEGUNG** — every named study, concrete research finding, or specific number MUST have a `[[CITE:]]` tag; prefer general phrasing over an uncited specific claim. **Never write placeholder notes in the fullRef** (e.g. "Angaben nicht verfügbar") — use all available data instead.
+- KurzRef guard: shortRef must be `Nachname (et al.) Jahr` using only the primary source author — never the paper title, never "zitiert in", never bare "al." without "et"
 - Rule 4: Output only valid JSON
 - Rule 5 (KRITISCH): Never use ASCII `"` in `"text"` fields — use `„German quotes"` only
 - Rule 6: Scientific terminology — always use `"Cortisol"` (not `"Kortisol"`), `"Oxytocin"` (not `"Oxytozin"`), etc.
@@ -204,7 +205,7 @@ Fixed: `Math.min(8192, Math.max(3000, Math.ceil(words * 6)))`
 `buildSectionPrompt` injects a **ZUGEWIESENE QUELLEN** block listing `section.verwendeteQuellen` (the source filenames assigned by the outline agent to this section). This ensures every uploaded PDF gets cited in at least one section rather than concentrating citations on only the highest-scoring chunks.
 
 `buildSectionPrompt` branches by `section.sectionType`:
-- `"einleitung"`: injected instruction for concrete Einstieg → Forschungsfrage → Aufbau structure. The chapter count is dynamically computed (`topLevelChapterCount = abschnitte.filter(s => !s.nummer.includes(".")).length`) in `generate-content/route.ts` and threaded through `writeSection` → `buildSectionPrompt` → `buildSectionTypeInstruction` so the Einleitung always states the correct number of chapters (e.g. "vier Kapitel", never a hardcoded "fünf").
+- `"einleitung"`: injected instruction for concrete Einstieg → Forschungsfrage → Aufbau structure. The chapter count is dynamically computed (`topLevelChapterCount = abschnitte.filter(s => !s.nummer.includes(".")).length`) in `generate-content/route.ts` and threaded through `writeSection` → `buildSectionPrompt` → `buildSectionTypeInstruction` so the Einleitung always states the correct number of chapters (e.g. "vier Kapitel", never a hardcoded "fünf"). The Aufbau instruction requires **exact chapter titles from the Gliederung** — not paraphrased, not summarized — to prevent the Einleitung from misdescribing chapters (e.g. writing "betriebliche Relevanz" when the actual chapter is "Kritische Diskussion").
 - `"fazit"`: injected instruction for Kernbefunde → Limitationen → Ausblick + explicit `WORTLIMIT: maximal N Wörtern`. Two additional guards: **Zahlenkonsistenz** (all statistics in the Fazit must exactly match the values written in the Hauptteil — no rounding or paraphrasing); **Studiendesign-Begriffe** (methodological terms like "Querschnittsdesign" are forbidden unless those exact terms were used to describe the studies in the Hauptteil — prevents the model from applying generic limitation templates to studies actually described as field studies or RCTs).
 - `"kapitelkopf"`: injected instruction to write only 1–2 transitional sentences (the subsections carry all content), **explicitly forbidden from inserting any `[[CITE:...]]` tags** (transitional sentences don't need citations, and citations in a tiny section were blowing the JSON budget at old token limits); max_tokens raised to `Math.max(500, ceil(words * 8))` as safety net
 - `"hauptteil"`: no additional instruction
@@ -286,7 +287,7 @@ The full `previousSectionSummaries` array is also emitted in the `all_sections_d
 3. Chicago citation format (correct `[[CITE:shortRef:fullRef]]` structure)
 4. Academic style (German academic register, no colloquialisms)
 5. Redundancy (no repetition of content from other sections — checked via compressed `[[CITE:shortRef]]` tags in the full section text)
-6. Meta-language (no self-referential descriptions) — **exception**: Einleitung Aufbau text ("Die Arbeit gliedert sich in N Kapitel...") is REQUIRED by the Einleitung instruction and must NOT be flagged
+6. Meta-language (no self-referential descriptions) — **exceptions**: Einleitung Aufbau text is REQUIRED and must NOT be flagged; kapitelkopf sections (~40–80 words, Ebene 1 with subsections) are fully exempt; inter-chapter transition sentences ("...bildet die konzeptuelle Grundlage für Kapitel 3...") are normal academic writing and must NOT be flagged
 7. Word count compliance (within target range)
 8. PFLICHT-BELEGUNG — every named study, concrete research finding, or specific number must have a `[[CITE:shortRef]]` tag
 9. Zahlenkonsistenz — numbers in the Fazit must exactly match the Hauptteil (checked against full section text)
