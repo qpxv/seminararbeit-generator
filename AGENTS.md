@@ -24,7 +24,7 @@ A fully automated German academic paper generator. User enters a research questi
 | Route | File | Description |
 |-------|------|-------------|
 | `/` | `app/page.tsx` | Form: Forschungsfrage, Gliederung, Ziel-Wortanzahl (number input), source PDFs (optional locally, required in production). Text fields persist to `localStorage`. Converts files to base64, stores everything in `sessionStorage`, navigates to `/generator`. |
-| `/generator` | `app/generator/page.tsx` | `h-screen` two-column dashboard (no page-level scroll). Left: sticky pipeline status with step indicators and progress bar — "Qualitätsprüfung" step shows with strikethrough + muted grey from the first API call onward when `REVIEW_STEP=false`. Right: outline confirmation accordion → live section preview → review diff panel (yellow critique / green revision) after review completes. |
+| `/generator` | `app/generator/page.tsx` | `h-screen` two-column dashboard (no page-level scroll). Left: sticky pipeline status with step indicators and progress bar — "Qualitätsprüfung" step shows with strikethrough + muted grey from the first API call onward when `REVIEW_STEP=false`. Right: outline confirmation accordion → live section preview → review diff panel (yellow critique / green revision) after review completes. Browser tab title updates dynamically with current step (`⟳ Quellen einlesen`, `[3/10] Sectiontitel`, `✓ Abgeschlossen`, `✗ Fehler`). |
 | `/output` | `app/output/page.tsx` | Success card, DOCX download button, file structure display, collapsible Review-Protokoll with per-section yellow/green diff visualization. |
 
 ### API Routes

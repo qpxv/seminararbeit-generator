@@ -329,6 +329,19 @@ export default function GeneratorPage() {
   const totalSections = outline?.abschnitte.length ?? 0;
   const completedSections = sections.length;
 
+  useEffect(() => {
+    const base = "KI Seminararbeiten-Generator";
+    if (phase === "idle") { document.title = base; return; }
+    if (phase === "complete") { document.title = `✓ Abgeschlossen — ${base}`; return; }
+    if (phase === "error") { document.title = `✗ Fehler — ${base}`; return; }
+    if (phase === "writing_section" && currentSectionTitel) {
+      document.title = `[${completedSections}/${totalSections}] ${currentSectionTitel} — ${base}`;
+      return;
+    }
+    const step = PIPELINE_STEPS.find((s) => s.id === phase);
+    document.title = step ? `⟳ ${step.label} — ${base}` : base;
+  }, [phase, currentSectionTitel, completedSections, totalSections]);
+
   const runWritingPipeline = useCallback(
     async (
       ol: ExpandedOutline,
