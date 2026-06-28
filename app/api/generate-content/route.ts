@@ -34,6 +34,7 @@ export async function POST(request: Request) {
   log("INFO", "generate-content POST received", { sectionCount: outline.abschnitte.length });
 
   const topLevelChapterCount = outline.abschnitte.filter((s) => !s.nummer.includes(".")).length;
+  const topLevelSections = outline.abschnitte.filter((s) => !s.nummer.includes("."));
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
             runningSummary,
             leitfadenRules,
             topLevelChapterCount,
+            topLevelSections,
             previousSectionSummaries,
           });
 

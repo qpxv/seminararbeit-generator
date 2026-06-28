@@ -319,25 +319,28 @@ export function getRelevantChunks(
 // ─── Section-Prompt Builder ────────────────────────────────────────────────────
 const GERMAN_CHAPTER_NUMBERS = ["null", "einem", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn"];
 
-function buildSectionTypeInstruction(section: OutlineSection, topLevelChapterCount?: number): string {
+function buildSectionTypeInstruction(section: OutlineSection, topLevelChapterCount?: number, topLevelSections?: OutlineSection[]): string {
   if (section.sectionType === "einleitung") {
     const chapterWord = topLevelChapterCount !== undefined
       ? (topLevelChapterCount < GERMAN_CHAPTER_NUMBERS.length
           ? GERMAN_CHAPTER_NUMBERS[topLevelChapterCount]
           : String(topLevelChapterCount))
       : "N";
+    const chapterRefBlock = topLevelSections && topLevelSections.length > 0
+      ? `\nHAUPTKAPITEL ZUR REFERENZ — verwende exakt diese Titel im Aufbau-Absatz:\n${topLevelSections.map(s => `- Kapitel ${s.nummer}: ${s.titel}`).join('\n')}`
+      : '';
     return `
 PFLICHT-STRUKTUR FÜR EINLEITUNG:
 1. Beginne mit einem konkreten Beispiel, einer aktuellen Statistik oder der gesellschaftlichen Relevanz des Themas — echter akademischer Fließtext, KEINE Ankündigungen.
 2. Leite organisch zur Forschungsfrage über und formuliere sie explizit.
-3. Erkläre den Aufbau der Arbeit in 2–3 Sätzen als Fließtext: Die Arbeit gliedert sich in ${chapterWord} Kapitel — nenne die Hauptkapitel mit ihren exakten Titeln aus der Gliederung (nicht paraphrasiert, nicht zusammengefasst).
+3. Erkläre den Aufbau der Arbeit in 2–3 Sätzen als Fließtext: Die Arbeit gliedert sich in ${chapterWord} Kapitel — nenne die Hauptkapitel mit ihren exakten Titeln aus der Gliederung (nicht paraphrasiert, nicht zusammengefasst).${chapterRefBlock}
 Alle drei Punkte als kontinuierlicher Fließtext — KEIN Aufzählungsformat.`;
   }
   if (section.sectionType === "fazit") {
     return `
 PFLICHT-STRUKTUR FÜR FAZIT:
 1. Beginne mit einer kompakten Zusammenfassung der wichtigsten Befunde — benenne KONKRETE Ergebnisse und Zahlen, niemals Formulierungen wie "diese Arbeit hat untersucht, ob...".
-KRITISCH — Zahlenkonsistenz: Alle im Fazit genannten statistischen Werte, Prozentzahlen und Messergebnisse MÜSSEN exakt mit den Werten im Hauptteil übereinstimmen. Niemals eigenmächtig runden, schätzen oder paraphrasieren.
+KRITISCH — Zahlenkonsistenz: Alle im Fazit genannten statistischen Werte, Prozentzahlen und Messergebnisse MÜSSEN exakt mit den Werten im Hauptteil übereinstimmen. Niemals eigenmächtig runden, schätzen oder paraphrasieren. Falls eine Studie im Hauptteil mehrere Messwerte für verschiedene Bedingungen nennt (z.B. 27,01 % für Slideshow-Bedingung und 27,66 % für Wartelisten-Bedingung), müssen ALLE diese Werte im Fazit erscheinen — keiner darf weggelassen werden.
 2. Diskutiere 1–2 wesentliche Limitationen der Arbeit ehrlich und präzise.
 KRITISCH — Studiendesign-Begriffe: Beschreibe Limitationen des Studiendesigns ausschließlich anhand der tatsächlichen Designs der zitierten Studien. Verwende KEINE generischen Methodenbegriffe (z.B. „Querschnittsdesign"), wenn die Studien im Hauptteil als Feldstudien, Interventionsstudien oder mit Längsschnittcharakter beschrieben wurden.
 3. Schließe mit einem konkreten Ausblick: offene Forschungsfragen oder praktische Implikationen.
@@ -367,12 +370,13 @@ function buildSectionPrompt(input: {
   critique?: string;
   previousSectionSummaries?: SectionSummary[];
   topLevelChapterCount?: number;
+  topLevelSections?: OutlineSection[];
 }): string {
   const critiqueText = input.critique
     ? `\n\nKRITIK AUS VORHERIGEM REVIEW (bitte beheben):\n${input.critique}`
     : "";
 
-  const sectionTypeInstruction = buildSectionTypeInstruction(input.section, input.topLevelChapterCount);
+  const sectionTypeInstruction = buildSectionTypeInstruction(input.section, input.topLevelChapterCount, input.topLevelSections);
   const antiRedundancy = buildAntiRedundancyBlock(input.previousSectionSummaries ?? []);
   const assignedSources = input.section.verwendeteQuellen.length > 0
     ? `\nZUGEWIESENE QUELLEN FÜR DIESEN ABSCHNITT: ${input.section.verwendeteQuellen.join(", ")}\nStelle sicher, dass relevante Erkenntnisse aus diesen Quellen mit [[CITE:]]-Tags belegt sind.`
@@ -414,7 +418,7 @@ ABSOLUTE PFLICHTREGELN:
 NIEMALS interne Platzhalter oder Erklärungen in den fullRef schreiben (z.B. „Angaben nicht verfügbar" oder „Quellenausschnitte liegen ohne vollständige bibliographische Angaben vor"). Wenn bibliographische Daten fehlen, gib die Quelle so vollständig wie möglich mit den verfügbaren Informationen an.
 4. Antworte NUR mit validem JSON, KEIN Text davor oder danach.
 5. KRITISCH FÜR JSON-GÜLTIGKEIT: Verwende ÜBERALL im JSON — in "text"-Feldern UND in allen fullRef-Teilen von [[CITE:]]-Tags — AUSSCHLIESSLICH deutsche Anführungszeichen: „ (U+201E) zum Öffnen, " (U+201C) zum Schließen. NIEMALS ASCII-" (U+0022) verwenden. Falsch: „Animal Visitation Program" — Richtig: „Animal Visitation Program". ASCII-" zerstört das JSON.
-6. Verwende für biochemische Marker und Neurotransmitter die international übliche wissenschaftliche Schreibweise: „Cortisol" (nicht „Kortisol"), „Oxytocin" (nicht „Oxytozin"), „Dopamin" etc.
+6. Verwende für biochemische Marker und Neurotransmitter die international übliche wissenschaftliche Schreibweise: „Cortisol" (nicht „Kortisol"), „Oxytocin" (nicht „Oxytozin"), „Dopamin" etc. Grammatisches Geschlecht: „Cortisol" ist Neutrum — korrekt: das Cortisol, des Cortisols. Kombinierte Formen: „den Cortisolspiegel" (Maskulinum durch -spiegel), „das Speichelcortisol" (Neutrum). Niemals: „den Speichelcortisol".
 
 ZITIERFORMAT — Chicago Notes-Bibliography (17. Aufl., eingedeutscht):
 Füge Zitate als [[CITE:...]]-Tags direkt am Ende des zitierten Satzes ein (vor dem Satzpunkt):
@@ -454,6 +458,7 @@ async function writeSectionAttempt(
     critique?: string;
     previousSectionSummaries?: SectionSummary[];
     topLevelChapterCount?: number;
+    topLevelSections?: OutlineSection[];
   },
   retryNote: string
 ): Promise<SectionContent> {
@@ -541,6 +546,7 @@ export async function writeSection(input: {
   critique?: string;
   previousSectionSummaries?: SectionSummary[];
   topLevelChapterCount?: number;
+  topLevelSections?: OutlineSection[];
 }): Promise<WriteSectionResult> {
   const MAX_RETRIES = 2;
   let lastSection: SectionContent | null = null;
@@ -706,7 +712,7 @@ PRÜFKRITERIEN:
 6. Meta-Sprache: Enthält ein Abschnitt Selbstbeschreibungen statt Inhalt? („Dieser Abschnitt...", „Im Folgenden wird...", „Das Fazit fasst...", „Ziel dieses Abschnitts...") AUSNAHME: In der Einleitung ist die Aufbaubeschreibung PFLICHT und kein Verstoß — Sätze wie „Die Arbeit gliedert sich in N Kapitel..." sind korrekt und dürfen NICHT als Meta-Sprache gewertet werden. Ebenso sind sehr kurze Kapitelkopf-Abschnitte (Ebene 1, ~40–80 Wörter, mit Unterkapiteln) von dieser Regel vollständig ausgenommen — ihr Zweck ist die kurze Überleitung zu den Unterabschnitten. Übergangssätze die auf ein nachfolgendes Kapitel verweisen (z.B. „...bildet die konzeptuelle Grundlage für Kapitel 3...") sind kein Verstoß — das ist normales akademisches Schreiben.
 7. Redundanzen: Gibt es inhaltliche Wiederholungen zwischen Abschnitten?
 8. Zahlenkonsistenz (Fazit): Stimmen alle Zahlen und Prozentwerte im Fazit exakt mit denen im Hauptteil überein? Kein eigenmächtiges Runden oder Paraphrasieren.
-9. Studiendesign-Begriffe (Fazit): Werden im Fazit nur Methodenbegriffe verwendet die im Hauptteil für diese Studien stehen? (Kein „Querschnittsdesign" wenn Studien als Feldstudien oder RCTs beschrieben sind)
+9. Studiendesign-Begriffe (Fazit): Werden im Fazit nur Methodenbegriffe verwendet die im Hauptteil für diese Studien stehen? (Kein „Querschnittsdesign" wenn Studien als Feldstudien oder RCTs beschrieben sind) Diese Regel gilt ausschließlich für Beschreibungen bestehender Studien und Limitationsdiskussionen — der Ausblick darf für künftige Forschungsempfehlungen frei beliebige Studiendesigns nennen.
 10. Akademischer Stil: Ist der Schreibstil klar, präzise und auf Universitätsniveau?
 11. Vollständigkeit der Quellenangaben: Enthalten Zeitschriftenartikel-Zitate Band, Heftnummer und Seitenzahlen (S. XX–XX)? Sind Beiträge in Herausgeberwerken als eine vollständige [[CITE:]]-Angabe formatiert — nicht als zwei aufgetrennte Einträge (z.B. Kapitelautoren + Herausgeberinfo getrennt)?
 

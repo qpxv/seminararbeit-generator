@@ -24,6 +24,7 @@ export async function POST(request: Request) {
 
     const { documentContent, expandedOutline, leitfadenRules, sources, sectionSummaries = [] } = body;
     const topLevelChapterCount = expandedOutline.abschnitte.filter((s) => !s.nummer.includes(".")).length;
+    const topLevelSections = expandedOutline.abschnitte.filter((s) => !s.nummer.includes("."));
     const reviewLog: ReviewResult[] = [];
     const reviewChanges: ReviewChange[] = [];
     let currentDoc = { ...documentContent, abschnitte: [...documentContent.abschnitte] };
@@ -94,6 +95,7 @@ export async function POST(request: Request) {
           ).join("\n\n"),
           previousSectionSummaries: sectionSummaries.slice(0, sectionIndex),
           topLevelChapterCount,
+          topLevelSections,
         });
 
         reviewChanges.push({
