@@ -39,7 +39,7 @@ function fixTextValues(json: string): string {
     if (!openMatch) { result.push(json.slice(pos)); break; }
     const valueStart = openMatch.index + openMatch[0].length;
     result.push(json.slice(pos, valueStart));
-    const closeMatch = /",\s*"bold"/.exec(json.slice(valueStart));
+    const closeMatch = /"(?:,\s*"(?:bold|italic|fussnoteNummer|fussnoteText)"|\s*\})/.exec(json.slice(valueStart));
     if (!closeMatch) { result.push(json.slice(valueStart)); pos = json.length; break; }
     const closeIdx = valueStart + closeMatch.index;
     const escaped = json.slice(valueStart, closeIdx).replace(/(?<!\\)"/g, '\\"');
@@ -168,7 +168,9 @@ export class CitationManager {
     return fullRef
       .replace(/^Vgl\.\s+/i, "")
       .replace(/,?\s*S\.\s*\d+(?:[-–]\d+)?\.?\s*$/, "")
-      .trim() + ".";
+      .trim()
+      .replace(/\.+$/, "")
+      + ".";
   }
 }
 
@@ -394,7 +396,7 @@ ABSOLUTE PFLICHTREGELN:
 3. Zitiere ausschließlich aus den bereitgestellten Quellenausschnitten. Niemals aus dem Gedächtnis.
 3b. PFLICHT-BELEGUNG: Jede benannte Studie, jedes konkrete Forschungsergebnis und jede spezifische Zahl MUSS mit einem [[CITE:]]-Tag belegt sein. Schreibe KEINE Fakten ohne direkten Quellenbeleg — lieber allgemeiner formulieren als unbelegt behaupten.
 4. Antworte NUR mit validem JSON, KEIN Text davor oder danach.
-5. KRITISCH FÜR JSON-GÜLTIGKEIT: Verwende im "text"-Feld NIEMALS gerade ASCII-Anführungszeichen " — weder für Zitate noch für Hervorhebungen noch für Fachbegriffe. Nutze ausschließlich „deutsches Format" (U+201E/U+201C). Gerade " im Text zerstören das JSON.
+5. KRITISCH FÜR JSON-GÜLTIGKEIT: Verwende ÜBERALL im JSON — in "text"-Feldern UND in allen fullRef-Teilen von [[CITE:]]-Tags — AUSSCHLIESSLICH deutsche Anführungszeichen: „ (U+201E) zum Öffnen, " (U+201C) zum Schließen. NIEMALS ASCII-" (U+0022) verwenden. Falsch: „Animal Visitation Program" — Richtig: „Animal Visitation Program". ASCII-" zerstört das JSON.
 6. Verwende für biochemische Marker und Neurotransmitter die international übliche wissenschaftliche Schreibweise: „Cortisol" (nicht „Kortisol"), „Oxytocin" (nicht „Oxytozin"), „Dopamin" etc.
 
 ZITIERFORMAT — Chicago Notes-Bibliography (17. Aufl., eingedeutscht):
@@ -402,7 +404,7 @@ Füge Zitate als [[CITE:...]]-Tags direkt am Ende des zitierten Satzes ein (vor 
   Format: [[CITE:KurzRef:VollständigerErstnachweis]]
 
 Korrekte Position: Das Tag steht unmittelbar VOR dem abschließenden Satzpunkt, ohne Leerzeichen dazwischen: ...Aussage[[CITE:...]].
-KRITISCH: Verwende im fullRef AUSSCHLIESSLICH deutsche Anführungszeichen „..." für Titelnennungen — NIEMALS gerade Anführungszeichen " — sonst ist das JSON ungültig.
+KRITISCH: Verwende im fullRef AUSSCHLIESSLICH deutsche Anführungszeichen „..." für Titelnennungen — NIEMALS ASCII-" (U+0022) — sonst ist das JSON ungültig. Öffne mit „ (U+201E) und schließe mit " (U+201C).
 
 Beispiele:
   Sinngemäß: "Stress am Arbeitsplatz beeinträchtigt die Produktivität nachweislich[[CITE:Müller et al. 2018:Vgl. Müller, Thomas, Fischer, Anna und Weber, Klaus, „Stressoren im modernen Büroumfeld", in: Zeitschrift für Arbeitspsychologie 12 (2), 2018, S. 45.]]."
@@ -437,11 +439,12 @@ async function writeSectionAttempt(
 ): Promise<SectionContent> {
   const userContent = retryNote + buildSectionPrompt(input);
   // kapitelkopf sections need very few tokens (1-2 sentences); other sections
-  // floor at 1500 because JSON structure + German tokenization needs headroom.
+  // floor at 3000: German tokenization + long Chicago fullRefs (40-60 tokens each)
+  // means a 320-word section with 6 citations needs ~1800 tokens — 1500 truncates.
   const isKapitelkopf = input.section.sectionType === "kapitelkopf";
   const maxTokens = isKapitelkopf
     ? Math.max(500, Math.ceil(input.section.geschaetzteWorte * 8))
-    : Math.min(8192, Math.max(1500, Math.ceil(input.section.geschaetzteWorte * 4)));
+    : Math.min(8192, Math.max(3000, Math.ceil(input.section.geschaetzteWorte * 6)));
 
   const stream = client.messages.stream({
     model: MODEL,
@@ -562,7 +565,7 @@ export async function extendSection(input: {
 
   const stream = client.messages.stream({
     model: MODEL,
-    max_tokens: Math.min(4096, Math.max(1000, Math.ceil(delta * 4))),
+    max_tokens: Math.min(4096, Math.max(1500, Math.ceil(delta * 6))),
     system: `Du bist ein erfahrener Autor wissenschaftlicher Texte auf Deutsch.
 Du erhältst einen zu kurzen Abschnitt und erweiterst ihn um substantiellen Inhalt.
 Antworte NUR mit einem JSON-Array von ContentBlock-Objekten (nur "paragraph" oder "quote" Typen).

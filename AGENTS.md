@@ -104,7 +104,7 @@ The AI embeds citations inline in paragraph text using a tag format:
   - Calls `citationManager.addCitation(shortRef, fullRef)` → returns a globally sequential footnote `id`
   - Formats the footnote text: first occurrence = fullRef, any repeat of the same shortRef = short note (Nachname, Kurztitel, S. XX.) — **no "Ebd." anywhere** (removed: collapsed different studies under one Ebd. chain, causing attribution errors)
   - Splits the paragraph text around the tag and inserts a `FootnoteReferenceRun(id)` inline
-- After all sections: builds `footnotes` record from all occurrences, builds bibliography by sorting `seenSources` alphabetically by extracted family name.
+- After all sections: builds `footnotes` record from all occurrences, builds bibliography by sorting `seenSources` alphabetically by extracted family name. `buildBibEntry` strips leading `Vgl.`, trailing page refs, and any existing trailing `.` before appending a single `.` — prevents `S. 713–729..` double-period when the fullRef already ends with `.`.
 - **Backward compat**: old `footnote_ref` block type is still handled in `blockToParagraphs` for sessions stored in `sessionStorage` before the tag system was introduced.
 
 ---
@@ -137,9 +137,9 @@ function fixTextValues(json: string): string {
     if (!openMatch) { result.push(json.slice(pos)); break; }
     const valueStart = openMatch.index + openMatch[0].length;
     result.push(json.slice(pos, valueStart));
-    // Schema sentinel: "bold" always immediately follows the closing " of "text"
-    // Use regex so newlines/indentation between them don't matter
-    const closeMatch = /",\s*"bold"/.exec(json.slice(valueStart));
+    // Extended sentinel: matches "bold", "italic", footnote fields, or closing }
+    // Handles field reordering and text-as-last-field edge cases safely
+    const closeMatch = /"(?:,\s*"(?:bold|italic|fussnoteNummer|fussnoteText)"|\s*\})/.exec(json.slice(valueStart));
     if (!closeMatch) { result.push(json.slice(valueStart)); pos = json.length; break; }
     const closeIdx = valueStart + closeMatch.index;
     const escaped = json.slice(valueStart, closeIdx).replace(/(?<!\\)"/g, '\\"');
@@ -149,7 +149,7 @@ function fixTextValues(json: string): string {
   return result.join("");
 }
 ```
-**Why it's safe**: The sentinel `", "bold"` (or with whitespace) cannot appear in real academic German prose, and in the JSON schema `"bold"` always immediately follows the closing `"` of the `"text"` field. The regex `/",\s*"bold"/` handles all formatting variants.
+**Why it's safe**: None of `", "bold"`, `", "italic"`, `", "fussnoteNummer"`, `", "fussnoteText"`, or `"}` can appear inside real academic German prose. The extended sentinel handles field reordering and the case where `"text"` is the last field in a block (no comma before `}`).
 
 **Why German quotes are safe**: `„` (U+201E) and `"` (U+201C) are different Unicode code points from ASCII `"` (U+0022). JSON only treats U+0022 as a string delimiter, so German quotes inside JSON strings are invisible to the parser. The system prompt instructs Claude to use German quotes exclusively for all in-text quotations.
 
@@ -168,11 +168,11 @@ In practice, Pass 1 fails on almost every section (citations always have some AS
 
 Original: `Math.ceil(words * 2.2)` — for a 30-word section this gives **66 tokens**, which is not even enough for the JSON wrapper, let alone content. The model would truncate mid-JSON, always producing a parse failure.
 
-Fixed: `Math.min(8192, Math.max(1500, Math.ceil(words * 4)))`
-- Floor of **1500** ensures even tiny sections get enough tokens for structure + content
-- `× 4` multiplier accounts for German word tokenization overhead (German compound words tokenize to more tokens than words) and Chicago citation fullRef strings
-- Same fix applied to `extendSection`: `Math.min(4096, Math.max(1000, Math.ceil(delta * 4)))`
-- **Exception — `"kapitelkopf"` sections**: `Math.max(500, Math.ceil(words * 8))` — raised from 300/×6 after discovering that full-author citation strings in even a single footnote were truncating the JSON mid-token at the lower limit. The prompt also now forbids citations in kapitelkopf entirely (`"Füge KEINE [[CITE:...]]-Tags ein"`) so the extra headroom is a safety net only.
+Fixed: `Math.min(8192, Math.max(3000, Math.ceil(words * 6)))`
+- Floor of **3000** covers citation-heavy sections: a 320-word section with 6 Chicago citations needs ~1800 tokens (German prose ≈450 + JSON overhead ≈50 + 6 × fullRef ≈300). The 1500-token floor caused sections 3.1 and 3.2 to truncate mid-JSON in a real 17-PDF run, returning empty content across all 3 write attempts AND all 18 review rewrites.
+- `× 6` multiplier accounts for German compound word tokenization AND citation fullRef overhead (each Chicago fullRef with full author list = ~40–60 tokens)
+- Same fix applied to `extendSection`: `Math.min(4096, Math.max(1500, Math.ceil(delta * 6)))`
+- **Exception — `"kapitelkopf"` sections**: `Math.max(500, Math.ceil(words * 8))` — transitional 1–2 sentences, no citations allowed.
 
 ---
 
