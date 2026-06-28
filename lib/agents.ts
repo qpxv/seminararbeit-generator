@@ -55,21 +55,17 @@ function fixTextValues(json: string): string {
 
 export class CitationManager {
   private nextId = 1;
-  private lastCitedShortRef: string | null = null;
   // shortRef → fullRef of first occurrence (for short-note and bibliography)
   private seenSources = new Map<string, string>();
   private occurrences: Array<{ id: number; footnoteText: string }> = [];
 
   addCitation(shortRef: string, fullRef: string): number {
-    const isIbid = this.lastCitedShortRef === shortRef;
     const isFirst = !this.seenSources.has(shortRef);
 
     const id = this.nextId++;
     let footnoteText: string;
 
-    if (isIbid) {
-      footnoteText = "Ebd.";
-    } else if (isFirst) {
+    if (isFirst) {
       footnoteText = fullRef;
       this.seenSources.set(shortRef, fullRef);
     } else {
@@ -77,7 +73,6 @@ export class CitationManager {
     }
 
     this.occurrences.push({ id, footnoteText });
-    this.lastCitedShortRef = shortRef;
     return id;
   }
 
@@ -381,10 +376,11 @@ Füge Zitate als [[CITE:...]]-Tags direkt am Ende des zitierten Satzes ein (vor 
 KRITISCH: Verwende im fullRef AUSSCHLIESSLICH deutsche Anführungszeichen „..." für Titelnennungen — NIEMALS gerade Anführungszeichen " — sonst ist das JSON ungültig.
 
 Beispiele:
-  Sinngemäß: "Hunde senken den Kortisolspiegel nachweislich.[[CITE:Barker et al. 2012:Vgl. Barker, Sandra C. u. a., „Dog Presence, Workplace Stress, and Organizational Perceptions", in: International Journal of Workplace Health Management 5 (1), 2012, S. 13.]]"
+  Sinngemäß: "Hunde senken den Kortisolspiegel nachweislich.[[CITE:Barker et al. 2012:Vgl. Barker, Sandra C., Randolph, Janet K. und Fondacaro, Mark R., „Dog Presence, Workplace Stress, and Organizational Perceptions", in: International Journal of Workplace Health Management 5 (1), 2012, S. 13.]]"
   Wörtlich:   "„Dogs have a unique calming effect on humans in office settings"[[CITE:Allen 2003:Allen, Karen, „Multiple Roles of Pets in Human Health", in: Handbook on Animal-Assisted Therapy, 2003, S. 47.]]"
 
 KurzRef-Format: Nachname (et al.) Jahr — z.B. "Barker et al. 2012", "Allen 2003"
+KRITISCH: Im fullRef IMMER alle Autorennamen vollständig ausschreiben — NIEMALS „u. a." oder „et al." im fullRef verwenden. Nur der KurzRef darf „et al." enthalten.
 "Vgl." nur bei sinngemäßen Übernahmen, entfällt bei wörtlichen Zitaten.
 Bei Monographien: Vorname Nachname, Titel (Ort: Verlag, Jahr), S. XX.
 

@@ -1,5 +1,5 @@
 import { generateOutline } from "@/lib/agents";
-import { inferSectionType } from "@/lib/utils";
+import { inferSectionType, sanitizeHeadingTitle } from "@/lib/utils";
 import { log, logRun } from "@/lib/logger";
 import type { LeitfadenRules } from "@/lib/types";
 
@@ -18,9 +18,10 @@ export async function POST(request: Request) {
 
     const outline = await generateOutline(body);
 
-    // Post-process: infer sectionType from titles (more reliable than asking Claude to classify)
+    // Post-process: sanitize titles, then infer sectionType
     outline.abschnitte = outline.abschnitte.map((s) => ({
       ...s,
+      titel: sanitizeHeadingTitle(s.titel),
       sectionType: s.sectionType ?? inferSectionType(s.titel),
     }));
 

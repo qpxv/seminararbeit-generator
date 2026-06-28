@@ -22,6 +22,10 @@ export function countWords(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+export function sanitizeHeadingTitle(title: string): string {
+  return title.replace(/\s*\([^)]*\)\s*/g, " ").trim();
+}
+
 export function inferSectionType(
   titel: string
 ): "einleitung" | "fazit" | "hauptteil" {
