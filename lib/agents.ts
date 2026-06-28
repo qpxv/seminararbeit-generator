@@ -247,7 +247,13 @@ Für jeden Abschnitt schreibst du 2–3 präzise Sätze die beschreiben:
 - Welche Quellen er primär verwendet
 - Wie er zur Gesamtargumentation beiträgt
 
-Antworte NUR mit validem JSON, KEIN Text davor oder danach, KEINE Markdown-Backticks.`,
+Antworte NUR mit validem JSON, KEIN Text davor oder danach, KEINE Markdown-Backticks.
+
+WICHTIG — Blueprint-Abgrenzung bei Grundlagen- und Wirkungskapiteln:
+Wenn die Gliederung theoretische Grundlagen-Kapitel (z.B. „Neurobiologische Grundlagen") UND darauf aufbauende Wirkungsmechanismus-Kapitel enthält:
+- Blueprint der Grundlagen: nur Definitionen und Konzepte — KEINE Wirkmechanismen oder Studienergebnisse vorwegnehmen.
+- Blueprint der Wirkungskapitel: Definitionen aus den Grundlagen als bekannt voraussetzen — direkt mit Mechanismen, empirischen Befunden und konkreten Studienergebnissen beginnen.
+Keine inhaltlichen Überschneidungen zwischen aufeinanderfolgenden Kapiteln.`,
     messages: [
       {
         role: "user",
@@ -417,13 +423,15 @@ Korrekte Position: Das Tag steht unmittelbar VOR dem abschließenden Satzpunkt, 
 KRITISCH: Verwende im fullRef AUSSCHLIESSLICH deutsche Anführungszeichen „..." für Titelnennungen — NIEMALS ASCII-" (U+0022) — sonst ist das JSON ungültig. Öffne mit „ (U+201E) und schließe mit " (U+201C).
 
 Beispiele:
-  Sinngemäß: "Stress am Arbeitsplatz beeinträchtigt die Produktivität nachweislich[[CITE:Müller et al. 2018:Vgl. Müller, Thomas, Fischer, Anna und Weber, Klaus, „Stressoren im modernen Büroumfeld", in: Zeitschrift für Arbeitspsychologie 12 (2), 2018, S. 45.]]."
+  Sinngemäß: "Stress am Arbeitsplatz beeinträchtigt die Produktivität nachweislich[[CITE:Müller et al. 2018:Vgl. Müller, Thomas, Fischer, Anna und Weber, Klaus, „Stressoren im modernen Büroumfeld", in: Zeitschrift für Arbeitspsychologie 12 (2), 2018, S. 45–58.]]."
   Wörtlich:   "„Chronic stress leads to measurable cognitive impairment"[[CITE:Schmidt 2020:Schmidt, Julia, Arbeitsstress und Kognition (Berlin: Springer, 2020), S. 112.]]."
 
 KurzRef-Format: Nachname (et al.) Jahr — z.B. "Barker et al. 2012", "Allen 2003"
 KRITISCH: Im fullRef IMMER alle Autorennamen vollständig ausschreiben — NIEMALS „u. a." oder „et al." im fullRef verwenden. Nur der KurzRef darf „et al." enthalten.
 "Vgl." nur bei sinngemäßen Übernahmen, entfällt bei wörtlichen Zitaten.
 Bei Monographien: Vorname Nachname, Titel (Ort: Verlag, Jahr), S. XX.
+Bei Zeitschriftenartikeln (PFLICHT — Band, Heft und Seitenzahlen sind immer anzugeben): Vorname Nachname, „Artikeltitel", in: Zeitschriftname Band (Heft), Jahr, S. XX–XX.
+Bei Beiträgen in Herausgeberwerken (KRITISCH — stets als EINE einzige [[CITE:]]-Angabe, NIEMALS aufteilen): Vorname Nachname, „Kapitelname", in: Werktitel, hrsg. von Vorname Nachname (Ort: Verlag, Jahr), S. XX–XX.
 
 JSON-SCHEMA (exakt einhalten):
 {
@@ -697,6 +705,7 @@ PRÜFKRITERIEN:
 8. Zahlenkonsistenz (Fazit): Stimmen alle Zahlen und Prozentwerte im Fazit exakt mit denen im Hauptteil überein? Kein eigenmächtiges Runden oder Paraphrasieren.
 9. Studiendesign-Begriffe (Fazit): Werden im Fazit nur Methodenbegriffe verwendet die im Hauptteil für diese Studien stehen? (Kein „Querschnittsdesign" wenn Studien als Feldstudien oder RCTs beschrieben sind)
 10. Akademischer Stil: Ist der Schreibstil klar, präzise und auf Universitätsniveau?
+11. Vollständigkeit der Quellenangaben: Enthalten Zeitschriftenartikel-Zitate Band, Heftnummer und Seitenzahlen (S. XX–XX)? Sind Beiträge in Herausgeberwerken als eine vollständige [[CITE:]]-Angabe formatiert — nicht als zwei aufgetrennte Einträge (z.B. Kapitelautoren + Herausgeberinfo getrennt)?
 
 KONSERVATIVE BEWERTUNG — PFLICHT:
 Trage in kritikpunkte NUR Abschnitte mit KLAREN, KONKRETEN und EINDEUTIG BEHEBBAREN Problemen ein.

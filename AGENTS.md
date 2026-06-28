@@ -32,7 +32,7 @@ A fully automated German academic paper generator. User enters a research questi
 |-------|------|-------------|
 | `GET /api/leitfaden-rules` | `app/api/leitfaden-rules/route.ts` | Reads `lib/leitfaden-format.json`, maps to `LeitfadenRules`, returns JSON. Also returns `reviewStepEnabled: boolean` (derived from `REVIEW_STEP` env) so the generator page can show the strikethrough immediately on load without a second env var. |
 | `POST /api/parse-source` | `app/api/parse-source/route.ts` | Receives source PDF as `FormData`, extracts text with pdf-parse v2, chunks into ~1000-word segments, returns `ParsedSource` JSON. |
-| `POST /api/generate-outline` | `app/api/generate-outline/route.ts` | Calls Agent 1a (Claude) with Forschungsfrage, Gliederung, `zielWortanzahl`, source filenames, and Leitfaden rules. Returns `ExpandedOutline` with per-section blueprints and word targets summing to `zielWortanzahl`. Post-processes each section through `inferSectionType()` before returning. |
+| `POST /api/generate-outline` | `app/api/generate-outline/route.ts` | Calls Agent 1a (Claude) with Forschungsfrage, Gliederung, `zielWortanzahl`, source filenames, and Leitfaden rules. Returns `ExpandedOutline` with per-section blueprints and word targets summing to `zielWortanzahl`. Post-processes each section through `inferSectionType()` before returning. Outline system prompt includes blueprint scoping guidance: when Grundlagen + Wirkungsmechanismus chapters coexist, theory chapters write only definitions (no mechanisms/findings), mechanism chapters assume definitions as known and go straight to empirical content — prevents structural redundancy between paired chapters. |
 | `POST /api/generate-content` | `app/api/generate-content/route.ts` | **SSE streaming.** Writes each section via Agent 1b (streaming Claude call). Sends `phase`, `section_done`, `all_sections_done`, `keepalive`, `meta_language_warning`, `word_count_warning` events. `all_sections_done` includes `sectionSummaries: SectionSummary[]` so the review loop can use anti-redundancy data. Client reads via `fetch` + `body.getReader()`. Auto-extends sections >20% below target via `extendSection`. |
 | `POST /api/review-content` | `app/api/review-content/route.ts` | Runs Agent 2 review loop (max 3 iterations). Accepts `sectionSummaries: SectionSummary[]` from the POST body. Skipped entirely if `REVIEW_STEP=false`. Captures original section before each rewrite and returns `{ finalDocument, reviewLog, reviewChanges, validationResult, reviewSkipped? }`. |
 | `POST /api/assemble-docx` | `app/api/assemble-docx/route.ts` | Builds A4 Word document: cover page (FOM logo + env vars), manual TOC with dot leaders, content sections, bibliography, footnotes, page numbers. Returns `.docx` as `application/octet-stream`. |
@@ -196,6 +196,7 @@ Fixed: `Math.min(8192, Math.max(3000, Math.ceil(words * 6)))`
 - Citation format: `[[CITE:shortRef:fullRef]]` with Chicago examples — **examples use fictional sources** (prevents the model from copying wrong real-world author data from the example into generated text)
 - Citation position: tag goes immediately **before** the closing period, no space: `...Aussage[[CITE:...]].`
 - KRITISCH in fullRef: always write ALL author names in full — never `u. a.` or `et al.`
+- Mandatory format templates for all source types: **Monographien** (Autor, Titel, Ort: Verlag, Jahr, S. XX.), **Zeitschriftenartikel** (Band + Heft + Seitenzahlen S. XX–XX are PFLICHT), **Beiträge in Herausgeberwerken** (always a single unified `[[CITE:]]` tag — never split chapter authors and editor/volume info into two separate tags, which would create two bibliography entries)
 - Full JSON schema
 
 `buildSectionPrompt` word target line enforces a **two-sided strict range**: `"Schreibe zwischen ${min} und ${max} Wörtern. Weder kürzer noch länger."` (90%–115% of target). Previously only the lower bound was enforced, causing 15–600% overproduction.
@@ -278,7 +279,7 @@ The full `previousSectionSummaries` array is also emitted in the `all_sections_d
 
 ## Review System — `reviewDocument` + Rewrite Loop
 
-`reviewDocument` is Agent 2. Its system prompt checks 10 criteria:
+`reviewDocument` is Agent 2. Its system prompt checks 11 criteria:
 
 1. Blueprint compliance (section covers all topics from the outline blueprint)
 2. Argumentation quality (claims backed by citations, logical flow)
@@ -290,6 +291,7 @@ The full `previousSectionSummaries` array is also emitted in the `all_sections_d
 8. PFLICHT-BELEGUNG — every named study, concrete research finding, or specific number must have a `[[CITE:shortRef]]` tag
 9. Zahlenkonsistenz — numbers in the Fazit must exactly match the Hauptteil (checked against full section text)
 10. Studiendesign-Begriffe — no generic methodology terms (e.g. "Querschnittsdesign") unless those exact terms appeared in the Hauptteil for these studies
+11. Vollständigkeit der Quellenangaben — journal citations must include Band + Heft + Seitenzahlen (S. XX–XX); Herausgeberwerk citations must be a single unified entry, not split across two `[[CITE:]]` tags
 
 **Conservative flagging instruction (PFLICHT):** Only add to `kritikpunkte` sections with CLEAR, SPECIFIC, CORRECTABLE problems. Sections that are imperfect but functionally sound go in `positivesHervorheben`, not `kritikpunkte`. This prevents rewrites triggered by incomplete information (e.g. "no citations" when citations were in paragraph 2 that the old 300-char preview couldn't see).
 
