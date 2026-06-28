@@ -363,6 +363,7 @@ export default function GeneratorPage() {
         const decoder = new TextDecoder();
         let buf = "";
         let finalDocument: DocumentContent | null = null;
+        let finalSectionSummaries: import("@/lib/types").SectionSummary[] = [];
 
         while (true) {
           const { done, value } = await reader.read();
@@ -384,6 +385,7 @@ export default function GeneratorPage() {
               }
               if (event.type === "all_sections_done") {
                 finalDocument = event.document;
+                finalSectionSummaries = event.sectionSummaries ?? [];
               }
               if (event.type === "meta_language_warning") {
                 setMetaLanguageWarnings((prev) => [
@@ -422,6 +424,7 @@ export default function GeneratorPage() {
             expandedOutline: ol,
             leitfadenRules: rules,
             sources: src,
+            sectionSummaries: finalSectionSummaries,
           }),
         });
 

@@ -9,6 +9,7 @@ import type {
   ReviewChange,
   ParsedSource,
   ValidationResult,
+  SectionSummary,
 } from "@/lib/types";
 
 export async function POST(request: Request) {
@@ -18,9 +19,11 @@ export async function POST(request: Request) {
       expandedOutline: ExpandedOutline;
       leitfadenRules: LeitfadenRules;
       sources: ParsedSource[];
+      sectionSummaries?: SectionSummary[];
     };
 
-    const { documentContent, expandedOutline, leitfadenRules, sources } = body;
+    const { documentContent, expandedOutline, leitfadenRules, sources, sectionSummaries = [] } = body;
+    const topLevelChapterCount = expandedOutline.abschnitte.filter((s) => !s.nummer.includes(".")).length;
     const reviewLog: ReviewResult[] = [];
     const reviewChanges: ReviewChange[] = [];
     let currentDoc = { ...documentContent, abschnitte: [...documentContent.abschnitte] };
@@ -73,16 +76,11 @@ export async function POST(request: Request) {
 
         const relevantChunks = getRelevantChunks(sources, outlineSection);
 
-        // Build running summary from preceding sections
-        const runningSummary = currentDoc.abschnitte
+        // Reconstruct runningSummary from the original section summaries (preserves exact numbers)
+        const runningSummary = sectionSummaries
           .slice(0, sectionIndex)
-          .map((s) => {
-            const firstPara = s.blocks
-              .find((b) => b.type === "paragraph")
-              ?.text.slice(0, 200) ?? "";
-            return `Abschnitt ${s.sectionNummer} „${s.sectionTitel}": ${firstPara}`;
-          })
-          .join("\n\n");
+          .map((s) => `Abschnitt ${s.sectionId}: ${s.keyFindings.join("; ")}`)
+          .join("\n");
 
         const original = currentDoc.abschnitte[sectionIndex];
         log("INFO", "rewriting section after critique", { sectionNummer, problems: problems.join(" / ").slice(0, 120) });
@@ -91,8 +89,11 @@ export async function POST(request: Request) {
           relevantChunks,
           runningSummary,
           leitfadenRules,
-          critique: `- ${vorschlaege.join("\n- ")}`,
-          previousSectionSummaries: [],
+          critique: problems.map((p, i) =>
+            `Problem: ${p}${vorschlaege[i] ? `\nVerbesserung: ${vorschlaege[i]}` : ""}`
+          ).join("\n\n"),
+          previousSectionSummaries: sectionSummaries.slice(0, sectionIndex),
+          topLevelChapterCount,
         });
 
         reviewChanges.push({

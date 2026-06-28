@@ -671,15 +671,25 @@ export async function reviewDocument(input: {
     model: MODEL,
     max_tokens: 4096,
     system: `Du bist ein strenger Gutachter für wissenschaftliche Seminararbeiten an einer deutschen Hochschule.
-Prüfe die vorgelegte Arbeit kritisch und gnadenlos.
-Prüfe insbesondere:
-- Hält jeder Abschnitt seinen Blueprint ein?
-- Ist die Argumentation kohärent und logisch?
-- Werden Quellen korrekt zitiert (Chicago-Format mit [[CITE:]]-Tags)?
-- Ist der Schreibstil akademisch und präzise?
-- Werden alle Leitfaden-Regeln eingehalten?
-- Gibt es inhaltliche Redundanzen zwischen Abschnitten?
-- Enthält ein Abschnitt Meta-Sprache statt echtem Inhalt ("Dieser Abschnitt...", "Im Folgenden...")?
+Prüfe die vorgelegte Arbeit präzise und kritisch.
+
+PRÜFKRITERIEN:
+1. Blueprint-Treue: Hält jeder Abschnitt seinen Blueprint (Gliederungs-Vertrag) ein?
+2. Argumentation: Ist die Argumentation kohärent, logisch und ohne inhaltliche Lücken?
+3. PFLICHT-BELEGUNG: Enthält jeder Satz mit einem konkreten Studienergebnis, einer benannten Studie oder einer spezifischen Zahl ein [[CITE:shortRef]]-Tag?
+4. Zitierposition: Steht das [[CITE:]]-Tag unmittelbar vor dem abschließenden Satzpunkt — nicht danach?
+5. Wissenschaftliche Schreibweise: Wird „Cortisol" (nicht „Kortisol"), „Oxytocin" (nicht „Oxytozin"), „Dopamin" etc. durchgehend einheitlich verwendet?
+6. Meta-Sprache: Enthält ein Abschnitt Selbstbeschreibungen statt Inhalt? („Dieser Abschnitt...", „Im Folgenden wird...", „Das Fazit fasst...", „Ziel dieses Abschnitts...")
+7. Redundanzen: Gibt es inhaltliche Wiederholungen zwischen Abschnitten?
+8. Zahlenkonsistenz (Fazit): Stimmen alle Zahlen und Prozentwerte im Fazit exakt mit denen im Hauptteil überein? Kein eigenmächtiges Runden oder Paraphrasieren.
+9. Studiendesign-Begriffe (Fazit): Werden im Fazit nur Methodenbegriffe verwendet die im Hauptteil für diese Studien stehen? (Kein „Querschnittsdesign" wenn Studien als Feldstudien oder RCTs beschrieben sind)
+10. Akademischer Stil: Ist der Schreibstil klar, präzise und auf Universitätsniveau?
+
+KONSERVATIVE BEWERTUNG — PFLICHT:
+Trage in kritikpunkte NUR Abschnitte mit KLAREN, KONKRETEN und EINDEUTIG BEHEBBAREN Problemen ein.
+Abschnitte die gut oder akzeptabel sind gehören in positivesHervorheben — NICHT in kritikpunkte.
+Setze success: true wenn die Arbeit insgesamt gut ist. Einzelne Kleinigkeiten rechtfertigen keinen weiteren Überarbeitungsdurchlauf.
+
 Antworte NUR mit validem JSON, KEIN Text davor oder danach.`,
     messages: [
       {
@@ -687,23 +697,21 @@ Antworte NUR mit validem JSON, KEIN Text davor oder danach.`,
         content: `ITERATION: ${input.iteration} von 3
 
 EXPANDED OUTLINE (Blueprint-Vertrag):
-${JSON.stringify(input.expandedOutline, null, 2).substring(0, 6000)}
+${JSON.stringify(input.expandedOutline, null, 2)}
 
 LEITFADEN-REGELN:
 ${JSON.stringify(input.leitfadenRules, null, 2)}
 
-EINGEREICHTE ARBEIT (Abschnitte zur Bewertung):
+EINGEREICHTE ARBEIT (vollständiger Text zur Bewertung):
 ${JSON.stringify(
   input.documentContent.abschnitte.map((s) => ({
     sectionNummer: s.sectionNummer,
     sectionTitel: s.sectionTitel,
     wordCount: s.wordCount,
-    preview: s.blocks
+    text: s.blocks
       .filter((b) => b.type === "paragraph")
-      .slice(0, 3)
-      .map((b) => b.text)
-      .join(" ")
-      .substring(0, 300),
+      .map((b) => b.text.replace(/\[\[CITE:([^:]+):[^\]]*\]\]/g, "[[CITE:$1]]"))
+      .join(" "),
   })),
   null,
   2
@@ -718,7 +726,7 @@ Bewerte die Arbeit und gib Feedback als JSON:
   "positivesHervorheben": string[]
 }
 
-Setze success: true nur wenn die Arbeit wirklich gut ist.`,
+Setze success: true wenn die Arbeit insgesamt gut ist.`,
       },
     ],
   });

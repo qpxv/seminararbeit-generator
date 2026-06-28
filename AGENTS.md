@@ -33,8 +33,8 @@ A fully automated German academic paper generator. User enters a research questi
 | `GET /api/leitfaden-rules` | `app/api/leitfaden-rules/route.ts` | Reads `lib/leitfaden-format.json`, maps to `LeitfadenRules`, returns JSON. Also returns `reviewStepEnabled: boolean` (derived from `REVIEW_STEP` env) so the generator page can show the strikethrough immediately on load without a second env var. |
 | `POST /api/parse-source` | `app/api/parse-source/route.ts` | Receives source PDF as `FormData`, extracts text with pdf-parse v2, chunks into ~1000-word segments, returns `ParsedSource` JSON. |
 | `POST /api/generate-outline` | `app/api/generate-outline/route.ts` | Calls Agent 1a (Claude) with Forschungsfrage, Gliederung, `zielWortanzahl`, source filenames, and Leitfaden rules. Returns `ExpandedOutline` with per-section blueprints and word targets summing to `zielWortanzahl`. Post-processes each section through `inferSectionType()` before returning. |
-| `POST /api/generate-content` | `app/api/generate-content/route.ts` | **SSE streaming.** Writes each section via Agent 1b (streaming Claude call). Sends `phase`, `section_done`, `all_sections_done`, `keepalive`, `meta_language_warning`, `word_count_warning` events. Client reads via `fetch` + `body.getReader()`. Auto-extends sections >20% below target via `extendSection`. |
-| `POST /api/review-content` | `app/api/review-content/route.ts` | Runs Agent 2 review loop (max 3 iterations). Skipped entirely if `REVIEW_STEP=false`. Captures original section before each rewrite and returns `{ finalDocument, reviewLog, reviewChanges, validationResult, reviewSkipped? }`. |
+| `POST /api/generate-content` | `app/api/generate-content/route.ts` | **SSE streaming.** Writes each section via Agent 1b (streaming Claude call). Sends `phase`, `section_done`, `all_sections_done`, `keepalive`, `meta_language_warning`, `word_count_warning` events. `all_sections_done` includes `sectionSummaries: SectionSummary[]` so the review loop can use anti-redundancy data. Client reads via `fetch` + `body.getReader()`. Auto-extends sections >20% below target via `extendSection`. |
+| `POST /api/review-content` | `app/api/review-content/route.ts` | Runs Agent 2 review loop (max 3 iterations). Accepts `sectionSummaries: SectionSummary[]` from the POST body. Skipped entirely if `REVIEW_STEP=false`. Captures original section before each rewrite and returns `{ finalDocument, reviewLog, reviewChanges, validationResult, reviewSkipped? }`. |
 | `POST /api/assemble-docx` | `app/api/assemble-docx/route.ts` | Builds A4 Word document: cover page (FOM logo + env vars), manual TOC with dot leaders, content sections, bibliography, footnotes, page numbers. Returns `.docx` as `application/octet-stream`. |
 
 ### Library Files
@@ -265,6 +265,50 @@ This is safe — it only removes leading space(s) followed by punctuation, never
 ## Anti-Redundancy System
 
 After each section is written, `generate-content/route.ts` calls `extractSectionSummary(section, sectionId)` (unless `REDUNDANCY_CHECK=false`). This is a non-streaming Claude call (max_tokens: 300) that returns a `SectionSummary` with 3-5 key findings as German bullet points. The prompt explicitly instructs: **preserve all numerical values, percentages, and measurements exactly** (e.g. "19,6 Punkte", "27,01 %") — without this, short summaries paraphrase numbers and the Fazit then regenerates different values. These summaries are accumulated in `previousSectionSummaries` and injected into every subsequent `writeSection` call as an anti-repetition block in the prompt.
+
+The full `previousSectionSummaries` array is also emitted in the `all_sections_done` SSE event and plumbed through `generator/page.tsx` → `review-content` POST body → each `writeSection` rewrite call in the review loop, so rewrites have the same anti-redundancy context as the original generation.
+
+---
+
+## Review System — `reviewDocument` + Rewrite Loop
+
+`reviewDocument` is Agent 2. Its system prompt checks 10 criteria:
+
+1. Blueprint compliance (section covers all topics from the outline blueprint)
+2. Argumentation quality (claims backed by citations, logical flow)
+3. Chicago citation format (correct `[[CITE:shortRef:fullRef]]` structure)
+4. Academic style (German academic register, no colloquialisms)
+5. Redundancy (no repetition of content from other sections — checked via compressed `[[CITE:shortRef]]` tags in the full section text)
+6. Meta-language (no self-referential descriptions)
+7. Word count compliance (within target range)
+8. PFLICHT-BELEGUNG — every named study, concrete research finding, or specific number must have a `[[CITE:shortRef]]` tag
+9. Zahlenkonsistenz — numbers in the Fazit must exactly match the Hauptteil (checked against full section text)
+10. Studiendesign-Begriffe — no generic methodology terms (e.g. "Querschnittsdesign") unless those exact terms appeared in the Hauptteil for these studies
+
+**Conservative flagging instruction (PFLICHT):** Only add to `kritikpunkte` sections with CLEAR, SPECIFIC, CORRECTABLE problems. Sections that are imperfect but functionally sound go in `positivesHervorheben`, not `kritikpunkte`. This prevents rewrites triggered by incomplete information (e.g. "no citations" when citations were in paragraph 2 that the old 300-char preview couldn't see).
+
+**Full section text:** Each section is passed as full paragraph text with `[[CITE:shortRef]]` tags (fullRef stripped to keep payload manageable):
+```js
+text: s.blocks
+  .filter(b => b.type === "paragraph")
+  .map(b => b.text.replace(/\[\[CITE:([^:]+):[^\]]*\]\]/g, "[[CITE:$1]]"))
+  .join(" ")
+```
+Previously only a 300-char preview was sent — the reviewer couldn't see citations in paragraph 2+, mis-flagging PFLICHT-BELEGUNG failures that weren't failures.
+
+**Outline not truncated:** The full `expandedOutline` JSON is sent to the reviewer without `.substring(0, 6000)` truncation — with 10+ sections and full blueprints the outline easily exceeded 6000 chars, making blueprint compliance invisible for later sections.
+
+**Critique format in rewrites:** Each rewrite call passes both the problem description AND the improvement suggestion:
+```js
+critique: problems.map((p, i) =>
+  `Problem: ${p}${vorschlaege[i] ? `\nVerbesserung: ${vorschlaege[i]}` : ""}`
+).join("\n\n")
+```
+Previously only `vorschlaege` (suggestions) were passed, dropping the diagnosis — the rewriter knew what to do but not why, leading to over-correction.
+
+**topLevelChapterCount in rewrites:** Calculated from `expandedOutline` and passed to every `writeSection` call in the review loop, so a rewritten Einleitung states the correct chapter count (e.g. "vier Kapitel") rather than defaulting to hardcoded "fünf".
+
+**runningSummary in rewrites:** Built from `sectionSummaries.slice(0, sectionIndex)` using the structured key-findings format — identical to how `generate-content` builds it. Previously built from raw 200-char first-paragraph slices which paraphrased exact numbers, defeating anti-redundancy.
 
 ---
 

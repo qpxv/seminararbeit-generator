@@ -171,7 +171,7 @@ export async function POST(request: Request) {
         const totalWords = abschnitte.reduce((sum, s) => sum + (s.wordCount ?? 0), 0);
         log("INFO", "generate-content done", { totalSections: abschnitte.length, totalWords });
 
-        controller.enqueue(sseEvent({ type: "all_sections_done", document }));
+        controller.enqueue(sseEvent({ type: "all_sections_done", document, sectionSummaries: previousSectionSummaries }));
         controller.close();
       } catch (error) {
         log("ERROR", "generate-content stream error", { error: String(error) });
