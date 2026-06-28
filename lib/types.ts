@@ -23,6 +23,7 @@ export interface OutlineSection {
   blueprint: string;
   geschaetzteWorte: number;
   verwendeteQuellen: string[];
+  sectionType: "einleitung" | "fazit" | "hauptteil";
 }
 
 export interface ExpandedOutline {
@@ -67,7 +68,18 @@ export interface LiteraturEintrag {
   seiten?: string;
   url?: string;
   zugegriffen?: string;
+  formattedRef?: string;
 }
+
+export interface CitationEntry {
+  id: number;
+  shortRef: string;
+  fullRef: string;
+  shortNote: string;
+  usedInSections: string[];
+}
+
+export type CitationRegistry = CitationEntry[];
 
 export interface DocumentContent {
   metadata: {
@@ -77,6 +89,7 @@ export interface DocumentContent {
   };
   abschnitte: SectionContent[];
   literaturverzeichnis: LiteraturEintrag[];
+  citations?: CitationRegistry;
 }
 
 export interface ReviewResult {
@@ -142,4 +155,21 @@ export interface SessionResult {
   reviewLog: ReviewResult[];
   reviewChanges: ReviewChange[];
   leitfadenRules: LeitfadenRules;
+}
+
+export interface SectionSummary {
+  sectionId: string;
+  keyFindings: string[];
+  citedSources: string[];
+}
+
+export interface ValidationResult {
+  passed: boolean;
+  warnings: string[];
+  errors: string[];
+}
+
+export interface WriteSectionResult {
+  section: SectionContent;
+  metaLanguageWarning: boolean;
 }

@@ -1,9 +1,17 @@
-import { writeSection, getRelevantChunks } from "@/lib/agents";
+import {
+  writeSection,
+  getRelevantChunks,
+  extractSectionSummary,
+  extendSection,
+} from "@/lib/agents";
+import { countWords } from "@/lib/utils";
+import { log, logRun } from "@/lib/logger";
 import type {
   ExpandedOutline,
   ParsedSource,
   LeitfadenRules,
   SectionContent,
+  SectionSummary,
   DocumentContent,
 } from "@/lib/types";
 
@@ -22,11 +30,15 @@ export async function POST(request: Request) {
 
   const { outline, sources, leitfadenRules } = body;
 
+  logRun("generate-content");
+  log("INFO", "generate-content POST received", { sectionCount: outline.abschnitte.length });
+
   const stream = new ReadableStream({
     async start(controller) {
       try {
         let runningSummary = "";
         const abschnitte: SectionContent[] = [];
+        const previousSectionSummaries: SectionSummary[] = [];
 
         let keepaliveTimer: ReturnType<typeof setInterval> | null = setInterval(() => {
           try {
@@ -37,7 +49,11 @@ export async function POST(request: Request) {
           }
         }, 15000);
 
+        const total = outline.abschnitte.length;
+        let idx = 0;
         for (const section of outline.abschnitte) {
+          idx++;
+          log("INFO", `writing section ${idx}/${total}`, { nummer: section.nummer, titel: section.titel, target: section.geschaetzteWorte });
           controller.enqueue(
             sseEvent({
               type: "phase",
@@ -49,17 +65,91 @@ export async function POST(request: Request) {
 
           const relevantChunks = getRelevantChunks(sources, section);
 
-          const sectionContent = await writeSection({
+          // Write section with built-in meta-language retry
+          const { section: sectionContent, metaLanguageWarning } = await writeSection({
             section,
             relevantChunks,
             runningSummary,
             leitfadenRules,
+            previousSectionSummaries,
           });
 
-          abschnitte.push(sectionContent);
-          runningSummary += `\nAbschnitt ${section.nummer} "${section.titel}": ${section.blueprint}`;
+          if (metaLanguageWarning) {
+            controller.enqueue(
+              sseEvent({
+                type: "meta_language_warning",
+                sectionNummer: section.nummer,
+                sectionTitel: section.titel,
+              })
+            );
+          }
 
-          controller.enqueue(sseEvent({ type: "section_done", section: sectionContent }));
+          // Word count check
+          const allParaText = sectionContent.blocks
+            .filter((b) => b.type === "paragraph")
+            .map((b) => b.text)
+            .join(" ");
+          const actualWords = countWords(allParaText);
+          const target = section.geschaetzteWorte;
+          const deviation = target > 0 ? (actualWords - target) / target : 0;
+
+          let finalSection = sectionContent;
+
+          // Auto-extend if too short (>20% below target)
+          let extended = false;
+          if (deviation < -0.2) {
+            const delta = target - actualWords;
+            finalSection = await extendSection({
+              section: sectionContent,
+              delta,
+              outlineSection: section,
+              relevantChunks,
+              runningSummary,
+              leitfadenRules,
+            });
+            extended = true;
+          }
+
+          log("INFO", "word count result", {
+            nummer: section.nummer,
+            actual: actualWords,
+            target,
+            deviationPct: Math.round(deviation * 100),
+            extended,
+          });
+
+          // Emit word count warning for significant deviations
+          if (Math.abs(deviation) > 0.2) {
+            controller.enqueue(
+              sseEvent({
+                type: "word_count_warning",
+                sectionNummer: section.nummer,
+                target,
+                actual: actualWords,
+                deviation: Math.round(deviation * 100),
+              })
+            );
+          }
+
+          abschnitte.push(finalSection);
+
+          // Redundancy check: extract key findings for subsequent sections
+          if (process.env.REDUNDANCY_CHECK !== "false") {
+            try {
+              const summary = await extractSectionSummary(finalSection, section.nummer);
+              previousSectionSummaries.push(summary);
+              runningSummary = previousSectionSummaries
+                .map((s) => `Abschnitt ${s.sectionId}: ${s.keyFindings.join("; ")}`)
+                .join("\n");
+            } catch {
+              // Fallback to blueprint-based summary
+              runningSummary += `\nAbschnitt ${section.nummer} „${section.titel}": ${section.blueprint}`;
+            }
+          } else {
+            runningSummary += `\nAbschnitt ${section.nummer} „${section.titel}": ${section.blueprint}`;
+          }
+
+          controller.enqueue(sseEvent({ type: "section_done", section: finalSection }));
         }
 
         if (keepaliveTimer) clearInterval(keepaliveTimer);
@@ -74,12 +164,14 @@ export async function POST(request: Request) {
           literaturverzeichnis: [],
         };
 
+        const totalWords = abschnitte.reduce((sum, s) => sum + (s.wordCount ?? 0), 0);
+        log("INFO", "generate-content done", { totalSections: abschnitte.length, totalWords });
+
         controller.enqueue(sseEvent({ type: "all_sections_done", document }));
         controller.close();
       } catch (error) {
-        controller.enqueue(
-          sseEvent({ type: "error", error: String(error) })
-        );
+        log("ERROR", "generate-content stream error", { error: String(error) });
+        controller.enqueue(sseEvent({ type: "error", error: String(error) }));
         controller.close();
       }
     },

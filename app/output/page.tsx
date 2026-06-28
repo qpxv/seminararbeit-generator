@@ -9,6 +9,7 @@ import {
   ChevronRight,
   FileText,
   ArrowLeft,
+  AlertCircle,
 } from "lucide-react";
 import { HEADER, OUTPUT_PAGE } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -18,8 +19,10 @@ export default function OutputPage() {
   const router = useRouter();
   const [result, setResult] = useState<SessionResult | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [quellenNames, setQuellenNames] = useState<string[]>([]);
+  const [zielWortanzahl, setZielWortanzahl] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("generatorResult");
@@ -34,12 +37,14 @@ export default function OutputPage() {
     if (inputRaw) {
       const input = JSON.parse(inputRaw);
       setQuellenNames(input.quellenFiles?.map((f: { name: string }) => f.name) ?? []);
+      setZielWortanzahl(input.zielWortanzahl);
     }
   }, [router]);
 
   async function handleDownload() {
     if (!result) return;
     setIsDownloading(true);
+    setDownloadError(null);
     try {
       const response = await fetch("/api/assemble-docx", {
         method: "POST",
@@ -47,10 +52,20 @@ export default function OutputPage() {
         body: JSON.stringify({
           documentContent: result.finalDocument,
           leitfadenRules: result.leitfadenRules,
+          zielWortanzahl,
         }),
       });
 
-      if (!response.ok) throw new Error("Download fehlgeschlagen");
+      if (!response.ok) {
+        let message = "Download fehlgeschlagen";
+        try {
+          const errData = await response.json();
+          if (errData.errors?.length) {
+            message = errData.errors.join(" • ");
+          }
+        } catch { /* ignore parse error */ }
+        throw new Error(message);
+      }
 
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -60,7 +75,7 @@ export default function OutputPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      console.error(err);
+      setDownloadError(String(err instanceof Error ? err.message : err));
     } finally {
       setIsDownloading(false);
     }
@@ -77,9 +92,7 @@ export default function OutputPage() {
   if (!result) return null;
 
   const generatedAt = result.finalDocument.metadata.generatedAt
-    ? new Date(result.finalDocument.metadata.generatedAt).toLocaleDateString(
-        "de-DE"
-      )
+    ? new Date(result.finalDocument.metadata.generatedAt).toLocaleDateString("de-DE")
     : "";
 
   return (
@@ -102,6 +115,19 @@ export default function OutputPage() {
               {generatedAt && ` · ${generatedAt}`}
             </p>
           </div>
+
+          {/* Download Error */}
+          {downloadError && (
+            <div className="bg-red-50 border border-fom-red rounded-fom-sm p-4">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-fom-red shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-fom-red mb-1">Download fehlgeschlagen</p>
+                  <p className="text-xs text-fom-red/80">{downloadError}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Download Button */}
           <button
@@ -213,7 +239,6 @@ export default function OutputPage() {
                           <span className="font-mono text-fom-grey-400">{change.sectionNummer}</span>
                           <span className="font-medium text-fom-grey-700">{change.sectionTitel}</span>
                         </div>
-                        {/* Yellow: critique */}
                         <div className="bg-fom-yellow/10 border-b border-fom-yellow/30 px-3 py-2 space-y-1">
                           <div className="flex items-center gap-1.5 mb-1">
                             <span className="bg-fom-yellow/40 text-fom-grey-800 font-medium rounded px-1.5 py-0.5 text-[10px] uppercase tracking-wide">Kritik</span>
@@ -224,7 +249,6 @@ export default function OutputPage() {
                             <p className="text-fom-grey-400 italic mt-1 line-clamp-2">{change.originalPreview}…</p>
                           )}
                         </div>
-                        {/* Green: revision */}
                         <div className="bg-fom-primary-bg px-3 py-2 space-y-1">
                           <div className="flex items-center gap-1.5 mb-1">
                             <span className="bg-fom-primary/20 text-fom-primary-darker font-medium rounded px-1.5 py-0.5 text-[10px] uppercase tracking-wide">KI-Revision</span>

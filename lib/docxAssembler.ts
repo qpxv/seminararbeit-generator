@@ -13,6 +13,7 @@ import {
   TabStopType,
 } from "docx";
 import type { DocumentContent, LiteraturEintrag, LeitfadenRules, ContentBlock } from "./types";
+import { CitationManager } from "./agents";
 
 const CM_TO_DXA = 567;
 
@@ -22,6 +23,32 @@ function cmToDxa(cm: number): number {
 
 function env(key: string, fallback: string): string {
   return process.env[key] ?? fallback;
+}
+
+// Parse [[CITE:shortRef:fullRef]] tags out of a text string.
+// Returns segments: either plain text or a citation reference.
+function parseCiteTags(
+  text: string
+): Array<{ text: string; cite?: { shortRef: string; fullRef: string } }> {
+  const parts: Array<{ text: string; cite?: { shortRef: string; fullRef: string } }> = [];
+  const regex = /\[\[CITE:([^:]+):([^\]]*)\]\]/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(text)) !== null) {
+    const before = text.slice(lastIndex, match.index);
+    if (before) parts.push({ text: before });
+    parts.push({
+      text: "",
+      cite: { shortRef: match[1].trim(), fullRef: match[2].trim() },
+    });
+    lastIndex = match.index + match[0].length;
+  }
+
+  const remaining = text.slice(lastIndex);
+  if (remaining) parts.push({ text: remaining });
+
+  return parts;
 }
 
 function coverParagraph(
@@ -96,8 +123,13 @@ function buildCoverPageParagraphs(logoBuffer: Buffer | null): Paragraph[] {
   return paragraphs;
 }
 
+// Convert a content block to DOCX Paragraph(s).
+// citationManager handles new [[CITE:...]] tags.
+// footnoteMap handles legacy footnote_ref blocks for backward compatibility.
 function blockToParagraphs(
   block: ContentBlock,
+  citationManager: CitationManager,
+  sectionId: string,
   footnoteMap: Map<number, string>,
   fontFamily: string,
   fontSize: number
@@ -106,6 +138,7 @@ function blockToParagraphs(
     return [new Paragraph({ children: [new PageBreak()] })];
   }
 
+  // Legacy footnote_ref block (backward compat with old sessions)
   if (block.type === "footnote_ref") {
     if (block.fussnoteNummer !== undefined && block.fussnoteText) {
       footnoteMap.set(block.fussnoteNummer, block.fussnoteText);
@@ -151,47 +184,74 @@ function blockToParagraphs(
     ];
   }
 
-  if (block.type === "quote") {
+  // paragraph and quote blocks — parse [[CITE:...]] tags inline
+  const segments = parseCiteTags(block.text);
+  const hasCitations = segments.some((s) => s.cite);
+
+  if (!hasCitations) {
+    // No citations: render as before
+    if (block.type === "quote") {
+      return [
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: block.text,
+              italics: true,
+              font: fontFamily,
+              size: fontSize,
+            }),
+          ],
+          indent: { left: 720 },
+          spacing: { line: 360, lineRule: "auto", before: 280, after: 280 },
+        }),
+      ];
+    }
     return [
       new Paragraph({
         children: [
           new TextRun({
             text: block.text,
-            italics: true,
+            bold: block.bold,
+            italics: block.italic,
             font: fontFamily,
             size: fontSize,
           }),
         ],
-        indent: { left: 720 },
-        spacing: { line: 360, lineRule: "auto", before: 280, after: 280 },
+        spacing: { line: 360, lineRule: "auto", after: 280 },
       }),
     ];
   }
 
-  return [
-    new Paragraph({
-      children: [
+  // Build children array with inline FootnoteReferenceRun
+  const children: (TextRun | FootnoteReferenceRun)[] = [];
+  for (const seg of segments) {
+    if (seg.cite) {
+      const id = citationManager.addCitation(seg.cite.shortRef, seg.cite.fullRef);
+      children.push(new FootnoteReferenceRun(id));
+    } else if (seg.text) {
+      children.push(
         new TextRun({
-          text: block.text,
-          bold: block.bold,
-          italics: block.italic,
+          text: seg.text,
+          bold: block.type === "quote" ? undefined : block.bold,
+          italics: block.type === "quote" ? true : block.italic,
           font: fontFamily,
           size: fontSize,
-        }),
-      ],
-      spacing: { line: 360, lineRule: "auto", after: 280 },
-    }),
-  ];
-}
+        })
+      );
+    }
+  }
 
-function formatBibliography(eintrag: LiteraturEintrag): string {
-  const parts = [eintrag.autor, `(${eintrag.jahr})`, eintrag.titel];
-  if (eintrag.zeitschrift) parts.push(eintrag.zeitschrift);
-  if (eintrag.verlag) parts.push(eintrag.verlag);
-  if (eintrag.seiten) parts.push(`S. ${eintrag.seiten}`);
-  if (eintrag.url) parts.push(`Verfügbar unter: ${eintrag.url}`);
-  if (eintrag.zugegriffen) parts.push(`[Zugegriffen: ${eintrag.zugegriffen}]`);
-  return parts.filter(Boolean).join(". ");
+  const paraOpts =
+    block.type === "quote"
+      ? {
+          indent: { left: 720 },
+          spacing: { line: 360, lineRule: "auto" as const, before: 280, after: 280 },
+        }
+      : {
+          spacing: { line: 360, lineRule: "auto" as const, after: 280 },
+        };
+
+  return [new Paragraph({ children, ...paraOpts })];
 }
 
 function buildManualToc(
@@ -202,7 +262,6 @@ function buildManualToc(
 ): Paragraph[] {
   const WORDS_PER_PAGE = 380;
   const DOT_TAB = [{ position: 8500, type: TabStopType.RIGHT, leader: LeaderType.DOT }];
-  // Left tab after section number (title start), then right dot tab for page number
   const tocTabs = (numPos: number) => [
     { position: numPos, type: TabStopType.LEFT },
     ...DOT_TAB,
@@ -216,12 +275,11 @@ function buildManualToc(
     }),
   ];
 
-  let page = 3; // cover(1) + toc(2) = content starts at 3
+  let page = 3;
 
   for (const section of content.abschnitte) {
     const dots = (section.sectionNummer.match(/\./g) ?? []).length;
     const tocStyle = dots === 0 ? "TOC1" : dots === 1 ? "TOC2" : "TOC3";
-    // title tab position accounts for paragraph indent + number width
     const titleTab = dots === 0 ? 720 : dots === 1 ? 900 : 1080;
 
     paras.push(
@@ -265,6 +323,19 @@ function buildPageFooter(fontFamily: string, fontSize: number): Footer {
   });
 }
 
+function formatBibliography(eintrag: LiteraturEintrag): string {
+  // Use pre-formatted Chicago entry if available
+  if (eintrag.formattedRef) return eintrag.formattedRef;
+  // Fallback for legacy entries
+  const parts = [eintrag.autor, `(${eintrag.jahr})`, eintrag.titel];
+  if (eintrag.zeitschrift) parts.push(eintrag.zeitschrift);
+  if (eintrag.verlag) parts.push(eintrag.verlag);
+  if (eintrag.seiten) parts.push(`S. ${eintrag.seiten}`);
+  if (eintrag.url) parts.push(`Verfügbar unter: ${eintrag.url}`);
+  if (eintrag.zugegriffen) parts.push(`[Zugegriffen: ${eintrag.zugegriffen}]`);
+  return parts.filter(Boolean).join(". ");
+}
+
 export function buildDocument(
   content: DocumentContent,
   rules: LeitfadenRules,
@@ -280,6 +351,9 @@ export function buildDocument(
     right: cmToDxa(rules.seitenraender?.rechts ?? 2),
   };
 
+  // Citation manager processes [[CITE:...]] tags in document order
+  const citationManager = new CitationManager();
+  // Legacy footnote map for old footnote_ref blocks
   const footnoteMap = new Map<number, string>();
   const contentParagraphs: Paragraph[] = [];
 
@@ -289,34 +363,48 @@ export function buildDocument(
     const dots = (section.sectionNummer.match(/\./g) ?? []).length;
     const headingType = (["h1", "h2", "h3"][Math.min(dots, 2)]) as ContentBlock["type"];
 
-    // Always inject the heading from section metadata — never trust the AI to include it
+    // Always inject heading from section metadata — never trust AI to include it
     contentParagraphs.push(
       ...blockToParagraphs(
         { type: headingType, text: `${section.sectionNummer}  ${section.sectionTitel}` },
-        footnoteMap, fontFamily, fontSize
+        citationManager,
+        section.sectionNummer,
+        footnoteMap,
+        fontFamily,
+        fontSize
       )
     );
 
-    // Skip any leading heading block the AI may have included to avoid duplicates
+    // Skip any leading heading block the AI may have included
     const blocks = HEADING_TYPES.has(section.blocks[0]?.type ?? "")
       ? section.blocks.slice(1)
       : section.blocks;
 
     for (const block of blocks) {
-      contentParagraphs.push(...blockToParagraphs(block, footnoteMap, fontFamily, fontSize));
+      contentParagraphs.push(
+        ...blockToParagraphs(block, citationManager, section.sectionNummer, footnoteMap, fontFamily, fontSize)
+      );
     }
   }
+
+  // Bibliography: prefer CitationManager output (new sessions), fall back to stored literaturverzeichnis
+  const bibliography =
+    citationManager.getAllCitations().length > 0
+      ? citationManager.buildBibliography()
+      : content.literaturverzeichnis;
+
+  const bibTitel = rules.bibliographieTitel ?? "Literaturverzeichnis";
 
   contentParagraphs.push(
     new Paragraph({ children: [new PageBreak()] }),
     new Paragraph({
-      children: [new TextRun({ text: rules.bibliographieTitel ?? "Literaturverzeichnis", bold: true })],
+      children: [new TextRun({ text: bibTitel, bold: true })],
       heading: HeadingLevel.HEADING_1,
       spacing: { after: 400 },
     })
   );
 
-  for (const eintrag of content.literaturverzeichnis) {
+  for (const eintrag of bibliography) {
     contentParagraphs.push(
       new Paragraph({
         children: [
@@ -332,7 +420,26 @@ export function buildDocument(
     );
   }
 
+  // Build footnotes record from CitationManager occurrences + legacy footnoteMap
   const footnotes: Record<number, { children: Paragraph[] }> = {};
+
+  for (const occ of citationManager.getAllOccurrences()) {
+    footnotes[occ.id] = {
+      children: [
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: occ.footnoteText,
+              font: fontFamily,
+              size: Math.max(fontSize - 4, 16),
+            }),
+          ],
+        }),
+      ],
+    };
+  }
+
+  // Merge legacy footnotes (no-op if there are none)
   for (const [id, text] of footnoteMap) {
     footnotes[id] = {
       children: [
@@ -350,7 +457,6 @@ export function buildDocument(
   }
 
   const coverParagraphs = buildCoverPageParagraphs(logoBuffer);
-  const bibTitel = rules.bibliographieTitel ?? "Literaturverzeichnis";
   const tocParagraphs = buildManualToc(content, bibTitel, fontFamily, fontSize);
 
   return new Document({

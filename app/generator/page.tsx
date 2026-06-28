@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Check, ChevronDown, ChevronRight, AlertCircle } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, AlertCircle, AlertTriangle } from "lucide-react";
 import { HEADER, GENERATOR_PAGE, PIPELINE_STEPS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import type {
@@ -17,6 +17,7 @@ import type {
   DocumentContent,
   GeneratorPhase,
   OutlineSection,
+  ValidationResult,
 } from "@/lib/types";
 
 function base64ToBlob(base64: string): Blob {
@@ -196,6 +197,11 @@ function OutlineCard({
   );
 }
 
+// Strip [[CITE:shortRef:fullRef]] tags to [shortRef] for display
+function stripCiteTags(text: string): string {
+  return text.replace(/\[\[CITE:([^:]+):[^\]]*\]\]/g, "[$1]");
+}
+
 function SectionPreview({ section }: { section: SectionContent }) {
   return (
     <div className="animate-fade-in">
@@ -233,10 +239,20 @@ function SectionPreview({ section }: { section: SectionContent }) {
               key={i}
               className="border-l-2 border-fom-grey-200 pl-4 my-3 text-fom-grey-600 text-sm italic"
             >
-              {block.text}
+              {stripCiteTags(block.text)}
             </blockquote>
           );
-        if (block.type === "page_break") return <hr key={i} className="my-4 border-fom-grey-100" />;
+        if (block.type === "page_break")
+          return <hr key={i} className="my-4 border-fom-grey-100" />;
+        if (block.type === "footnote_ref")
+          return (
+            <p key={i} className={cn("text-fom-grey-700 text-sm leading-relaxed mb-3", block.bold && "font-bold", block.italic && "italic")}>
+              {block.text}
+              {block.fussnoteNummer !== undefined && (
+                <sup className="text-fom-primary text-xs ml-0.5">[{block.fussnoteNummer}]</sup>
+              )}
+            </p>
+          );
         return (
           <p
             key={i}
@@ -246,10 +262,49 @@ function SectionPreview({ section }: { section: SectionContent }) {
               block.italic && "italic"
             )}
           >
-            {block.text}
+            {stripCiteTags(block.text)}
           </p>
         );
       })}
+    </div>
+  );
+}
+
+function ValidationBanner({ result }: { result: ValidationResult }) {
+  if (result.errors.length === 0 && result.warnings.length === 0) return null;
+
+  return (
+    <div className="space-y-2 mb-4">
+      {result.errors.length > 0 && (
+        <div className="bg-red-50 border border-fom-red rounded-fom-sm p-3">
+          <div className="flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 text-fom-red shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-fom-red mb-1">Validierungsfehler</p>
+              <ul className="space-y-0.5">
+                {result.errors.map((e, i) => (
+                  <li key={i} className="text-xs text-fom-red">{e}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+      {result.warnings.length > 0 && (
+        <div className="bg-fom-yellow/10 border border-fom-yellow/40 rounded-fom-sm p-3">
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="w-4 h-4 text-fom-grey-700 shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-fom-grey-700 mb-1">Qualitätshinweise</p>
+              <ul className="space-y-0.5">
+                {result.warnings.map((w, i) => (
+                  <li key={i} className="text-xs text-fom-grey-600">{w}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -264,6 +319,11 @@ export default function GeneratorPage() {
   const [currentSectionTitel, setCurrentSectionTitel] = useState("");
   const [reviewLog, setReviewLog] = useState<ReviewResult[]>([]);
   const [reviewChanges, setReviewChanges] = useState<ReviewChange[]>([]);
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
+  const [metaLanguageWarnings, setMetaLanguageWarnings] = useState<string[]>([]);
+  const [wordCountWarnings, setWordCountWarnings] = useState<
+    Array<{ sectionNummer: string; target: number; actual: number; deviation: number }>
+  >([]);
   const [error, setError] = useState<string | null>(null);
   const [expandedSectionId, setExpandedSectionId] = useState<string | null>(null);
   const [pipelineInput, setPipelineInput] = useState<SessionInput | null>(null);
@@ -320,6 +380,23 @@ export default function GeneratorPage() {
               if (event.type === "all_sections_done") {
                 finalDocument = event.document;
               }
+              if (event.type === "meta_language_warning") {
+                setMetaLanguageWarnings((prev) => [
+                  ...prev,
+                  `${event.sectionNummer} „${event.sectionTitel}"`,
+                ]);
+              }
+              if (event.type === "word_count_warning") {
+                setWordCountWarnings((prev) => [
+                  ...prev,
+                  {
+                    sectionNummer: event.sectionNummer,
+                    target: event.target,
+                    actual: event.actual,
+                    deviation: event.deviation,
+                  },
+                ]);
+              }
               if (event.type === "error") {
                 throw new Error(event.error);
               }
@@ -345,14 +422,21 @@ export default function GeneratorPage() {
 
         if (!reviewRes.ok) throw new Error("Fehler beim Review");
 
-        const { finalDocument: reviewedDoc, reviewLog: log, reviewChanges: changes } =
-          await reviewRes.json() as {
-            finalDocument: DocumentContent;
-            reviewLog: ReviewResult[];
-            reviewChanges: ReviewChange[];
-          };
+        const {
+          finalDocument: reviewedDoc,
+          reviewLog: log,
+          reviewChanges: changes,
+          validationResult: valResult,
+        } = (await reviewRes.json()) as {
+          finalDocument: DocumentContent;
+          reviewLog: ReviewResult[];
+          reviewChanges: ReviewChange[];
+          validationResult: ValidationResult;
+        };
+
         setReviewLog(log);
         setReviewChanges(changes ?? []);
+        setValidationResult(valResult ?? null);
 
         const result: SessionResult = {
           finalDocument: reviewedDoc,
@@ -392,14 +476,12 @@ export default function GeneratorPage() {
 
     async function runPrePipeline() {
       try {
-        // Step 1: Load Leitfaden rules from lib/leitfaden-format.json
         setPhase("parsing_leitfaden");
         const rulesRes = await fetch("/api/leitfaden-rules");
         if (!rulesRes.ok) throw new Error("Fehler beim Laden der Leitfaden-Regeln");
         const rules = (await rulesRes.json()) as LeitfadenRules;
         setLeitfadenRules(rules);
 
-        // Step 2: Parse Sources
         setPhase("parsing_sources");
         const parsedSources: ParsedSource[] = [];
         for (const quelleFile of input.quellenFiles) {
@@ -415,7 +497,6 @@ export default function GeneratorPage() {
         }
         setSources(parsedSources);
 
-        // Step 3: Generate Outline
         setPhase("generating_outline");
         const outlineRes = await fetch("/api/generate-outline", {
           method: "POST",
@@ -533,6 +614,31 @@ export default function GeneratorPage() {
             )}
           </div>
           <div className="bg-fom-grey-97 h-[calc(100vh-10rem)] overflow-y-auto p-8 font-fom space-y-1">
+            {/* Validation banners */}
+            {validationResult && (
+              <ValidationBanner result={validationResult} />
+            )}
+
+            {/* Meta-language / word count warnings */}
+            {(metaLanguageWarnings.length > 0 || wordCountWarnings.length > 0) && (
+              <div className="bg-fom-yellow/10 border border-fom-yellow/40 rounded-fom-sm p-3 mb-4">
+                <div className="flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 text-fom-grey-700 shrink-0 mt-0.5" />
+                  <div className="flex-1 text-xs text-fom-grey-600 space-y-0.5">
+                    {metaLanguageWarnings.map((w, i) => (
+                      <p key={i}>⚠ Meta-Sprache erkannt in {w} — Retry-Versuch gestartet.</p>
+                    ))}
+                    {wordCountWarnings.map((w, i) => (
+                      <p key={i}>
+                        ⚠ Wortanzahl {w.sectionNummer}: {w.actual} statt {w.target} Wörter
+                        ({w.deviation > 0 ? "+" : ""}{w.deviation}%)
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {pipelineInput && (
               <h1 className="text-2xl font-bold text-fom-black mb-6 pb-4 border-b border-fom-grey-200">
                 {pipelineInput.forschungsfrage}
@@ -582,7 +688,6 @@ export default function GeneratorPage() {
       );
     }
 
-    // Idle / loading state
     return (
       <div className="bg-white border border-fom-grey-100 rounded-fom-md p-12 flex items-center justify-center">
         <p className="text-fom-grey-400 text-sm">{GENERATOR_PAGE.waitingText}</p>

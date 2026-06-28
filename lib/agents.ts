@@ -4,10 +4,17 @@ import type {
   ExpandedOutline,
   OutlineSection,
   SectionContent,
+  ContentBlock,
   ReviewResult,
   DocumentContent,
   ParsedSource,
+  SectionSummary,
+  WriteSectionResult,
+  LiteraturEintrag,
+  CitationRegistry,
 } from "./types";
+import { detectMetaLanguage } from "./utils";
+import { log } from "./logger";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const MODEL = "claude-sonnet-4-6";
@@ -16,7 +23,147 @@ function stripJsonFences(text: string): string {
   return text.replace(/```json\n?|```\n?/g, "").trim();
 }
 
-// Agent 0 — Leitfaden-Parser
+// Escapes unescaped ASCII " inside "text" block values.
+// The AI embeds Chicago citations like Allen, "Title", in: Journal — the "
+// inside the fullRef breaks JSON.parse. We find each "text" value using the
+// known schema sentinel `",\s*"bold"` that always immediately follows it, then
+// escape every unescaped " in the content. This is safe because the sentinel
+// string `", "bold"` cannot appear in real academic German prose.
+function fixTextValues(json: string): string {
+  const OPEN_RE = /"text"\s*:\s*"/g;
+  const result: string[] = [];
+  let pos = 0;
+  while (pos < json.length) {
+    OPEN_RE.lastIndex = pos;
+    const openMatch = OPEN_RE.exec(json);
+    if (!openMatch) { result.push(json.slice(pos)); break; }
+    const valueStart = openMatch.index + openMatch[0].length;
+    result.push(json.slice(pos, valueStart));
+    const closeMatch = /",\s*"bold"/.exec(json.slice(valueStart));
+    if (!closeMatch) { result.push(json.slice(valueStart)); pos = json.length; break; }
+    const closeIdx = valueStart + closeMatch.index;
+    const escaped = json.slice(valueStart, closeIdx).replace(/(?<!\\)"/g, '\\"');
+    result.push(escaped);
+    pos = closeIdx;
+  }
+  return result.join("");
+}
+
+// ─── CitationManager ──────────────────────────────────────────────────────────
+// Created fresh inside buildDocument; processes [[CITE:shortRef:fullRef]] tags
+// in document order and builds globally consistent footnote IDs + bibliography.
+
+export class CitationManager {
+  private nextId = 1;
+  private lastCitedShortRef: string | null = null;
+  // shortRef → fullRef of first occurrence (for short-note and bibliography)
+  private seenSources = new Map<string, string>();
+  private occurrences: Array<{ id: number; footnoteText: string }> = [];
+
+  addCitation(shortRef: string, fullRef: string): number {
+    const isIbid = this.lastCitedShortRef === shortRef;
+    const isFirst = !this.seenSources.has(shortRef);
+
+    const id = this.nextId++;
+    let footnoteText: string;
+
+    if (isIbid) {
+      footnoteText = "Ebd.";
+    } else if (isFirst) {
+      footnoteText = fullRef;
+      this.seenSources.set(shortRef, fullRef);
+    } else {
+      footnoteText = this.buildShortNote(shortRef, fullRef);
+    }
+
+    this.occurrences.push({ id, footnoteText });
+    this.lastCitedShortRef = shortRef;
+    return id;
+  }
+
+  getAllOccurrences(): Array<{ id: number; footnoteText: string }> {
+    return this.occurrences;
+  }
+
+  getAllCitations(): CitationRegistry {
+    return Array.from(this.seenSources.entries()).map(([shortRef, fullRef], i) => ({
+      id: i + 1,
+      shortRef,
+      fullRef,
+      shortNote: this.buildShortNote(shortRef, fullRef),
+      usedInSections: [],
+    }));
+  }
+
+  buildBibliography(): LiteraturEintrag[] {
+    const sources = Array.from(this.seenSources.entries());
+    sources.sort(([, aRef], [, bRef]) => {
+      return this.extractSortName(aRef).localeCompare(
+        this.extractSortName(bRef),
+        "de"
+      );
+    });
+
+    return sources.map(([shortRef, fullRef], i) => ({
+      id: `bib-${i + 1}`,
+      autor: this.extractSortName(fullRef),
+      jahr: this.extractYear(fullRef),
+      titel: shortRef,
+      formattedRef: this.buildBibEntry(fullRef),
+    }));
+  }
+
+  private buildShortNote(shortRef: string, currentFullRef: string): string {
+    const firstFullRef = this.seenSources.get(shortRef) ?? currentFullRef;
+    const lastName = this.extractSortName(firstFullRef);
+    const shortTitle = this.extractShortTitle(firstFullRef);
+    const page = this.extractPage(currentFullRef);
+    return [lastName, shortTitle, page].filter(Boolean).join(", ") + ".";
+  }
+
+  private extractSortName(fullRef: string): string {
+    // Handles "Nachname, Vorname" and "Vorname Nachname" patterns
+    const firstToken = fullRef.split(",")[0].trim();
+    // If the first segment has multiple words, take the last (family name in "First Last" format)
+    // If it's a single word, that is the family name
+    const words = firstToken.split(/\s+/);
+    return words[words.length - 1] ?? firstToken;
+  }
+
+  private extractShortTitle(fullRef: string): string {
+    // Try German angle quotes „…"
+    const quoteMatch = fullRef.match(/[„"]([^"""]+)["""]/);
+    if (quoteMatch) {
+      return quoteMatch[1].split(/\s+/).slice(0, 3).join(" ");
+    }
+    // Fallback: text after second comma segment
+    const parts = fullRef.split(",");
+    if (parts.length > 1) {
+      return parts[1].trim().replace(/^[„""'']/, "").split(/\s+/).slice(0, 3).join(" ");
+    }
+    return "";
+  }
+
+  private extractPage(fullRef: string): string {
+    const match = fullRef.match(/S\.\s*(\d+(?:[-–]\d+)?)/);
+    return match ? `S. ${match[1]}` : "";
+  }
+
+  private extractYear(fullRef: string): number {
+    const match = fullRef.match(/\b(19|20)\d{2}\b/);
+    return match ? parseInt(match[0], 10) : 0;
+  }
+
+  private buildBibEntry(fullRef: string): string {
+    // Remove leading "Vgl. " and trailing page reference for bibliography entries
+    return fullRef
+      .replace(/^Vgl\.\s+/i, "")
+      .replace(/,?\s*S\.\s*\d+(?:[-–]\d+)?\.?\s*$/, "")
+      .trim() + ".";
+  }
+}
+
+// ─── Agent 0 — Leitfaden-Parser ───────────────────────────────────────────────
 export async function parseLeitfaden(
   pdfText: string
 ): Promise<LeitfadenRules> {
@@ -52,7 +199,7 @@ ${pdfText.substring(0, 15000)}`,
       schriftgroesse: 12,
       zeilenabstand: 1.5,
       seitenraender: { oben: 2, unten: 2, links: 2.5, rechts: 2 },
-      zitierweise: "APA",
+      zitierweise: "Chicago",
       fussnoten: true,
       pflichtabschnitte: ["Einleitung", "Hauptteil", "Fazit"],
       sonstigeRegeln: [],
@@ -60,7 +207,7 @@ ${pdfText.substring(0, 15000)}`,
   }
 }
 
-// Agent 1a — Erweiterter Gliederungs-Writer
+// ─── Agent 1a — Erweiterter Gliederungs-Writer ────────────────────────────────
 export async function generateOutline(input: {
   forschungsfrage: string;
   gliederung: string;
@@ -68,6 +215,7 @@ export async function generateOutline(input: {
   quellenListe: string[];
   leitfadenRules: LeitfadenRules;
 }): Promise<ExpandedOutline> {
+  log("INFO", "generateOutline start", { forschungsfrage: input.forschungsfrage.slice(0, 80), zielWortanzahl: input.zielWortanzahl, quellen: input.quellenListe.length });
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 8192,
@@ -109,10 +257,12 @@ Erstelle jetzt die Expanded Outline als JSON. Schema:
 
   const text =
     response.content[0].type === "text" ? response.content[0].text : "";
-  return JSON.parse(stripJsonFences(text)) as ExpandedOutline;
+  const outline = JSON.parse(stripJsonFences(text)) as ExpandedOutline;
+  log("INFO", "generateOutline done", { sectionCount: outline.abschnitte.length, totalWordTarget: outline.gesamtWortanzahlZiel });
+  return outline;
 }
 
-// Source-Chunk-Filterung für Agent 1b
+// ─── Source-Chunk-Filterung für Agent 1b ──────────────────────────────────────
 export function getRelevantChunks(
   sources: ParsedSource[],
   section: OutlineSection,
@@ -131,9 +281,7 @@ export function getRelevantChunks(
     }))
   );
 
-  const top = scored
-    .sort((a, b) => b.score - a.score)
-    .slice(0, maxChunks);
+  const top = scored.sort((a, b) => b.score - a.score).slice(0, maxChunks);
 
   if (top.length === 0) return "Keine passenden Quellenausschnitte gefunden.";
 
@@ -142,68 +290,269 @@ export function getRelevantChunks(
     .join("\n\n---\n\n");
 }
 
+// ─── Section-Prompt Builder ────────────────────────────────────────────────────
+function buildSectionTypeInstruction(section: OutlineSection): string {
+  if (section.sectionType === "einleitung") {
+    return `
+PFLICHT-STRUKTUR FÜR EINLEITUNG:
+1. Beginne mit einem konkreten Beispiel, einer aktuellen Statistik oder der gesellschaftlichen Relevanz des Themas — echter akademischer Fließtext, KEINE Ankündigungen.
+2. Leite organisch zur Forschungsfrage über und formuliere sie explizit.
+3. Erkläre den Aufbau der Arbeit in 2–3 Sätzen als Fließtext (z.B. "Die Arbeit gliedert sich in fünf Kapitel...").
+Alle drei Punkte als kontinuierlicher Fließtext — KEIN Aufzählungsformat.`;
+  }
+  if (section.sectionType === "fazit") {
+    return `
+PFLICHT-STRUKTUR FÜR FAZIT:
+1. Beginne mit einer kompakten Zusammenfassung der wichtigsten Befunde — benenne KONKRETE Ergebnisse und Zahlen, niemals Formulierungen wie "diese Arbeit hat untersucht, ob...".
+2. Diskutiere 1–2 wesentliche Limitationen der Arbeit ehrlich und präzise.
+3. Schließe mit einem konkreten Ausblick: offene Forschungsfragen oder praktische Implikationen.
+Alles als zusammenhängender akademischer Fließtext — KEIN Aufzählungsformat.`;
+  }
+  return "";
+}
+
+function buildAntiRedundancyBlock(summaries: SectionSummary[]): string {
+  if (summaries.length === 0) return "";
+  const findings = summaries.flatMap((s) => s.keyFindings);
+  if (findings.length === 0) return "";
+  return `
+BEREITS ETABLIERTE KERNAUSSAGEN (nicht wiederholen, nur bei Bedarf kurz referenzieren):
+${findings.map((f) => `- ${f}`).join("\n")}`;
+}
+
 function buildSectionPrompt(input: {
   section: OutlineSection;
   relevantChunks: string;
   runningSummary: string;
   leitfadenRules: LeitfadenRules;
   critique?: string;
+  previousSectionSummaries?: SectionSummary[];
 }): string {
   const critiqueText = input.critique
     ? `\n\nKRITIK AUS VORHERIGEM REVIEW (bitte beheben):\n${input.critique}`
     : "";
 
+  const sectionTypeInstruction = buildSectionTypeInstruction(input.section);
+  const antiRedundancy = buildAntiRedundancyBlock(input.previousSectionSummaries ?? []);
+
   return `AKTUELLER ABSCHNITT:
 Nummer: ${input.section.nummer}
 Titel: ${input.section.titel}
 Blueprint: ${input.section.blueprint}
-Zielwortanzahl: ${input.section.geschaetzteWorte}
+Ziel-Wortanzahl: ${input.section.geschaetzteWorte} Wörter (±10%). Unterschreite dieses Ziel nicht. Nutze jeden Satz für inhaltlichen Mehrwert — keine Füllsätze.${sectionTypeInstruction}
 
-BISHERIGE ARBEIT ZUSAMMENFASSUNG:
-${input.runningSummary || "Dies ist der erste Abschnitt."}
+BISHERIGE ARBEIT — KONTEXT:
+${input.runningSummary || "Dies ist der erste Abschnitt."}${antiRedundancy}
 
 RELEVANTE QUELLENAUSSCHNITTE FÜR DIESEN ABSCHNITT:
 ${input.relevantChunks}
 
-LEITFADEN-REGELN (Zitierweise etc.):
-Zitierweise: ${input.leitfadenRules.zitierweise}
+LEITFADEN-REGELN:
+Zitierweise: Chicago Notes-Bibliography (17. Aufl., eingedeutscht)
 Fußnoten: ${input.leitfadenRules.fussnoten ? "ja" : "nein"}${critiqueText}
 
 Schreibe jetzt den Abschnitt als JSON.`;
 }
 
-// Agent 1b — Abschnitt-Writer (Streaming)
+// ─── Agent 1b — Abschnitt-Writer ──────────────────────────────────────────────
+const SECTION_SYSTEM_PROMPT = `Du bist ein erfahrener Autor wissenschaftlicher Texte auf Universitätsniveau auf Deutsch.
+Du schreibst einen einzelnen Abschnitt einer Seminararbeit.
+Du erhältst: den Blueprint des Abschnitts, relevante Quellenausschnitte, eine Zusammenfassung der bisherigen Arbeit.
+
+ABSOLUTE PFLICHTREGELN:
+1. Schreibe akademisches Deutsch, klar, präzise und argumentativ.
+2. ABSOLUT VERBOTEN — Meta-Sprache: Beschreibe NIEMALS was dieser Abschnitt tun wird. Schreibe echten Fließtext der es TUT.
+   Verbotene Einstiegsmuster (NIEMALS verwenden):
+   "Dieser Abschnitt..." / "Dieses Kapitel..." / "Im Folgenden wird..." / "Nachfolgend wird..." /
+   "Das Fazit fasst..." / "Er stellt sicher, dass..." / "Ziel dieses Abschnitts ist es..." /
+   "Die folgende Analyse..." — jeder Satz der den eigenen Text ankündigt statt Inhalt zu liefern ist ein FEHLER.
+3. Zitiere ausschließlich aus den bereitgestellten Quellenausschnitten. Niemals aus dem Gedächtnis.
+4. Antworte NUR mit validem JSON, KEIN Text davor oder danach.
+5. KRITISCH FÜR JSON-GÜLTIGKEIT: Verwende im "text"-Feld NIEMALS gerade ASCII-Anführungszeichen " — weder für Zitate noch für Hervorhebungen noch für Fachbegriffe. Nutze ausschließlich „deutsches Format" (U+201E/U+201C). Gerade " im Text zerstören das JSON.
+
+ZITIERFORMAT — Chicago Notes-Bibliography (17. Aufl., eingedeutscht):
+Füge Zitate als [[CITE:...]]-Tags direkt am Ende des zitierten Satzes ein (vor dem Satzpunkt):
+  Format: [[CITE:KurzRef:VollständigerErstnachweis]]
+
+KRITISCH: Verwende im fullRef AUSSCHLIESSLICH deutsche Anführungszeichen „..." für Titelnennungen — NIEMALS gerade Anführungszeichen " — sonst ist das JSON ungültig.
+
+Beispiele:
+  Sinngemäß: "Hunde senken den Kortisolspiegel nachweislich.[[CITE:Barker et al. 2012:Vgl. Barker, Sandra C. u. a., „Dog Presence, Workplace Stress, and Organizational Perceptions", in: International Journal of Workplace Health Management 5 (1), 2012, S. 13.]]"
+  Wörtlich:   "„Dogs have a unique calming effect on humans in office settings"[[CITE:Allen 2003:Allen, Karen, „Multiple Roles of Pets in Human Health", in: Handbook on Animal-Assisted Therapy, 2003, S. 47.]]"
+
+KurzRef-Format: Nachname (et al.) Jahr — z.B. "Barker et al. 2012", "Allen 2003"
+"Vgl." nur bei sinngemäßen Übernahmen, entfällt bei wörtlichen Zitaten.
+Bei Monographien: Vorname Nachname, Titel (Ort: Verlag, Jahr), S. XX.
+
+JSON-SCHEMA (exakt einhalten):
+{
+  "sectionNummer": string,
+  "sectionTitel": string,
+  "blocks": [
+    { "type": "paragraph"|"h1"|"h2"|"h3"|"quote"|"page_break", "text": string, "bold": false, "italic": false }
+  ],
+  "wordCount": number
+}`;
+
+async function writeSectionAttempt(
+  input: {
+    section: OutlineSection;
+    relevantChunks: string;
+    runningSummary: string;
+    leitfadenRules: LeitfadenRules;
+    critique?: string;
+    previousSectionSummaries?: SectionSummary[];
+  },
+  retryNote: string
+): Promise<SectionContent> {
+  const userContent = retryNote + buildSectionPrompt(input);
+  // Floor at 1500: JSON structure + German word tokenization overhead means
+  // 2.2× is far too low for short sections (30 words → 66 tokens, not enough even for the JSON wrapper).
+  const maxTokens = Math.min(8192, Math.max(1500, Math.ceil(input.section.geschaetzteWorte * 4)));
+
+  const stream = client.messages.stream({
+    model: MODEL,
+    max_tokens: maxTokens,
+    system: SECTION_SYSTEM_PROMPT,
+    messages: [{ role: "user", content: userContent }],
+  });
+
+  let fullText = "";
+  for await (const chunk of stream) {
+    if (
+      chunk.type === "content_block_delta" &&
+      chunk.delta.type === "text_delta"
+    ) {
+      fullText += chunk.delta.text;
+    }
+  }
+
+  log("INFO", "writeSectionAttempt stream done", {
+    sectionNummer: input.section.nummer,
+    chars: fullText.length,
+    preview: fullText.slice(0, 200),
+  });
+
+  const stripped = stripJsonFences(fullText);
+
+  // Pass 1: try as-is (works when AI uses German „..." quotes and outputs valid JSON)
+  try {
+    const result = JSON.parse(stripped) as SectionContent;
+    log("INFO", "writeSectionAttempt Pass 1 OK", { sectionNummer: input.section.nummer, wordCount: result.wordCount });
+    return result;
+  } catch { /* continue */ }
+  log("WARN", "writeSectionAttempt Pass 1 failed", { sectionNummer: input.section.nummer });
+
+  // Pass 2: fix unescaped ASCII " inside "text" block values using the schema-aware
+  // sentinel /",\s*"bold"/ — this correctly handles citations like "Title", in: Journal
+  // where naive heuristics misidentify the " before ", in:" as a closing delimiter.
+  const fixed = fixTextValues(stripped);
+  try {
+    const result = JSON.parse(fixed) as SectionContent;
+    log("INFO", "writeSectionAttempt Pass 2 OK (fixTextValues)", { sectionNummer: input.section.nummer, wordCount: result.wordCount });
+    return result;
+  } catch { /* continue */ }
+  log("WARN", "writeSectionAttempt Pass 2 failed", { sectionNummer: input.section.nummer });
+
+  // Pass 3: extract outermost { } in case there is leading preamble text
+  const start = fixed.indexOf("{");
+  const end = fixed.lastIndexOf("}");
+  if (start !== -1 && end > start) {
+    try {
+      const result = JSON.parse(fixed.slice(start, end + 1)) as SectionContent;
+      log("INFO", "writeSectionAttempt Pass 3 OK (boundary extract)", { sectionNummer: input.section.nummer, wordCount: result.wordCount });
+      return result;
+    } catch { /* fall through */ }
+  }
+
+  log("ERROR", "writeSectionAttempt all passes failed — returning empty section", {
+    sectionNummer: input.section.nummer,
+    fullOutput: fullText,
+  });
+  return {
+    sectionNummer: input.section.nummer,
+    sectionTitel: input.section.titel,
+    blocks: [{ type: "paragraph", text: "", bold: false, italic: false }],
+    wordCount: 0,
+  };
+}
+
 export async function writeSection(input: {
   section: OutlineSection;
   relevantChunks: string;
   runningSummary: string;
   leitfadenRules: LeitfadenRules;
   critique?: string;
+  previousSectionSummaries?: SectionSummary[];
+}): Promise<WriteSectionResult> {
+  const MAX_RETRIES = 2;
+  let lastSection: SectionContent | null = null;
+
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    log("INFO", `writeSection attempt ${attempt + 1}/${MAX_RETRIES + 1}`, { sectionNummer: input.section.nummer, sectionTitel: input.section.titel });
+    const retryNote =
+      attempt > 0
+        ? `FEHLER IM VORHERIGEN VERSUCH: Der Text enthielt unzulässige Meta-Beschreibungen statt echtem akademischen Inhalt. Schreibe den Abschnitt jetzt NEU — ausschließlich als echter Fließtext der den Blueprint direkt umsetzt, ohne jegliche Selbstbeschreibung oder Ankündigungen.\n\n`
+        : "";
+
+    const section = await writeSectionAttempt(input, retryNote);
+    lastSection = section;
+
+    const allParaText = section.blocks
+      .filter((b) => b.type === "paragraph")
+      .map((b) => b.text)
+      .join(" ");
+
+    if (!detectMetaLanguage(allParaText)) {
+      log("INFO", "writeSection done", { sectionNummer: input.section.nummer, wordCount: section.wordCount, metaLanguageWarning: false });
+      return { section, metaLanguageWarning: false };
+    }
+    log("WARN", "writeSection meta-language detected", { sectionNummer: input.section.nummer, attempt: attempt + 1 });
+  }
+
+  log("WARN", "writeSection returning with metaLanguageWarning=true", { sectionNummer: input.section.nummer });
+  return { section: lastSection!, metaLanguageWarning: true };
+}
+
+// ─── Section-Extend (word count too low) ──────────────────────────────────────
+export async function extendSection(input: {
+  section: SectionContent;
+  delta: number;
+  outlineSection: OutlineSection;
+  relevantChunks: string;
+  runningSummary: string;
+  leitfadenRules: LeitfadenRules;
 }): Promise<SectionContent> {
+  const { section, delta, outlineSection, relevantChunks } = input;
+  log("INFO", "extendSection start", { sectionNummer: section.sectionNummer, delta });
+
   const stream = client.messages.stream({
     model: MODEL,
-    max_tokens: 8192,
-    system: `Du bist ein erfahrener Autor wissenschaftlicher Texte auf Universitätsniveau auf Deutsch.
-Du schreibst einen einzelnen Abschnitt einer Seminararbeit.
-Du erhältst: den Blueprint des Abschnitts, relevante Quellenausschnitte, eine Zusammenfassung der bisherigen Arbeit.
-Deine Regeln:
-- Schreibe akademisches Deutsch, klar und präzise
-- Zitiere nur aus den bereitgestellten Quellen, niemals aus dem Gedächtnis
-- Formatiere Zitate als Fußnoten
-- Antworte NUR mit validem JSON, KEIN Text davor oder danach
-- Halte dich exakt an den Blueprint
-
-JSON-Schema für die Antwort:
-{
-  "sectionNummer": string,
-  "sectionTitel": string,
-  "blocks": [{ "type": "h1"|"h2"|"h3"|"paragraph"|"quote"|"footnote_ref"|"page_break", "text": string, "bold": boolean, "italic": boolean, "fussnoteNummer": number, "fussnoteText": string }],
-  "wordCount": number
-}`,
+    max_tokens: Math.min(4096, Math.max(1000, Math.ceil(delta * 4))),
+    system: `Du bist ein erfahrener Autor wissenschaftlicher Texte auf Deutsch.
+Du erhältst einen zu kurzen Abschnitt und erweiterst ihn um substantiellen Inhalt.
+Antworte NUR mit einem JSON-Array von ContentBlock-Objekten (nur "paragraph" oder "quote" Typen).
+ABSOLUT VERBOTEN: Keine Meta-Sprache. Schreibe echten akademischen Fließtext.
+Zitierformat: [[CITE:KurzRef:VollstChicagoZitat]]`,
     messages: [
       {
         role: "user",
-        content: buildSectionPrompt(input),
+        content: `Der Abschnitt "${section.sectionTitel}" ist zu kurz. Schreibe ${delta} weitere Wörter mit substantiellem Inhalt: neue Argumente, zusätzliche Studienergebnisse aus den Quellen oder vertiefte Erläuterung der Mechanismen.
+
+BLUEPRINT: ${outlineSection.blueprint}
+
+RELEVANTE QUELLEN:
+${relevantChunks}
+
+BISHERIGER INHALT (nur ergänzen, nicht wiederholen):
+${section.blocks
+  .filter((b) => b.type === "paragraph")
+  .map((b) => b.text)
+  .join("\n\n")
+  .slice(0, 800)}
+
+Antworte NUR mit einem JSON-Array:
+[{ "type": "paragraph", "text": "...", "bold": false, "italic": false }]`,
       },
     ],
   });
@@ -219,32 +568,71 @@ JSON-Schema für die Antwort:
   }
 
   try {
-    return JSON.parse(stripJsonFences(fullText)) as SectionContent;
-  } catch {
-    // Second attempt: extract the outermost JSON object from the response
-    const start = fullText.indexOf("{");
-    const end = fullText.lastIndexOf("}");
-    if (start !== -1 && end > start) {
-      try {
-        return JSON.parse(fullText.slice(start, end + 1)) as SectionContent;
-      } catch { /* fall through */ }
+    const start = fullText.indexOf("[");
+    const end = fullText.lastIndexOf("]");
+    if (start === -1 || end <= start) {
+      log("WARN", "extendSection: no JSON array found in response", { sectionNummer: section.sectionNummer });
+      return section;
     }
-    return {
-      sectionNummer: input.section.nummer,
-      sectionTitel: input.section.titel,
-      blocks: [{ type: "paragraph", text: input.section.blueprint }],
-      wordCount: 0,
-    };
+    const newBlocks = JSON.parse(fullText.slice(start, end + 1)) as ContentBlock[];
+    const extended = { ...section, blocks: [...section.blocks, ...newBlocks] };
+    log("INFO", "extendSection done", { sectionNummer: section.sectionNummer, addedBlocks: newBlocks.length });
+    return extended;
+  } catch (err) {
+    log("WARN", "extendSection JSON parse failed", { sectionNummer: section.sectionNummer, error: String(err) });
+    return section;
   }
 }
 
-// Agent 2 — Reviewer
+// ─── SectionSummary-Extraktion (für Redundanz-Check) ─────────────────────────
+export async function extractSectionSummary(
+  section: SectionContent,
+  sectionId: string
+): Promise<SectionSummary> {
+  const paragraphs = section.blocks
+    .filter((b) => b.type === "paragraph")
+    .map((b) => b.text)
+    .join("\n")
+    .slice(0, 2000);
+
+  if (!paragraphs.trim()) {
+    return { sectionId, keyFindings: [], citedSources: [] };
+  }
+
+  try {
+    const response = await client.messages.create({
+      model: MODEL,
+      max_tokens: 200,
+      system: `Antworte ausschließlich mit einem JSON-Array von 3–5 deutschen Kernaussagen (kurze Strings, je max. 20 Wörter). Kein Text davor oder danach.`,
+      messages: [
+        {
+          role: "user",
+          content: `Extrahiere die 3–5 zentralen Kernaussagen aus diesem Abschnitt:\n\n${paragraphs}`,
+        },
+      ],
+    });
+
+    const text =
+      response.content[0].type === "text" ? response.content[0].text : "[]";
+    const keyFindings = JSON.parse(stripJsonFences(text)) as string[];
+    return {
+      sectionId,
+      keyFindings: Array.isArray(keyFindings) ? keyFindings.slice(0, 5) : [],
+      citedSources: [],
+    };
+  } catch {
+    return { sectionId, keyFindings: [], citedSources: [] };
+  }
+}
+
+// ─── Agent 2 — Reviewer ───────────────────────────────────────────────────────
 export async function reviewDocument(input: {
   documentContent: DocumentContent;
   expandedOutline: ExpandedOutline;
   leitfadenRules: LeitfadenRules;
   iteration: number;
 }): Promise<ReviewResult> {
+  log("INFO", `reviewDocument start — iteration ${input.iteration}`, { sectionCount: input.documentContent.abschnitte.length });
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 4096,
@@ -253,10 +641,11 @@ Prüfe die vorgelegte Arbeit kritisch und gnadenlos.
 Prüfe insbesondere:
 - Hält jeder Abschnitt seinen Blueprint ein?
 - Ist die Argumentation kohärent und logisch?
-- Werden Quellen korrekt zitiert?
+- Werden Quellen korrekt zitiert (Chicago-Format mit [[CITE:]]-Tags)?
 - Ist der Schreibstil akademisch und präzise?
 - Werden alle Leitfaden-Regeln eingehalten?
-- Gibt es inhaltliche Redundanzen zwischen Abschnitten? (z.B. wenn ein Einleitungsabschnitt und seine Unterabschnitte denselben Inhalt wiederholen)
+- Gibt es inhaltliche Redundanzen zwischen Abschnitten?
+- Enthält ein Abschnitt Meta-Sprache statt echtem Inhalt ("Dieser Abschnitt...", "Im Folgenden...")?
 Antworte NUR mit validem JSON, KEIN Text davor oder danach.`,
     messages: [
       {
@@ -277,10 +666,10 @@ ${JSON.stringify(
     wordCount: s.wordCount,
     preview: s.blocks
       .filter((b) => b.type === "paragraph")
-      .slice(0, 2)
+      .slice(0, 3)
       .map((b) => b.text)
       .join(" ")
-      .substring(0, 150),
+      .substring(0, 300),
   })),
   null,
   2
@@ -303,8 +692,11 @@ Setze success: true nur wenn die Arbeit wirklich gut ist.`,
   const text =
     response.content[0].type === "text" ? response.content[0].text : "";
   try {
-    return JSON.parse(stripJsonFences(text)) as ReviewResult;
+    const result = JSON.parse(stripJsonFences(text)) as ReviewResult;
+    log("INFO", `reviewDocument done — iteration ${input.iteration}`, { gesamtBewertung: result.gesamtBewertung, kritikCount: result.kritikpunkte.length, success: result.success });
+    return result;
   } catch {
+    log("WARN", "reviewDocument JSON parse failed — using fallback", { iteration: input.iteration });
     return {
       success: true,
       iteration: input.iteration,
