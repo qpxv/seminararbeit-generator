@@ -227,7 +227,13 @@ private normalizeShortRef(shortRef: string): string {
 }
 ```
 
-The normalized form is used as the Map key (`seenSources`, `canonicalShortRef`). The original shortRef from the first occurrence is stored in `canonicalShortRef` and used for display in `buildBibliography` and `getAllCitations`. This means the bibliography deduplicated correctly regardless of which variant Claude used.
+The normalized form is used as the Map key (`seenSources`, `canonicalShortRef`). The original shortRef from the first occurrence is stored in `canonicalShortRef` and used for display in `buildBibliography` and `getAllCitations`. This means the bibliography deduplicates correctly regardless of which variant Claude used.
+
+### Bibliography Deduplication by fullRef in `buildBibliography`
+
+`normalizeShortRef` handles separator and `et al.` variants, but not compound-surname truncation: `"Acquadro Maran et al. 2022"` normalizes to `"acquadro maran 2022"` while `"Maran et al. 2022"` normalizes to `"maran 2022"` — different keys → two `seenSources` entries → duplicate bibliography lines.
+
+Fix: `buildBibliography()` deduplicates the sorted result list by `formattedRef` string. After `buildBibEntry()` strips `Vgl.` and page refs, the same paper always produces an identical string regardless of which shortRef variant first populated `seenSources`. Only the alphabetically-first entry survives, which is correct.
 
 ### Word Count Accuracy — Strip Citation Tags
 
@@ -279,7 +285,7 @@ The full `previousSectionSummaries` array is also emitted in the `all_sections_d
 3. Chicago citation format (correct `[[CITE:shortRef:fullRef]]` structure)
 4. Academic style (German academic register, no colloquialisms)
 5. Redundancy (no repetition of content from other sections — checked via compressed `[[CITE:shortRef]]` tags in the full section text)
-6. Meta-language (no self-referential descriptions)
+6. Meta-language (no self-referential descriptions) — **exception**: Einleitung Aufbau text ("Die Arbeit gliedert sich in N Kapitel...") is REQUIRED by the Einleitung instruction and must NOT be flagged
 7. Word count compliance (within target range)
 8. PFLICHT-BELEGUNG — every named study, concrete research finding, or specific number must have a `[[CITE:shortRef]]` tag
 9. Zahlenkonsistenz — numbers in the Fazit must exactly match the Hauptteil (checked against full section text)
@@ -330,6 +336,8 @@ If a written section is >20% below its word target, `generate-content/route.ts` 
 - anything else → `"hauptteil"`
 
 **Pass 3 — Kapitelkopf detection**: among sections typed `"hauptteil"`, any section where `ebene === 1 && geschaetzteWorte <= 60 && nextSection.nummer.startsWith(s.nummer + ".")` is reclassified as `"kapitelkopf"`. These are chapter-heading sections whose real content lives entirely in their subsections. Without this detection, Claude wrote 170–220 words for 30-word targets (463–627% over). With it, they get a tight token budget and a prompt to write 1–2 sentences only.
+
+**Pass 4 — Word-count scaling**: Claude consistently over-distributes word targets (e.g. 2330 for a 2000-word goal = +16.5%). After the kapitelkopf pass, the route scales all `geschaetzteWorte` proportionally so they sum exactly to `outline.gesamtWortanzahlZiel`. Only fires when the sum deviates >2% from the target; floor of 20 words prevents kapitelkopf sections from disappearing.
 
 All four types are in the `OutlineSection.sectionType` union: `"einleitung" | "fazit" | "hauptteil" | "kapitelkopf"`.
 

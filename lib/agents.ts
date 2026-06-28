@@ -113,13 +113,23 @@ export class CitationManager {
       );
     });
 
-    return sources.map(([key, fullRef], i) => ({
-      id: `bib-${i + 1}`,
-      autor: this.extractSortName(fullRef),
-      jahr: this.extractYear(fullRef),
-      titel: this.canonicalShortRef.get(key) ?? key,
-      formattedRef: this.buildBibEntry(fullRef),
-    }));
+    // Deduplicate by formatted bibliography entry — same paper cited with
+    // different shortRef variants (e.g. "Maran et al." vs "Acquadro Maran et al.")
+    // produce identical formattedRef strings after buildBibEntry() processing.
+    const seenRefs = new Set<string>();
+    return sources
+      .map(([key, fullRef], i) => ({
+        id: `bib-${i + 1}`,
+        autor: this.extractSortName(fullRef),
+        jahr: this.extractYear(fullRef),
+        titel: this.canonicalShortRef.get(key) ?? key,
+        formattedRef: this.buildBibEntry(fullRef),
+      }))
+      .filter((entry) => {
+        if (seenRefs.has(entry.formattedRef!)) return false;
+        seenRefs.add(entry.formattedRef!);
+        return true;
+      });
   }
 
   private buildShortNote(key: string, currentFullRef: string): string {
@@ -682,7 +692,7 @@ PRÜFKRITERIEN:
 3. PFLICHT-BELEGUNG: Enthält jeder Satz mit einem konkreten Studienergebnis, einer benannten Studie oder einer spezifischen Zahl ein [[CITE:shortRef]]-Tag?
 4. Zitierposition: Steht das [[CITE:]]-Tag unmittelbar vor dem abschließenden Satzpunkt — nicht danach?
 5. Wissenschaftliche Schreibweise: Wird „Cortisol" (nicht „Kortisol"), „Oxytocin" (nicht „Oxytozin"), „Dopamin" etc. durchgehend einheitlich verwendet?
-6. Meta-Sprache: Enthält ein Abschnitt Selbstbeschreibungen statt Inhalt? („Dieser Abschnitt...", „Im Folgenden wird...", „Das Fazit fasst...", „Ziel dieses Abschnitts...")
+6. Meta-Sprache: Enthält ein Abschnitt Selbstbeschreibungen statt Inhalt? („Dieser Abschnitt...", „Im Folgenden wird...", „Das Fazit fasst...", „Ziel dieses Abschnitts...") AUSNAHME: In der Einleitung ist die Aufbaubeschreibung PFLICHT und kein Verstoß — Sätze wie „Die Arbeit gliedert sich in N Kapitel..." sind korrekt und dürfen NICHT als Meta-Sprache gewertet werden.
 7. Redundanzen: Gibt es inhaltliche Wiederholungen zwischen Abschnitten?
 8. Zahlenkonsistenz (Fazit): Stimmen alle Zahlen und Prozentwerte im Fazit exakt mit denen im Hauptteil überein? Kein eigenmächtiges Runden oder Paraphrasieren.
 9. Studiendesign-Begriffe (Fazit): Werden im Fazit nur Methodenbegriffe verwendet die im Hauptteil für diese Studien stehen? (Kein „Querschnittsdesign" wenn Studien als Feldstudien oder RCTs beschrieben sind)

@@ -37,8 +37,21 @@ export async function POST(request: Request) {
       return s;
     });
 
+    // Scale section word targets to sum exactly to gesamtWortanzahlZiel.
+    // Claude consistently over-distributes (e.g. 2330 for a 2000-word goal).
+    const rawTotal = outline.abschnitte.reduce((s, a) => s + a.geschaetzteWorte, 0);
+    if (rawTotal > 0 && Math.abs(rawTotal - outline.gesamtWortanzahlZiel) / outline.gesamtWortanzahlZiel > 0.02) {
+      const scale = outline.gesamtWortanzahlZiel / rawTotal;
+      outline.abschnitte = outline.abschnitte.map((s) => ({
+        ...s,
+        geschaetzteWorte: Math.max(20, Math.round(s.geschaetzteWorte * scale)),
+      }));
+    }
+
     log("INFO", "generate-outline POST done", {
       sections: outline.abschnitte.map((s) => ({ nummer: s.nummer, titel: s.titel, words: s.geschaetzteWorte, type: s.sectionType })),
+      rawTotal,
+      scaledTotal: outline.abschnitte.reduce((s, a) => s + a.geschaetzteWorte, 0),
     });
 
     return Response.json(outline);
