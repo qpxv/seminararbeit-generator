@@ -20,14 +20,6 @@ import type {
   ValidationResult,
 } from "@/lib/types";
 
-function base64ToBlob(base64: string): Blob {
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-  return new Blob([bytes], { type: "application/pdf" });
-}
 
 const PHASE_ORDER: GeneratorPhase[] = [
   "parsing_leitfaden",
@@ -493,19 +485,7 @@ export default function GeneratorPage() {
         setLeitfadenRules(rules);
 
         setPhase("parsing_sources");
-        const parsedSources: ParsedSource[] = [];
-        for (const quelleFile of input.quellenFiles) {
-          const blob = base64ToBlob(quelleFile.base64);
-          const fd = new FormData();
-          fd.append("file", blob, quelleFile.name);
-          const res = await fetch("/api/parse-source", {
-            method: "POST",
-            body: fd,
-          });
-          if (!res.ok) throw new Error(`Fehler beim Lesen: ${quelleFile.name}`);
-          parsedSources.push((await res.json()) as ParsedSource);
-        }
-        setSources(parsedSources);
+        setSources(input.parsedSources);
 
         setPhase("generating_outline");
         const outlineRes = await fetch("/api/generate-outline", {
@@ -515,7 +495,7 @@ export default function GeneratorPage() {
             forschungsfrage: input.forschungsfrage,
             gliederung: input.gliederung,
             zielWortanzahl: input.zielWortanzahl,
-            quellenListe: parsedSources.map((s) => s.dateiname),
+            quellenListe: input.parsedSources.map((s) => s.dateiname),
             leitfadenRules: rules,
           }),
         });

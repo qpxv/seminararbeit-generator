@@ -138,7 +138,7 @@ export interface SessionInput {
   forschungsfrage: string;
   gliederung: string;
   zielWortanzahl: number;
-  quellenFiles: { name: string; base64: string }[];
+  parsedSources: ParsedSource[];
 }
 
 export interface ReviewChange {

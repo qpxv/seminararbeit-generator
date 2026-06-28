@@ -1,1214 +1,1191 @@
 
 ============================================================
-=== generate-outline — 2026-06-28T14:55:12.584Z ===
+=== generate-outline — 2026-06-28T16:15:47.667Z ===
 ============================================================
-[2026-06-28T14:55:12.586Z] [INFO] generate-outline POST received
+[2026-06-28T16:15:47.669Z] [INFO] generate-outline POST received
     {
       "forschungsfrage": "Welche neurobiologischen Mechanismen erklären die stressreduzierende Wirkung von",
-      "zielWortanzahl": 1000
+      "zielWortanzahl": 2000
     }
-[2026-06-28T14:55:12.587Z] [INFO] generateOutline start
+[2026-06-28T16:15:47.670Z] [INFO] generateOutline start
     {
       "forschungsfrage": "Welche neurobiologischen Mechanismen erklären die stressreduzierende Wirkung von",
-      "zielWortanzahl": 1000,
-      "quellen": 6
+      "zielWortanzahl": 2000,
+      "quellen": 17
     }
-[2026-06-28T14:56:01.522Z] [INFO] generateOutline done
+[2026-06-28T16:16:41.576Z] [INFO] generateOutline done
     {
       "sectionCount": 10,
-      "totalWordTarget": 1000
+      "totalWordTarget": 2000
     }
-[2026-06-28T14:56:01.524Z] [INFO] generate-outline POST done
+[2026-06-28T16:16:41.577Z] [INFO] generate-outline POST done
     {
       "sections": [
         {
           "nummer": "1",
           "titel": "Einleitung",
-          "words": 120,
+          "words": 200,
           "type": "einleitung"
         },
         {
           "nummer": "2",
           "titel": "Theoretische Grundlagen",
-          "words": 10,
+          "words": 50,
           "type": "kapitelkopf"
         },
         {
           "nummer": "2.1",
-          "titel": "Arbeitsbedingter Stress",
-          "words": 130,
+          "titel": "Arbeitsbedingter Stress: Definition, Ursachen und gesundheitliche Relevanz",
+          "words": 220,
           "type": "hauptteil"
         },
         {
           "nummer": "2.2",
-          "titel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive",
-          "words": 130,
+          "titel": "Die Mensch-Hund-Beziehung aus neurobiologischer Perspektive",
+          "words": 230,
           "type": "hauptteil"
         },
         {
           "nummer": "2.3",
-          "titel": "Neurobiologische Grundlagen der Stressregulation",
-          "words": 130,
+          "titel": "Neurobiologische Grundlagen der Stressregulation: Cortisol, Oxytocin und Dopamin",
+          "words": 250,
           "type": "hauptteil"
         },
         {
           "nummer": "3",
           "titel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz",
-          "words": 10,
+          "words": 50,
           "type": "kapitelkopf"
         },
         {
           "nummer": "3.1",
           "titel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz",
-          "words": 160,
+          "words": 320,
           "type": "hauptteil"
         },
         {
           "nummer": "3.2",
           "titel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld",
-          "words": 160,
+          "words": 330,
           "type": "hauptteil"
         },
         {
           "nummer": "3.3",
-          "titel": "Weitere neurobiologische Effekte",
-          "words": 130,
+          "titel": "Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem",
+          "words": 300,
           "type": "hauptteil"
         },
         {
           "nummer": "4",
           "titel": "Fazit und Ausblick",
-          "words": 120,
+          "words": 250,
           "type": "fazit"
         }
       ]
     }
 
 ============================================================
-=== generate-content — 2026-06-28T14:56:03.425Z ===
+=== generate-content — 2026-06-28T16:16:49.382Z ===
 ============================================================
-[2026-06-28T14:56:03.425Z] [INFO] generate-content POST received
+[2026-06-28T16:16:49.384Z] [INFO] generate-content POST received
     {
       "sectionCount": 10
     }
-[2026-06-28T14:56:03.426Z] [INFO] writing section 1/10
+[2026-06-28T16:16:49.385Z] [INFO] writing section 1/10
     {
       "nummer": "1",
       "titel": "Einleitung",
-      "target": 120
+      "target": 200
     }
-[2026-06-28T14:56:03.447Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:16:49.469Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "1",
       "sectionTitel": "Einleitung"
     }
-[2026-06-28T14:56:16.711Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:17:08.880Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "1",
-      "chars": 1636,
-      "preview": "```json\n{\n  \"sectionNummer\": \"1\",\n  \"sectionTitel\": \"Einleitung\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress zählt zu den drängendsten gesundheitspolitischen"
+      "chars": 2751,
+      "preview": "```json\n{\n  \"sectionNummer\": \"1\",\n  \"sectionTitel\": \"Einleitung\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress zählt zu den bedeutendsten Gesundheitsrisiken mo"
     }
-[2026-06-28T14:56:16.711Z] [WARN] writeSectionAttempt Pass 1 failed
+[2026-06-28T16:17:08.881Z] [WARN] writeSectionAttempt Pass 1 failed
     {
       "sectionNummer": "1"
     }
-[2026-06-28T14:56:16.711Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+[2026-06-28T16:17:08.881Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
     {
       "sectionNummer": "1",
-      "wordCount": 130
+      "wordCount": 215
     }
-[2026-06-28T14:56:16.712Z] [INFO] writeSection done
+[2026-06-28T16:17:08.882Z] [INFO] writeSection done
     {
       "sectionNummer": "1",
-      "wordCount": 130,
+      "wordCount": 215,
       "metaLanguageWarning": false
     }
-[2026-06-28T14:56:16.712Z] [INFO] word count result
+[2026-06-28T16:17:08.882Z] [INFO] word count result
     {
       "nummer": "1",
-      "actual": 109,
-      "target": 120,
-      "deviationPct": -9,
+      "actual": 183,
+      "target": 200,
+      "deviationPct": -8,
       "extended": false
     }
-[2026-06-28T14:56:23.748Z] [INFO] writing section 2/10
+[2026-06-28T16:17:12.842Z] [INFO] writing section 2/10
     {
       "nummer": "2",
       "titel": "Theoretische Grundlagen",
-      "target": 10
+      "target": 50
     }
-[2026-06-28T14:56:23.766Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:17:12.903Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "2",
       "sectionTitel": "Theoretische Grundlagen"
     }
-[2026-06-28T14:56:26.769Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:17:18.000Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "2",
-      "chars": 308,
-      "preview": "```json\n{\n  \"sectionNummer\": \"2\",\n  \"sectionTitel\": \"Theoretische Grundlagen\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Stress, Mensch-Hund-Bindung und Oxytocinregulation bilden d"
+      "chars": 638,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2\",\n  \"sectionTitel\": \"Theoretische Grundlagen\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress, die Mensch-Hund-Beziehung und neur"
     }
-[2026-06-28T14:56:26.769Z] [INFO] writeSectionAttempt Pass 1 OK
+[2026-06-28T16:17:18.001Z] [INFO] writeSectionAttempt Pass 1 OK
     {
       "sectionNummer": "2",
-      "wordCount": 11
+      "wordCount": 52
     }
-[2026-06-28T14:56:26.769Z] [INFO] writeSection done
+[2026-06-28T16:17:18.001Z] [INFO] writeSection done
     {
       "sectionNummer": "2",
-      "wordCount": 11,
+      "wordCount": 52,
       "metaLanguageWarning": false
     }
-[2026-06-28T14:56:26.770Z] [INFO] word count result
+[2026-06-28T16:17:18.001Z] [INFO] word count result
     {
       "nummer": "2",
-      "actual": 8,
-      "target": 10,
-      "deviationPct": -20,
-      "extended": false
-    }
-[2026-06-28T14:56:29.562Z] [INFO] writing section 3/10
-    {
-      "nummer": "2.1",
-      "titel": "Arbeitsbedingter Stress",
-      "target": 130
-    }
-[2026-06-28T14:56:29.584Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "2.1",
-      "sectionTitel": "Arbeitsbedingter Stress"
-    }
-[2026-06-28T14:56:43.911Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "2.1",
-      "chars": 1995,
-      "preview": "```json\n{\n  \"sectionNummer\": \"2.1\",\n  \"sectionTitel\": \"Arbeitsbedingter Stress\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress entsteht, wenn die wahrgenommenen"
-    }
-[2026-06-28T14:56:43.912Z] [WARN] writeSectionAttempt Pass 1 failed
-    {
-      "sectionNummer": "2.1"
-    }
-[2026-06-28T14:56:43.912Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
-    {
-      "sectionNummer": "2.1",
-      "wordCount": 134
-    }
-[2026-06-28T14:56:43.912Z] [INFO] writeSection done
-    {
-      "sectionNummer": "2.1",
-      "wordCount": 134,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T14:56:43.912Z] [INFO] word count result
-    {
-      "nummer": "2.1",
-      "actual": 113,
-      "target": 130,
-      "deviationPct": -13,
-      "extended": false
-    }
-[2026-06-28T14:56:47.839Z] [INFO] writing section 4/10
-    {
-      "nummer": "2.2",
-      "titel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive",
-      "target": 130
-    }
-[2026-06-28T14:56:47.859Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "2.2",
-      "sectionTitel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive"
-    }
-[2026-06-28T14:56:59.846Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "2.2",
-      "chars": 1630,
-      "preview": "```json\n{\n  \"sectionNummer\": \"2.2\",\n  \"sectionTitel\": \"Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Mensch u"
-    }
-[2026-06-28T14:56:59.846Z] [WARN] writeSectionAttempt Pass 1 failed
-    {
-      "sectionNummer": "2.2"
-    }
-[2026-06-28T14:56:59.847Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
-    {
-      "sectionNummer": "2.2",
-      "wordCount": 143
-    }
-[2026-06-28T14:56:59.847Z] [INFO] writeSection done
-    {
-      "sectionNummer": "2.2",
-      "wordCount": 143,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T14:56:59.847Z] [INFO] word count result
-    {
-      "nummer": "2.2",
-      "actual": 123,
-      "target": 130,
-      "deviationPct": -5,
-      "extended": false
-    }
-[2026-06-28T14:57:03.368Z] [INFO] writing section 5/10
-    {
-      "nummer": "2.3",
-      "titel": "Neurobiologische Grundlagen der Stressregulation",
-      "target": 130
-    }
-[2026-06-28T14:57:03.387Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "2.3",
-      "sectionTitel": "Neurobiologische Grundlagen der Stressregulation"
-    }
-[2026-06-28T14:57:18.772Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "2.3",
-      "chars": 2170,
-      "preview": "```json\n{\n  \"sectionNummer\": \"2.3\",\n  \"sectionTitel\": \"Neurobiologische Grundlagen der Stressregulation\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Cortisol gilt als zentraler bioc"
-    }
-[2026-06-28T14:57:18.772Z] [WARN] writeSectionAttempt Pass 1 failed
-    {
-      "sectionNummer": "2.3"
-    }
-[2026-06-28T14:57:18.772Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
-    {
-      "sectionNummer": "2.3",
-      "wordCount": 138
-    }
-[2026-06-28T14:57:18.773Z] [INFO] writeSection done
-    {
-      "sectionNummer": "2.3",
-      "wordCount": 138,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T14:57:18.773Z] [INFO] word count result
-    {
-      "nummer": "2.3",
-      "actual": 112,
-      "target": 130,
-      "deviationPct": -14,
-      "extended": false
-    }
-[2026-06-28T14:57:23.122Z] [INFO] writing section 6/10
-    {
-      "nummer": "3",
-      "titel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz",
-      "target": 10
-    }
-[2026-06-28T14:57:23.140Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "3",
-      "sectionTitel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz"
-    }
-[2026-06-28T14:57:26.860Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "3",
-      "chars": 412,
-      "preview": "```json\n{\n  \"sectionNummer\": \"3\",\n  \"sectionTitel\": \"Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Konvergierende Evid"
-    }
-[2026-06-28T14:57:26.861Z] [INFO] writeSectionAttempt Pass 1 OK
-    {
-      "sectionNummer": "3",
-      "wordCount": 11
-    }
-[2026-06-28T14:57:26.861Z] [INFO] writeSection done
-    {
-      "sectionNummer": "3",
-      "wordCount": 11,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T14:57:26.861Z] [INFO] word count result
-    {
-      "nummer": "3",
-      "actual": 14,
-      "target": 10,
-      "deviationPct": 40,
-      "extended": false
-    }
-[2026-06-28T14:57:29.897Z] [INFO] writing section 7/10
-    {
-      "nummer": "3.1",
-      "titel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz",
-      "target": 160
-    }
-[2026-06-28T14:57:29.919Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "3.1",
-      "sectionTitel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz"
-    }
-[2026-06-28T14:57:47.491Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "3.1",
-      "chars": 2141,
-      "preview": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Emp"
-    }
-[2026-06-28T14:57:47.491Z] [WARN] writeSectionAttempt Pass 1 failed
-    {
-      "sectionNummer": "3.1"
-    }
-[2026-06-28T14:57:47.492Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
-    {
-      "sectionNummer": "3.1",
-      "wordCount": 162
-    }
-[2026-06-28T14:57:47.492Z] [INFO] writeSection done
-    {
-      "sectionNummer": "3.1",
-      "wordCount": 162,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T14:57:47.492Z] [INFO] word count result
-    {
-      "nummer": "3.1",
-      "actual": 135,
-      "target": 160,
+      "actual": 42,
+      "target": 50,
       "deviationPct": -16,
       "extended": false
     }
-[2026-06-28T14:57:50.986Z] [INFO] writing section 8/10
-    {
-      "nummer": "3.2",
-      "titel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld",
-      "target": 160
-    }
-[2026-06-28T14:57:51.008Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "3.2",
-      "sectionTitel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld"
-    }
-[2026-06-28T14:58:04.793Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "3.2",
-      "chars": 1735,
-      "preview": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": "
-    }
-[2026-06-28T14:58:04.793Z] [WARN] writeSectionAttempt Pass 1 failed
-    {
-      "sectionNummer": "3.2"
-    }
-[2026-06-28T14:58:04.794Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
-    {
-      "sectionNummer": "3.2",
-      "wordCount": 162
-    }
-[2026-06-28T14:58:04.794Z] [INFO] writeSection done
-    {
-      "sectionNummer": "3.2",
-      "wordCount": 162,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T14:58:04.794Z] [INFO] word count result
-    {
-      "nummer": "3.2",
-      "actual": 139,
-      "target": 160,
-      "deviationPct": -13,
-      "extended": false
-    }
-[2026-06-28T14:58:08.779Z] [INFO] writing section 9/10
-    {
-      "nummer": "3.3",
-      "titel": "Weitere neurobiologische Effekte",
-      "target": 130
-    }
-[2026-06-28T14:58:08.802Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "3.3",
-      "sectionTitel": "Weitere neurobiologische Effekte"
-    }
-[2026-06-28T14:58:21.361Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "3.3",
-      "chars": 1622,
-      "preview": "```json\n{\n  \"sectionNummer\": \"3.3\",\n  \"sectionTitel\": \"Weitere neurobiologische Effekte\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die stressreduzierende Wirkung von Hunden am Arb"
-    }
-[2026-06-28T14:58:21.361Z] [WARN] writeSectionAttempt Pass 1 failed
-    {
-      "sectionNummer": "3.3"
-    }
-[2026-06-28T14:58:21.361Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
-    {
-      "sectionNummer": "3.3",
-      "wordCount": 138
-    }
-[2026-06-28T14:58:21.361Z] [INFO] writeSection done
-    {
-      "sectionNummer": "3.3",
-      "wordCount": 138,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T14:58:21.362Z] [INFO] word count result
-    {
-      "nummer": "3.3",
-      "actual": 116,
-      "target": 130,
-      "deviationPct": -11,
-      "extended": false
-    }
-[2026-06-28T14:58:25.958Z] [INFO] writing section 10/10
-    {
-      "nummer": "4",
-      "titel": "Fazit und Ausblick",
-      "target": 120
-    }
-[2026-06-28T14:58:25.981Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "4",
-      "sectionTitel": "Fazit und Ausblick"
-    }
-[2026-06-28T14:58:38.604Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "4",
-      "chars": 1568,
-      "preview": "```json\n{\n  \"sectionNummer\": \"4\",\n  \"sectionTitel\": \"Fazit und Ausblick\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die vorliegende Arbeit zeigt, dass die stressreduzierende Wirkun"
-    }
-[2026-06-28T14:58:38.604Z] [WARN] writeSectionAttempt Pass 1 failed
-    {
-      "sectionNummer": "4"
-    }
-[2026-06-28T14:58:38.605Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
-    {
-      "sectionNummer": "4",
-      "wordCount": 127
-    }
-[2026-06-28T14:58:38.605Z] [INFO] writeSection done
-    {
-      "sectionNummer": "4",
-      "wordCount": 127,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T14:58:38.605Z] [INFO] word count result
-    {
-      "nummer": "4",
-      "actual": 119,
-      "target": 120,
-      "deviationPct": -1,
-      "extended": false
-    }
-[2026-06-28T14:58:42.068Z] [INFO] generate-content done
-    {
-      "totalSections": 10,
-      "totalWords": 1156
-    }
-
-============================================================
-=== review-content — 2026-06-28T14:58:42.112Z ===
-============================================================
-[2026-06-28T14:58:42.112Z] [INFO] review-content POST received
-    {
-      "REVIEW_STEP": "false",
-      "sectionCount": 10
-    }
-
-============================================================
-=== assemble-docx — 2026-06-28T14:58:45.958Z ===
-============================================================
-[2026-06-28T14:58:45.960Z] [INFO] assemble-docx start
-    {
-      "sectionCount": 10,
-      "totalWordCount": 1156
-    }
-[2026-06-28T14:58:46.038Z] [INFO] assemble-docx done
-    {
-      "bufferBytes": 44796
-    }
-
-============================================================
-=== generate-outline — 2026-06-28T15:17:30.649Z ===
-============================================================
-[2026-06-28T15:17:30.651Z] [INFO] generate-outline POST received
-    {
-      "forschungsfrage": "Welche neurobiologischen Mechanismen erklären die stressreduzierende Wirkung von",
-      "zielWortanzahl": 1000
-    }
-[2026-06-28T15:17:30.652Z] [INFO] generateOutline start
-    {
-      "forschungsfrage": "Welche neurobiologischen Mechanismen erklären die stressreduzierende Wirkung von",
-      "zielWortanzahl": 1000,
-      "quellen": 6
-    }
-[2026-06-28T15:18:16.887Z] [INFO] generateOutline done
-    {
-      "sectionCount": 10,
-      "totalWordTarget": 1000
-    }
-[2026-06-28T15:18:16.888Z] [INFO] generate-outline POST done
-    {
-      "sections": [
-        {
-          "nummer": "1",
-          "titel": "Einleitung",
-          "words": 100,
-          "type": "einleitung"
-        },
-        {
-          "nummer": "2",
-          "titel": "Theoretische Grundlagen",
-          "words": 30,
-          "type": "kapitelkopf"
-        },
-        {
-          "nummer": "2.1",
-          "titel": "Arbeitsbedingter Stress",
-          "words": 150,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "2.2",
-          "titel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive",
-          "words": 150,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "2.3",
-          "titel": "Neurobiologische Grundlagen der Stressregulation",
-          "words": 150,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "3",
-          "titel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz",
-          "words": 30,
-          "type": "kapitelkopf"
-        },
-        {
-          "nummer": "3.1",
-          "titel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz",
-          "words": 160,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "3.2",
-          "titel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld",
-          "words": 160,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "3.3",
-          "titel": "Weitere neurobiologische Effekte",
-          "words": 120,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "4",
-          "titel": "Fazit und Ausblick",
-          "words": 100,
-          "type": "fazit"
-        }
-      ]
-    }
-
-============================================================
-=== generate-content — 2026-06-28T15:18:57.032Z ===
-============================================================
-[2026-06-28T15:18:57.032Z] [INFO] generate-content POST received
-    {
-      "sectionCount": 10
-    }
-[2026-06-28T15:18:57.033Z] [INFO] writing section 1/10
-    {
-      "nummer": "1",
-      "titel": "Einleitung",
-      "target": 100
-    }
-[2026-06-28T15:18:57.050Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "1",
-      "sectionTitel": "Einleitung"
-    }
-[2026-06-28T15:19:08.121Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "1",
-      "chars": 1472,
-      "preview": "```json\n{\n  \"sectionNummer\": \"1\",\n  \"sectionTitel\": \"Einleitung\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress gehört zu den zentralen Gesundheitsrisiken moder"
-    }
-[2026-06-28T15:19:08.121Z] [WARN] writeSectionAttempt Pass 1 failed
-    {
-      "sectionNummer": "1"
-    }
-[2026-06-28T15:19:08.122Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
-    {
-      "sectionNummer": "1",
-      "wordCount": 152
-    }
-[2026-06-28T15:19:08.122Z] [INFO] writeSection done
-    {
-      "sectionNummer": "1",
-      "wordCount": 152,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T15:19:08.122Z] [INFO] word count result
-    {
-      "nummer": "1",
-      "actual": 104,
-      "target": 100,
-      "deviationPct": 4,
-      "extended": false
-    }
-[2026-06-28T15:19:12.339Z] [INFO] writing section 2/10
-    {
-      "nummer": "2",
-      "titel": "Theoretische Grundlagen",
-      "target": 30
-    }
-[2026-06-28T15:19:12.358Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "2",
-      "sectionTitel": "Theoretische Grundlagen"
-    }
-[2026-06-28T15:19:16.638Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "2",
-      "chars": 486,
-      "preview": "```json\n{\n  \"sectionNummer\": \"2\",\n  \"sectionTitel\": \"Theoretische Grundlagen\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress, die neurobiologische Stressregulat"
-    }
-[2026-06-28T15:19:16.639Z] [INFO] writeSectionAttempt Pass 1 OK
-    {
-      "sectionNummer": "2",
-      "wordCount": 33
-    }
-[2026-06-28T15:19:16.639Z] [INFO] writeSection done
-    {
-      "sectionNummer": "2",
-      "wordCount": 33,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T15:19:16.639Z] [INFO] word count result
-    {
-      "nummer": "2",
-      "actual": 24,
-      "target": 30,
-      "deviationPct": -20,
-      "extended": false
-    }
-[2026-06-28T15:19:19.811Z] [INFO] writing section 3/10
+[2026-06-28T16:17:21.608Z] [INFO] writing section 3/10
     {
       "nummer": "2.1",
-      "titel": "Arbeitsbedingter Stress",
-      "target": 150
+      "titel": "Arbeitsbedingter Stress: Definition, Ursachen und gesundheitliche Relevanz",
+      "target": 220
     }
-[2026-06-28T15:19:19.831Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:17:21.690Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "2.1",
-      "sectionTitel": "Arbeitsbedingter Stress"
+      "sectionTitel": "Arbeitsbedingter Stress: Definition, Ursachen und gesundheitliche Relevanz"
     }
-[2026-06-28T15:19:33.936Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:17:47.368Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "2.1",
-      "chars": 2013,
-      "preview": "```json\n{\n  \"sectionNummer\": \"2.1\",\n  \"sectionTitel\": \"Arbeitsbedingter Stress\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress entsteht, wenn berufliche Anforde"
+      "chars": 4232,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.1\",\n  \"sectionTitel\": \"Arbeitsbedingter Stress: Definition, Ursachen und gesundheitliche Relevanz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeit"
     }
-[2026-06-28T15:19:33.936Z] [WARN] writeSectionAttempt Pass 1 failed
+[2026-06-28T16:17:47.369Z] [WARN] writeSectionAttempt Pass 1 failed
     {
       "sectionNummer": "2.1"
     }
-[2026-06-28T15:19:33.936Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+[2026-06-28T16:17:47.369Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
     {
       "sectionNummer": "2.1",
-      "wordCount": 156
+      "wordCount": 228
     }
-[2026-06-28T15:19:33.937Z] [INFO] writeSection done
+[2026-06-28T16:17:47.370Z] [INFO] writeSection done
     {
       "sectionNummer": "2.1",
-      "wordCount": 156,
+      "wordCount": 228,
       "metaLanguageWarning": false
     }
-[2026-06-28T15:19:33.937Z] [INFO] word count result
+[2026-06-28T16:17:47.370Z] [INFO] extendSection start
+    {
+      "sectionNummer": "2.1",
+      "delta": 49
+    }
+[2026-06-28T16:17:54.965Z] [WARN] extendSection JSON parse failed
+    {
+      "sectionNummer": "2.1",
+      "error": "SyntaxError: Expected double-quoted property name in JSON at position 167 (line 4 column 137)"
+    }
+[2026-06-28T16:17:54.966Z] [INFO] word count result
     {
       "nummer": "2.1",
-      "actual": 123,
-      "target": 150,
-      "deviationPct": -18,
-      "extended": false
+      "actual": 171,
+      "target": 220,
+      "deviationPct": -22,
+      "extended": true
     }
-[2026-06-28T15:19:37.870Z] [INFO] writing section 4/10
+[2026-06-28T16:17:59.062Z] [INFO] writing section 4/10
     {
       "nummer": "2.2",
-      "titel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive",
-      "target": 150
+      "titel": "Die Mensch-Hund-Beziehung aus neurobiologischer Perspektive",
+      "target": 230
     }
-[2026-06-28T15:19:37.888Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:17:59.131Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "2.2",
-      "sectionTitel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive"
+      "sectionTitel": "Die Mensch-Hund-Beziehung aus neurobiologischer Perspektive"
     }
-[2026-06-28T15:19:52.465Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:18:24.113Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "2.2",
-      "chars": 1930,
-      "preview": "```json\n{\n  \"sectionNummer\": \"2.2\",\n  \"sectionTitel\": \"Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die Mens"
+      "chars": 3686,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.2\",\n  \"sectionTitel\": \"Die Mensch-Hund-Beziehung aus neurobiologischer Perspektive\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die Bindung zwischen "
     }
-[2026-06-28T15:19:52.465Z] [WARN] writeSectionAttempt Pass 1 failed
+[2026-06-28T16:18:24.114Z] [WARN] writeSectionAttempt Pass 1 failed
     {
       "sectionNummer": "2.2"
     }
-[2026-06-28T15:19:52.466Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+[2026-06-28T16:18:24.114Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
     {
       "sectionNummer": "2.2",
-      "wordCount": 193
+      "wordCount": 248
     }
-[2026-06-28T15:19:52.466Z] [INFO] writeSection done
+[2026-06-28T16:18:24.114Z] [INFO] writeSection done
     {
       "sectionNummer": "2.2",
-      "wordCount": 193,
+      "wordCount": 248,
       "metaLanguageWarning": false
     }
-[2026-06-28T15:19:52.466Z] [INFO] word count result
+[2026-06-28T16:18:24.115Z] [INFO] word count result
     {
       "nummer": "2.2",
-      "actual": 158,
-      "target": 150,
-      "deviationPct": 5,
+      "actual": 219,
+      "target": 230,
+      "deviationPct": -5,
       "extended": false
     }
-[2026-06-28T15:19:56.878Z] [INFO] writing section 5/10
+[2026-06-28T16:18:28.537Z] [INFO] writing section 5/10
     {
       "nummer": "2.3",
-      "titel": "Neurobiologische Grundlagen der Stressregulation",
-      "target": 150
+      "titel": "Neurobiologische Grundlagen der Stressregulation: Cortisol, Oxytocin und Dopamin",
+      "target": 250
     }
-[2026-06-28T15:19:56.898Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:18:28.622Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "2.3",
-      "sectionTitel": "Neurobiologische Grundlagen der Stressregulation"
+      "sectionTitel": "Neurobiologische Grundlagen der Stressregulation: Cortisol, Oxytocin und Dopamin"
     }
-[2026-06-28T15:20:16.596Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:19:00.316Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "2.3",
-      "chars": 2399,
-      "preview": "```json\n{\n  \"sectionNummer\": \"2.3\",\n  \"sectionTitel\": \"Neurobiologische Grundlagen der Stressregulation\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die physiologische Stressantwort"
+      "chars": 3861,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.3\",\n  \"sectionTitel\": \"Neurobiologische Grundlagen der Stressregulation: Cortisol, Oxytocin und Dopamin\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \""
     }
-[2026-06-28T15:20:16.597Z] [WARN] writeSectionAttempt Pass 1 failed
+[2026-06-28T16:19:00.317Z] [WARN] writeSectionAttempt Pass 1 failed
     {
       "sectionNummer": "2.3"
     }
-[2026-06-28T15:20:16.597Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+[2026-06-28T16:19:00.317Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
     {
       "sectionNummer": "2.3",
-      "wordCount": 163
+      "wordCount": 267
     }
-[2026-06-28T15:20:16.597Z] [INFO] writeSection done
+[2026-06-28T16:19:00.317Z] [INFO] writeSection done
     {
       "sectionNummer": "2.3",
-      "wordCount": 163,
+      "wordCount": 267,
       "metaLanguageWarning": false
     }
-[2026-06-28T15:20:16.598Z] [INFO] word count result
+[2026-06-28T16:19:00.317Z] [INFO] word count result
     {
       "nummer": "2.3",
-      "actual": 129,
-      "target": 150,
-      "deviationPct": -14,
+      "actual": 236,
+      "target": 250,
+      "deviationPct": -6,
       "extended": false
     }
-[2026-06-28T15:20:21.334Z] [INFO] writing section 6/10
+[2026-06-28T16:19:04.027Z] [INFO] writing section 6/10
     {
       "nummer": "3",
       "titel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz",
-      "target": 30
+      "target": 50
     }
-[2026-06-28T15:20:21.353Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:19:04.103Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "3",
       "sectionTitel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz"
     }
-[2026-06-28T15:20:25.703Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:19:13.512Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "3",
-      "chars": 500,
-      "preview": "```json\n{\n  \"sectionNummer\": \"3\",\n  \"sectionTitel\": \"Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die Anwesenheit von"
+      "chars": 658,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3\",\n  \"sectionTitel\": \"Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die stressreduziere"
     }
-[2026-06-28T15:20:25.703Z] [INFO] writeSectionAttempt Pass 1 OK
+[2026-06-28T16:19:13.512Z] [INFO] writeSectionAttempt Pass 1 OK
     {
       "sectionNummer": "3",
-      "wordCount": 33
+      "wordCount": 52
     }
-[2026-06-28T15:20:25.703Z] [INFO] writeSection done
+[2026-06-28T16:19:13.513Z] [INFO] writeSection done
     {
       "sectionNummer": "3",
-      "wordCount": 33,
+      "wordCount": 52,
       "metaLanguageWarning": false
     }
-[2026-06-28T15:20:25.704Z] [INFO] word count result
+[2026-06-28T16:19:13.513Z] [INFO] extendSection start
+    {
+      "sectionNummer": "3",
+      "delta": 11
+    }
+[2026-06-28T16:19:33.940Z] [WARN] extendSection JSON parse failed
+    {
+      "sectionNummer": "3",
+      "error": "SyntaxError: Expected ',' or '}' after property value in JSON at position 1361 (line 4 column 1331)"
+    }
+[2026-06-28T16:19:33.941Z] [INFO] word count result
     {
       "nummer": "3",
-      "actual": 28,
-      "target": 30,
-      "deviationPct": -7,
-      "extended": false
+      "actual": 39,
+      "target": 50,
+      "deviationPct": -22,
+      "extended": true
     }
-[2026-06-28T15:20:30.655Z] [INFO] writing section 7/10
+[2026-06-28T16:19:38.136Z] [INFO] writing section 7/10
     {
       "nummer": "3.1",
       "titel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz",
-      "target": 160
+      "target": 320
     }
-[2026-06-28T15:20:30.680Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:19:38.223Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "3.1",
       "sectionTitel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz"
     }
-[2026-06-28T15:20:49.436Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:20:05.524Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "3.1",
-      "chars": 2583,
-      "preview": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Emp"
+      "chars": 4221,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die"
     }
-[2026-06-28T15:20:49.436Z] [WARN] writeSectionAttempt Pass 1 failed
+[2026-06-28T16:20:05.525Z] [WARN] writeSectionAttempt Pass 1 failed
     {
       "sectionNummer": "3.1"
     }
-[2026-06-28T15:20:49.436Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+[2026-06-28T16:20:05.525Z] [WARN] writeSectionAttempt Pass 2 failed
     {
-      "sectionNummer": "3.1",
-      "wordCount": 162
+      "sectionNummer": "3.1"
     }
-[2026-06-28T15:20:49.437Z] [INFO] writeSection done
+[2026-06-28T16:20:05.525Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
     {
       "sectionNummer": "3.1",
-      "wordCount": 162,
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die empirische Evidenz für eine messbare Cortisolreduktion durch Mensch-Hund-Interaktion am Arbeitsplatz gründet auf methodisch unterschiedlich anspruchsvollen Studien, unter denen das randomisierte Kontrollgruppendesign von Pendry und Vandagriff besondere Aussagekraft besitzt. In ihrer an der Washington State University durchgeführten Untersuchung mit N = 249 Studierenden wurden die Teilnehmenden zufällig vier Bedingungen zugewiesen: direktes Streicheln von Hunden und Katzen (hands-on), Beobachten der Interaktion, Betrachtung von Tierfotos oder Warten ohne Stimulation. Die Speichelcortisolwerte wurden beim Aufwachen sowie 15 und 25 Minuten nach Beginn der zehnminütigen Intervention erhoben[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", AERA Open 5 (2), 2019, S. 1–12.]]. Unter Kontrolle von Basalcortisol, Wachzeit und zirkadianem Muster wiesen Studierende der hands-on-Bedingung signifikant niedrigere Postcortisol-Werte auf als die Vergleichsgruppen: gegenüber der Diashow-Bedingung (β = .150, p = .046), der Wartebedingung (β = .152, p = .033) und der Beobachtungsbedingung (β = .164, p = .040)[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", AERA Open 5 (2), 2019, S. 1–12.]]. Bemerkenswert ist dabei, dass die Beobachtungsgruppe gegenüber der Warte- und Diashow-Gruppe ebenfalls reduzierte Cortisolwerte zeigte, was auf einen zusätzlichen wahrnehmungsbasierten Mechanismus jenseits des direkten Körperkontakts hindeutet[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", AERA Open 5 (2), 2019, S. 1–12.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Dieser Befund fügt sich in einen breiteren Forschungskontext ein, den Barker et al. in einer Pilotstudie mit Beschäftigten im Gesundheitswesen etablierten. Die Untersuchung dokumentierte signifikant reduzierte Stresswerte bei Pflegefachkräften nach der Interaktion mit einem Therapiehund, wobei sowohl selbstberichtete Stressmaße als auch physiologische Indikatoren erfasst wurden[[CITE:Barker et al. 2005:Sandra B. Barker, Janet S. Knisely, Nancy L. McCain und Alvin M. Best, „Measuring Stress and Immune Response in Healthcare Professionals Following Interaction with a Therapy Dog: A Pilot Study\", Psychological Reports 96 (3), 2005, S. 713–729.]]. Auch Barker et al. zeigten in einer Untersuchung zur Hundeanwesenheit am Arbeitsplatz, dass die Präsenz von Hunden mit niedrigeren wahrgenommenen Stresswerten unter Angestellten einherging, wenngleich ein Fünftel der hundelosen Beschäftigten angab, die Anwesenheit von Hunden beeinträchtige ihre Produktivität[[CITE:Barker et al. 2012:Randy T. Barker, Janet S. Knisely, Sandra B. Barker, Rachel K. Cobb und Christine M. Schubert, „Preliminary Investigation of Employee's Dog Presence on Stress and Organizational Perceptions\", International Journal of Workplace Health Management 5 (1), 2012, S. 15–30.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Als neuroendokriner Erklärungsrahmen für die nachgewiesenen Cortisolabfälle diskutieren Pendry und Vandagriff einen Oxytocin-vermittelten Mechanismus: Der physische Kontakt beim Streicheln könnte über einen Oxytoциnanstieg die HPA-Achsenaktivität dämpfen, ohne dass dies die vollständige Erklärung darstellt[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", AERA Open 5 (2), 2019, S. 1–12.]]. Ergänzend sind kognitive Appraisal-Prozesse relevant: Die Wahrnehmung des Tieres als soziale Unterstütz"
+    }
+[2026-06-28T16:20:05.526Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.1",
+      "wordCount": 0,
       "metaLanguageWarning": false
     }
-[2026-06-28T15:20:49.437Z] [INFO] word count result
+[2026-06-28T16:20:05.526Z] [INFO] extendSection start
+    {
+      "sectionNummer": "3.1",
+      "delta": 320
+    }
+[2026-06-28T16:20:30.441Z] [WARN] extendSection JSON parse failed
+    {
+      "sectionNummer": "3.1",
+      "error": "SyntaxError: Expected ',' or '}' after property value in JSON at position 1127 (line 4 column 1097)"
+    }
+[2026-06-28T16:20:30.442Z] [INFO] word count result
     {
       "nummer": "3.1",
-      "actual": 167,
-      "target": 160,
-      "deviationPct": 4,
-      "extended": false
+      "actual": 0,
+      "target": 320,
+      "deviationPct": -100,
+      "extended": true
     }
-[2026-06-28T15:20:53.669Z] [INFO] writing section 8/10
+[2026-06-28T16:20:30.442Z] [INFO] writing section 8/10
     {
       "nummer": "3.2",
       "titel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld",
-      "target": 160
+      "target": 330
     }
-[2026-06-28T15:20:53.691Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:20:30.529Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "3.2",
       "sectionTitel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld"
     }
-[2026-06-28T15:21:08.788Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:20:57.142Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "3.2",
-      "chars": 2183,
+      "chars": 4101,
       "preview": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": "
     }
-[2026-06-28T15:21:08.788Z] [WARN] writeSectionAttempt Pass 1 failed
+[2026-06-28T16:20:57.142Z] [WARN] writeSectionAttempt Pass 1 failed
     {
       "sectionNummer": "3.2"
     }
-[2026-06-28T15:21:08.788Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+[2026-06-28T16:20:57.142Z] [WARN] writeSectionAttempt Pass 2 failed
     {
-      "sectionNummer": "3.2",
-      "wordCount": 164
+      "sectionNummer": "3.2"
     }
-[2026-06-28T15:21:08.789Z] [INFO] writeSection done
+[2026-06-28T16:20:57.143Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
     {
       "sectionNummer": "3.2",
-      "wordCount": 164,
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Oxytocin wird im Hypothalamus, spezifisch in den Nuclei paraventricularis und supraopticus, produziert und gelangt sowohl systemisch als auch zentral zur Wirkung[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", Frontiers in Psychology 8 (2017), Art. 1796, S. 1.]]. Nicht-noxische sensorische Stimulation — wie das sanfte Streicheln eines Hundes — reicht aus, um dieses oxytocinergische System zu aktivieren und damit eine Kaskade anti-stressoger Effekte auszulösen, darunter sinkende Cortisolspiegel und reduzierter Blutdruck[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", Frontiers in Psychology 8 (2017), Art. 1796, S. 1–2.]]. Entscheidend ist dabei, dass die Oxytocin-Ausschüttung bidirektional verläuft: Sowohl Halter als auch Hund zeigen nach der Interaktion erhöhte Oxytocinspiegel, wobei die Werte beider Partner eng miteinander korrelieren[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", Frontiers in Psychology 8 (2017), Art. 1796, S. 2–3.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die von Nagasawa et al. beschriebene Rückkopplungsschleife — der sogenannte „Oxytocin-Gaze Positive Loop\" — bildet den zentralen neurobiologischen Mechanismus dieses Prozesses: Gegenseitiger Blickkontakt zwischen Mensch und Hund erhöht die Oxytocinspiegel bei beiden Partnern, was wiederum die Bereitschaft zu erneutem Blickkontakt steigert und so eine sich selbstverstärkende Bindungsreaktion erzeugt[[CITE:Beetz et al. 2012:Vgl. Andrea Beetz, Kerstin Uvnäs-Moberg, Henri Julius und Kurt Kotrschal, „Psychosocial and Psychophysiological Effects of Human-Animal Interactions: The Possible Role of Oxytocin\", Frontiers in Psychology 3 (2012), Art. 234, S. 5.]]. Petersson et al. konnten in ihrer explorativen Studie mit zehn Hundehalter-Hund-Paaren zeigen, dass Besitzerinnen mit niedrigen basalen Oxytocinspiegeln ihren Hund signifikant häufiger berührten, was auf eine kompensatorische Aktivierungsdynamik hinweist[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", Frontiers in Psychology 8 (2017), Art. 1796, S. 4.]]. Je höher der maximale Oxytocinspiegel der Besitzerinnen während der Interaktion, desto ruhiger verhielten sich die Hunde, was auf eine wechselseitige Regulation des Stressniveaus durch das gemeinsam aktivierte oxytocinergische System schließen lässt[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", Frontiers in Psychology 8 (2017), Art. 1796, S. 4–5.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die Bedeutung dieses Mechanismus für den Arbeitskontext liegt in seiner Unabhängigkeit von kognitiven Verarbeitungsprozessen: Oxytocin dämpft die HPA-Achsen-Aktivität direkt auf hypothalamischer Ebene, sodass die stressreduzierende Wirkung nicht allein auf"
+    }
+[2026-06-28T16:20:57.143Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.2",
+      "wordCount": 0,
       "metaLanguageWarning": false
     }
-[2026-06-28T15:21:08.789Z] [INFO] word count result
+[2026-06-28T16:20:57.143Z] [INFO] extendSection start
+    {
+      "sectionNummer": "3.2",
+      "delta": 330
+    }
+[2026-06-28T16:21:22.051Z] [WARN] extendSection JSON parse failed
+    {
+      "sectionNummer": "3.2",
+      "error": "SyntaxError: Expected double-quoted property name in JSON at position 821 (line 4 column 791)"
+    }
+[2026-06-28T16:21:22.051Z] [INFO] word count result
     {
       "nummer": "3.2",
-      "actual": 144,
-      "target": 160,
-      "deviationPct": -10,
-      "extended": false
+      "actual": 0,
+      "target": 330,
+      "deviationPct": -100,
+      "extended": true
     }
-[2026-06-28T15:21:12.761Z] [INFO] writing section 9/10
+[2026-06-28T16:21:22.052Z] [INFO] writing section 9/10
     {
       "nummer": "3.3",
-      "titel": "Weitere neurobiologische Effekte",
-      "target": 120
+      "titel": "Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem",
+      "target": 300
     }
-[2026-06-28T15:21:12.781Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:21:22.140Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "3.3",
-      "sectionTitel": "Weitere neurobiologische Effekte"
+      "sectionTitel": "Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem"
     }
-[2026-06-28T15:21:25.394Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:21:51.202Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "3.3",
-      "chars": 1427,
-      "preview": "```json\n{\n  \"sectionNummer\": \"3.3\",\n  \"sectionTitel\": \"Weitere neurobiologische Effekte\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Neben Cortisol und Oxytocin wirken bei der Mensc"
+      "chars": 4210,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.3\",\n  \"sectionTitel\": \"Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Neb"
     }
-[2026-06-28T15:21:25.395Z] [WARN] writeSectionAttempt Pass 1 failed
+[2026-06-28T16:21:51.202Z] [WARN] writeSectionAttempt Pass 1 failed
     {
       "sectionNummer": "3.3"
     }
-[2026-06-28T15:21:25.395Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+[2026-06-28T16:21:51.202Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
     {
       "sectionNummer": "3.3",
-      "wordCount": 128
+      "wordCount": 318
     }
-[2026-06-28T15:21:25.395Z] [INFO] writeSection done
+[2026-06-28T16:21:51.203Z] [INFO] writeSection done
     {
       "sectionNummer": "3.3",
-      "wordCount": 128,
+      "wordCount": 318,
       "metaLanguageWarning": false
     }
-[2026-06-28T15:21:25.395Z] [INFO] word count result
+[2026-06-28T16:21:51.203Z] [INFO] word count result
     {
       "nummer": "3.3",
-      "actual": 108,
-      "target": 120,
-      "deviationPct": -10,
+      "actual": 286,
+      "target": 300,
+      "deviationPct": -5,
       "extended": false
     }
-[2026-06-28T15:21:28.907Z] [INFO] writing section 10/10
+[2026-06-28T16:21:54.582Z] [INFO] writing section 10/10
     {
       "nummer": "4",
       "titel": "Fazit und Ausblick",
-      "target": 100
+      "target": 250
     }
-[2026-06-28T15:21:28.928Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:21:54.653Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "4",
       "sectionTitel": "Fazit und Ausblick"
     }
-[2026-06-28T15:21:41.918Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:22:21.282Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "4",
-      "chars": 1572,
-      "preview": "```json\n{\n  \"sectionNummer\": \"4\",\n  \"sectionTitel\": \"Fazit und Ausblick\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die vorliegenden Befunde belegen, dass die stressreduzierende Wi"
+      "chars": 4361,
+      "preview": "```json\n{\n  \"sectionNummer\": \"4\",\n  \"sectionTitel\": \"Fazit und Ausblick\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die vorliegende Arbeit hat gezeigt, dass die stressreduzierende "
     }
-[2026-06-28T15:21:41.918Z] [WARN] writeSectionAttempt Pass 1 failed
+[2026-06-28T16:22:21.283Z] [WARN] writeSectionAttempt Pass 1 failed
     {
       "sectionNummer": "4"
     }
-[2026-06-28T15:21:41.918Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+[2026-06-28T16:22:21.283Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
     {
       "sectionNummer": "4",
-      "wordCount": 152
+      "wordCount": 262
     }
-[2026-06-28T15:21:41.919Z] [INFO] writeSection done
+[2026-06-28T16:22:21.283Z] [INFO] writeSection done
     {
       "sectionNummer": "4",
-      "wordCount": 152,
+      "wordCount": 262,
       "metaLanguageWarning": false
     }
-[2026-06-28T15:21:41.919Z] [INFO] word count result
+[2026-06-28T16:22:21.283Z] [INFO] word count result
     {
       "nummer": "4",
-      "actual": 117,
-      "target": 100,
-      "deviationPct": 17,
+      "actual": 256,
+      "target": 250,
+      "deviationPct": 2,
       "extended": false
     }
-[2026-06-28T15:21:46.906Z] [INFO] generate-content done
+[2026-06-28T16:22:25.200Z] [INFO] generate-content done
     {
       "totalSections": 10,
-      "totalWords": 1336
+      "totalWords": 1642
     }
 
 ============================================================
-=== review-content — 2026-06-28T15:21:46.953Z ===
+=== review-content — 2026-06-28T16:22:25.271Z ===
 ============================================================
-[2026-06-28T15:21:46.953Z] [INFO] review-content POST received
+[2026-06-28T16:22:25.272Z] [INFO] review-content POST received
     {
-      "REVIEW_STEP": "false",
+      "REVIEW_STEP": "true",
       "sectionCount": 10
     }
-
-============================================================
-=== assemble-docx — 2026-06-28T15:21:53.653Z ===
-============================================================
-[2026-06-28T15:21:53.654Z] [INFO] assemble-docx start
-    {
-      "sectionCount": 10,
-      "totalWordCount": 1336
-    }
-[2026-06-28T15:21:53.734Z] [INFO] assemble-docx done
-    {
-      "bufferBytes": 45534
-    }
-
-============================================================
-=== generate-outline — 2026-06-28T15:35:01.212Z ===
-============================================================
-[2026-06-28T15:35:01.214Z] [INFO] generate-outline POST received
-    {
-      "forschungsfrage": "Welche neurobiologischen Mechanismen erklären die stressreduzierende Wirkung von",
-      "zielWortanzahl": 1000
-    }
-[2026-06-28T15:35:01.215Z] [INFO] generateOutline start
-    {
-      "forschungsfrage": "Welche neurobiologischen Mechanismen erklären die stressreduzierende Wirkung von",
-      "zielWortanzahl": 1000,
-      "quellen": 6
-    }
-[2026-06-28T15:35:48.864Z] [INFO] generateOutline done
-    {
-      "sectionCount": 10,
-      "totalWordTarget": 1000
-    }
-[2026-06-28T15:35:48.865Z] [INFO] generate-outline POST done
-    {
-      "sections": [
-        {
-          "nummer": "1",
-          "titel": "Einleitung",
-          "words": 100,
-          "type": "einleitung"
-        },
-        {
-          "nummer": "2",
-          "titel": "Theoretische Grundlagen",
-          "words": 20,
-          "type": "kapitelkopf"
-        },
-        {
-          "nummer": "2.1",
-          "titel": "Arbeitsbedingter Stress",
-          "words": 120,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "2.2",
-          "titel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive",
-          "words": 130,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "2.3",
-          "titel": "Neurobiologische Grundlagen der Stressregulation",
-          "words": 140,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "3",
-          "titel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz",
-          "words": 20,
-          "type": "kapitelkopf"
-        },
-        {
-          "nummer": "3.1",
-          "titel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz",
-          "words": 160,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "3.2",
-          "titel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld",
-          "words": 160,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "3.3",
-          "titel": "Weitere neurobiologische Effekte",
-          "words": 100,
-          "type": "hauptteil"
-        },
-        {
-          "nummer": "4",
-          "titel": "Fazit und Ausblick",
-          "words": 150,
-          "type": "fazit"
-        }
-      ]
-    }
-
-============================================================
-=== generate-content — 2026-06-28T15:35:52.670Z ===
-============================================================
-[2026-06-28T15:35:52.671Z] [INFO] generate-content POST received
+[2026-06-28T16:22:25.273Z] [INFO] reviewDocument start — iteration 1
     {
       "sectionCount": 10
     }
-[2026-06-28T15:35:52.672Z] [INFO] writing section 1/10
+[2026-06-28T16:23:08.902Z] [INFO] reviewDocument done — iteration 1
     {
-      "nummer": "1",
-      "titel": "Einleitung",
-      "target": 100
+      "gesamtBewertung": "akzeptabel",
+      "kritikCount": 7,
+      "success": false
     }
-[2026-06-28T15:35:52.692Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:23:08.966Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "1",
+      "problems": "Meta-Sprache im letzten Satz: 'Dazu werden im zweiten Kapitel ... beschrieben, im dritten Kapitel ... analysiert und im "
+    }
+[2026-06-28T16:23:08.966Z] [INFO] writeSection attempt 1/3
     {
       "sectionNummer": "1",
       "sectionTitel": "Einleitung"
     }
-[2026-06-28T15:36:08.206Z] [INFO] writeSectionAttempt stream done
+[2026-06-28T16:23:27.606Z] [INFO] writeSectionAttempt stream done
     {
       "sectionNummer": "1",
-      "chars": 1936,
-      "preview": "```json\n{\n  \"sectionNummer\": \"1\",\n  \"sectionTitel\": \"Einleitung\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsplatzbedingter Stress zählt zu den zentralen Gesundheitsrisiken m"
+      "chars": 2520,
+      "preview": "```json\n{\n  \"sectionNummer\": \"1\",\n  \"sectionTitel\": \"Einleitung\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingte psychosoziale Belastungen zählen zu den bedeutsamsten Ge"
     }
-[2026-06-28T15:36:08.207Z] [WARN] writeSectionAttempt Pass 1 failed
+[2026-06-28T16:23:27.606Z] [WARN] writeSectionAttempt Pass 1 failed
     {
       "sectionNummer": "1"
     }
-[2026-06-28T15:36:08.207Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+[2026-06-28T16:23:27.607Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
     {
       "sectionNummer": "1",
-      "wordCount": 197
+      "wordCount": 218
     }
-[2026-06-28T15:36:08.208Z] [INFO] writeSection done
+[2026-06-28T16:23:27.607Z] [INFO] writeSection done
     {
       "sectionNummer": "1",
-      "wordCount": 197,
+      "wordCount": 218,
       "metaLanguageWarning": false
     }
-[2026-06-28T15:36:08.208Z] [INFO] word count result
-    {
-      "nummer": "1",
-      "actual": 133,
-      "target": 100,
-      "deviationPct": 33,
-      "extended": false
-    }
-[2026-06-28T15:36:11.614Z] [INFO] writing section 2/10
-    {
-      "nummer": "2",
-      "titel": "Theoretische Grundlagen",
-      "target": 20
-    }
-[2026-06-28T15:36:11.635Z] [INFO] writeSection attempt 1/3
-    {
-      "sectionNummer": "2",
-      "sectionTitel": "Theoretische Grundlagen"
-    }
-[2026-06-28T15:36:15.854Z] [INFO] writeSectionAttempt stream done
-    {
-      "sectionNummer": "2",
-      "chars": 372,
-      "preview": "```json\n{\n  \"sectionNummer\": \"2\",\n  \"sectionTitel\": \"Theoretische Grundlagen\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress, die Mensch-Hund-Beziehung und neur"
-    }
-[2026-06-28T15:36:15.854Z] [INFO] writeSectionAttempt Pass 1 OK
-    {
-      "sectionNummer": "2",
-      "wordCount": 21
-    }
-[2026-06-28T15:36:15.855Z] [INFO] writeSection done
-    {
-      "sectionNummer": "2",
-      "wordCount": 21,
-      "metaLanguageWarning": false
-    }
-[2026-06-28T15:36:15.855Z] [INFO] extendSection start
-    {
-      "sectionNummer": "2",
-      "delta": 7
-    }
-[2026-06-28T15:36:36.336Z] [WARN] extendSection JSON parse failed
-    {
-      "sectionNummer": "2",
-      "error": "SyntaxError: Expected ',' or '}' after property value in JSON at position 1141 (line 4 column 1111)"
-    }
-[2026-06-28T15:36:36.336Z] [INFO] word count result
-    {
-      "nummer": "2",
-      "actual": 13,
-      "target": 20,
-      "deviationPct": -35,
-      "extended": true
-    }
-[2026-06-28T15:36:39.443Z] [INFO] writing section 3/10
-    {
-      "nummer": "2.1",
-      "titel": "Arbeitsbedingter Stress",
-      "target": 120
-    }
-[2026-06-28T15:36:39.462Z] [INFO] writeSection attempt 1/3
+[2026-06-28T16:23:27.693Z] [INFO] rewriting section after critique
     {
       "sectionNummer": "2.1",
-      "sectionTitel": "Arbeitsbedingter Stress"
+      "problems": "Alle sieben Sätze mit konkreten Fakten und Zahlen (Burnout-Prävalenz 20 %, ICD-11-Anerkennung, physiologische Folgen) be"
+    }
+[2026-06-28T16:23:27.694Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2.1",
+      "sectionTitel": "Arbeitsbedingter Stress: Definition, Ursachen und gesundheitliche Relevanz"
+    }
+[2026-06-28T16:23:49.373Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2.1",
+      "chars": 2901,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.1\",\n  \"sectionTitel\": \"Arbeitsbedingter Stress: Definition, Ursachen und gesundheitliche Relevanz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeit"
+    }
+[2026-06-28T16:23:49.373Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "2.1"
+    }
+[2026-06-28T16:23:49.373Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "2.1",
+      "wordCount": 222
+    }
+[2026-06-28T16:23:49.374Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2.1",
+      "wordCount": 222,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:23:49.465Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "2.3",
+      "problems": "Der Abschnitt enthält einen Satz ohne Beleg: 'Bei Wahrnehmung eines Stressors schüttet der Hypothalamus das Corticotropi"
+    }
+[2026-06-28T16:23:49.466Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2.3",
+      "sectionTitel": "Neurobiologische Grundlagen der Stressregulation: Cortisol, Oxytocin und Dopamin"
+    }
+[2026-06-28T16:24:14.978Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2.3",
+      "chars": 4145,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.3\",\n  \"sectionTitel\": \"Neurobiologische Grundlagen der Stressregulation: Cortisol, Oxytocin und Dopamin\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \""
+    }
+[2026-06-28T16:24:14.979Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "2.3"
+    }
+[2026-06-28T16:24:14.979Z] [WARN] writeSectionAttempt Pass 2 failed
+    {
+      "sectionNummer": "2.3"
+    }
+[2026-06-28T16:24:14.980Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
+    {
+      "sectionNummer": "2.3",
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"2.3\",\n  \"sectionTitel\": \"Neurobiologische Grundlagen der Stressregulation: Cortisol, Oxytocin und Dopamin\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die physiologische Stressreaktion des menschlichen Organismus wird maßgeblich durch die Hypothalamus-Hypophysen-Nebennierenrinden-Achse (HPA-Achse) gesteuert. Bei Wahrnehmung eines Stressors schüttet der Hypothalamus das Corticotropin-Releasing-Hormon aus, das die Hypophyse zur Freisetzung von Adrenocorticotropin stimuliert, woraufhin die Nebennierenrinde Cortisol produziert[[CITE:Pop et al. 2014:Vgl. Denisa Pop, Alina S. Rusu, Vlad Pop-Vancia, Ionel Papuc, Radu Constantinescu und Vioara Miresan, „Physiological Effects of Human-Animal Positive Interaction in Dogs - Review of the Literature\", in: Bulletin UASVM Animal Science and Biotechnologies 71 (2), 2014, S. 103–111.]]. Cortisol mobilisiert Energiereserven, unterdrückt Immunreaktionen und erhöht die Vigilanz — adaptive Reaktionen, die bei chronischer Aktivierung jedoch pathologische Folgen zeitigen[[CITE:Gee et al. 2021:Vgl. Nancy R. Gee, Angela K. Mueller und Aubrey H. Fine, „Dogs and Human Health/Mental Health: From the Pleasure of Their Company to the Benefits of Their Assistance\", in: Frontiers in Veterinary Science 8, 2021, Art. 631043.]]. Damit liefert die HPA-Achse den zentralen Biomarker — Cortisol —, anhand dessen Stressreduktionseffekte in Mensch-Hund-Interaktionsstudien operationalisiert werden[[CITE:Pop et al. 2014:Vgl. Denisa Pop, Alina S. Rusu, Vlad Pop-Vancia, Ionel Papuc, Radu Constantinescu und Vioara Miresan, „Physiological Effects of Human-Animal Positive Interaction in Dogs - Review of the Literature\", in: Bulletin UASVM Animal Science and Biotechnologies 71 (2), 2014, S. 103–111.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Dem stressaktivierten System steht das oxytocinergische System als antagonistischer Regulationsmechanismus gegenüber. Oxytocin, ein im Hypothalamus synthetisiertes Neuropeptid, fördert soziale Bindung, reduziert Angst und wirkt dämpfend auf die HPA-Achsen-Aktivität[[CITE:Beetz et al. 2012:Vgl. Andrea Beetz, Kerstin Uvnäs-Moberg, Henri Julius und Kurt Kotrschal, „Psychosocial and Psychophysiological Effects of Human-Animal Interactions: The Possible Role of Oxytocin\", in: Frontiers in Psychology 3, 2012, Art. 234.]]. Soziale Interaktion — einschließlich des Körperkontakts mit einem Hund — stimuliert die endogene Oxytocinausschüttung und wirkt damit der Cortisol-vermittelten Stressreaktion entgegen[[CITE:Beetz et al. 2012:Vgl. Andrea Beetz, Kerstin Uvnäs-Moberg, Henri Julius und Kurt Kotrschal, „Psychosocial and Psychophysiological Effects of Human-Animal Interactions: The Possible Role of Oxytocin\", in: Frontiers in Psychology 3, 2012, Art. 234.]]. Studien zeigen, dass positive Mensch-Hund-Interaktion bei beiden Partnern mit signifikant erhöhten Oxytocinspiegeln einhergeht[[CITE:Petersson et al. 2017:Vgl. Marie Petersson, Kerstin Uvnäs-Moberg, Anna Nilsson, Linda Gustafson, Erika Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", in: Frontiers in Psychology 8, 2017, Art. 1796.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Ergänzend wirkt Dopamin als Neurotransmitter des mesolimbischen Belohnungssystems. Im Kontext positiver Mensch-Hund-Interaktionen wurde neben erhöhten Oxytocin- auch erhöhte Dopaminkonzentrationen nachgewiesen[[CITE:Pop et al. 2014:Vgl. Denisa Pop, Alina S. Rusu, Vlad Pop-Vancia, Ionel Papuc, Radu Constantinescu und Vioara Miresan, „Physiological Effects of Human-Animal Positive Interaction in Dogs - Review of the Literature\", in: Bulletin UASVM Animal Science and Biotechnologies 71 (2), 2014, S. 103–111.]]. Dopamin vermittelt Motivation, Antizipation von Belohnung und affektives Wohlbefinden — Funktionen, die im Arbeitskontext unmittelbar mit Engagement und Leistungsbereitschaft verknüpft sind. Das Zusammenspiel von Cortisol-Suppression, Oxyt"
+    }
+[2026-06-28T16:24:14.981Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2.3",
+      "wordCount": 0,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:24:15.078Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "3.1",
+      "problems": "Der Abschnitt ist vollständig leer (wordCount: 0, text: ''). Laut Blueprint ist dies ein zentraler Hauptteil-Abschnitt, "
+    }
+[2026-06-28T16:24:15.079Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.1",
+      "sectionTitel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz"
+    }
+[2026-06-28T16:24:41.178Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.1",
+      "chars": 4192,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die"
+    }
+[2026-06-28T16:24:41.178Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.1"
+    }
+[2026-06-28T16:24:41.178Z] [WARN] writeSectionAttempt Pass 2 failed
+    {
+      "sectionNummer": "3.1"
+    }
+[2026-06-28T16:24:41.179Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
+    {
+      "sectionNummer": "3.1",
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die empirisch robusteste Evidenz für eine Cortisolsenkung durch Mensch-Hund-Interaktionen liefert das randomisierte Kontrollgruppendesign von Pendry und Vandagriff. In ihrer Studie mit 249 Studierenden wurden die Teilnehmenden zufällig einer von vier Bedingungen zugewiesen: körperlicher Kontakt mit Hunden und Katzen (hands-on), Beobachtung der Interaktion anderer, Betrachtung von Tierfotos oder passives Warten[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", AERA Open 5 (2), 2019, S. 1–2.]]. Salivare Cortisolproben wurden unmittelbar nach dem Aufwachen sowie 15 und 25 Minuten nach der zehnminütigen Intervention entnommen, um sowohl den diurnalen Grundspiegel als auch die momentane Cortisolreaktivität abzubilden[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", AERA Open 5 (2), 2019, S. 3–4.]]. Unter Kontrolle des individuellen Basalspiegels und des Tagesverlaufs wiesen Teilnehmende in der hands-on-Bedingung signifikant niedrigere Cortisolspiegel im Vergleich zur Diashow- (β = .150, p = .046), Beobachtungs- (β = .164, p = .040) und Wartegruppe (β = .152, p = .033) auf[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", AERA Open 5 (2), 2019, S. 7–8.]]. Bemerkenswert ist dabei, dass auch die Beobachtungsgruppe niedrigere Cortisolwerte als die Warte- und Diashowgruppen aufwies, was darauf hindeutet, dass allein die visuelle und auditive Wahrnehmung einer Mensch-Tier-Interaktion stressmodulierend wirken kann[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", AERA Open 5 (2), 2019, S. 8.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die Autoren diskutieren als möglichen neuroendokrinen Mechanismus einen Oxytocinanstieg durch körperliche Interaktion, weisen jedoch darauf hin, dass pereptuelle und psychologische Prozesse — etwa die Erwartungshaltung gegenüber sozialer Unterstützung durch Tiere — die HPA-Achsen-Aktivität zusätzlich modulieren dürften[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", AERA Open 5 (2), 2019, S. 8–9.]]. Dieses Zusammenspiel biologischer und kognitiv-appraisalbezogener Pfade unterstreicht, dass die Cortisolsenkung kein rein reflexartiger physiologischer Vorgang ist, sondern in ein komplexes bio-psycho-soziales Regulationssystem eingebettet bleibt.\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Ergänzend belegen Barker et al. in einer Pilotstudie mit Beschäftigten im Gesundheitswesen, dass die Anwesenheit eines Therapiehundes am Arbeitsplatz mit messbaren Veränderungen physiologischer Stressindikatoren einhergeht[[CITE:Barker et al. 2012:R. T. Barker, J. S. Knisely, S. B. Barker, R. K. Cobb und C. M. Schubert, „Preliminary Investigation of Employee's Dog Presence on Stress and Organizational Perceptions\", International Journal of Workplace Health Management 5 (1), 2012, S. 15–30.]]. Die Verbindung beider Studienlinien — kontrolliertexperimentelle Kurzinterventionen einerseits, arbeitsplatzbezogene Befragungsdesigns andererseits — verdichtet die Evidenz dahingehend, dass bereits kurze Kontaktphasen von zehn Minuten ausreichen, um eine statistisch signifikante Absenkung des salivaren Cortisolspiegels hervorzurufen. Da Cortisol als sensibelster und biochemisch unmittelbar messbarer Marker der HPA-Achsen-Aktivität gilt, stellen diese"
+    }
+[2026-06-28T16:24:41.179Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.1",
+      "wordCount": 0,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:24:41.264Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "3.2",
+      "problems": "Der Abschnitt ist vollständig leer (wordCount: 0, text: ''). Laut Blueprint analysiert dieser Abschnitt die Oxytocinauss"
+    }
+[2026-06-28T16:24:41.265Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.2",
+      "sectionTitel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld"
+    }
+[2026-06-28T16:25:09.858Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.2",
+      "chars": 4109,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": "
+    }
+[2026-06-28T16:25:09.859Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.2"
+    }
+[2026-06-28T16:25:09.859Z] [WARN] writeSectionAttempt Pass 2 failed
+    {
+      "sectionNummer": "3.2"
+    }
+[2026-06-28T16:25:09.859Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
+    {
+      "sectionNummer": "3.2",
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Oxytocin wird im Hypothalamus gebildet und über den Nucleus paraventricularis sowie den Nucleus supraopticus ausgeschüttet[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", in: Frontiers in Psychology 8 (2017), S. 1.]]. Nicht-nozizeptive sensorische Stimulation — wie das sanfte Streicheln eines Hundes — genügt, um dieses System zu aktivieren und dadurch Anti-Stress-Effekte wie sinkende Cortisolspiegel und reduzierten Blutdruck auszulösen[[CITE:Petersson et al. 2017:Petersson et al., „Oxytocin and Cortisol Levels\", S. 1.]]. Dieser Mechanismus ist für den Arbeitskontext unmittelbar relevant: Kurze Interaktionsepisoden mit einem Hund am Arbeitsplatz können demnach bereits ausreichen, um die hypothalamische Oxytocinausschüttung anzuregen und dadurch die HPA-Achsen-Aktivität zu dämpfen.\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Nagasawa et al. konnten zeigen, dass gegenseitiger Blickkontakt zwischen Hund und Halter bei beiden Partnern zu einem messbaren Oxytocin-Anstieg führt — ein als „oxytocin-gaze positive loop\" bezeichneter Rückkopplungskreis, der dem Blickkontakt zwischen Mutter und Säugling strukturell analog ist[[CITE:Nagasawa et al. 2015:Vgl. Miho Nagasawa, Shouhei Mitsui, Shiori En, Nobuyo Ohtani, Mitsuaki Ohta, Yasuo Sakuma et al., „Oxytocin-Gaze Positive Loop and the Coevolution of Human-Dog Bonds\", in: Science 348 (2015), S. 333–336.]]. Nasale Oxytocin-Applikation verstärkte in diesem Experiment das Blickverhalten der Hunde gegenüber ihren Haltern zusätzlich und erhöhte daraufhin die urinären Oxytocinspiegel der Halter, was die bidirektionale Natur des Kreislaufs belegt[[CITE:Nagasawa et al. 2015:Nagasawa et al., „Oxytocin-Gaze Positive Loop\", S. 334–335.]]. Für den Berufsalltag bedeutet dies: Bereits flüchtiger Blick- und Streichelkontakt mit einem anwesenden Hund kann diesen Kreislauf in Gang setzen und so eine neurochemisch verankerte Stressreduktion auslösen, die weit über bloße Ablenkung hinausgeht.\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Petersson et al. untersuchten in einer explorativen Studie mit zehn Hundehalter-Hund-Paaren, inwiefern Oxytocin- und Cortisolspiegel mit konkreten Interaktionsmustern zusammenhängen. Halterinnen mit niedrigen basalen Oxytocinspiegeln berührten ihre Hunde signifikant häufiger, und je niedriger der Oxytocinspiegel des Hundes während der Interaktion war, desto mehr Streicheln erhielt er[[CITE:Petersson et al. 2017:Petersson et al., „Oxytocin and Cortisol Levels\", S. 4.]]. Diese Befunde legen nahe, dass Streichelverhalten und oxytocinvermittelte Beruhigung in einem dynamischen Wechselverhältnis stehen: Beide Partner regulieren sich gegenseitig über Berührungs- und Hormonsignale. Im Arbeitsumfeld unter chronischer Belastung — etwa in Pflegeberufen — dürfte dieser Rückkopplungskreis besonders wirksam sein, da dort basale Oxytocindefizite und erhöhte Cortisolspiegel strukturell bedingt häufig auftreten.\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Beetz et al. betonen in ihrem Review von 69 Originalstudien, dass das oxytocinergische System als gemeinsamer neurobiologischer Mechanismus gilt, der die psychophysiologischen Effekte von Mensch-Tier-Interaktionen erklärt[[CITE:Beetz et al. 2012:Vgl. Andrea Beetz, Kerstin Uvnäs-Moberg, Henri Julius und Kurt Kotrschal, „Psychosocial and Psychophysiological Effects of Human-Animal Interactions: The Possible Role of Oxytocin\", in: Frontiers in Psychology 3 (2012), S. 1.]]. Oxytocin hemmt direkt die basale und stressinduzierte Aktivität der HPA-Achse[[CITE:Beetz et al. 2"
+    }
+[2026-06-28T16:25:09.860Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.2",
+      "wordCount": 0,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:25:09.950Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "3.3",
+      "problems": "Der Abschnitt referenziert Odendaal und Meintjes inhaltlich, ohne diese Autoren direkt zu zitieren — stattdessen wird Be"
+    }
+[2026-06-28T16:25:09.950Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.3",
+      "sectionTitel": "Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem"
+    }
+[2026-06-28T16:25:36.932Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.3",
+      "chars": 4261,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.3\",\n  \"sectionTitel\": \"Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die"
+    }
+[2026-06-28T16:25:36.933Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.3"
+    }
+[2026-06-28T16:25:36.933Z] [WARN] writeSectionAttempt Pass 2 failed
+    {
+      "sectionNummer": "3.3"
+    }
+[2026-06-28T16:25:36.933Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
+    {
+      "sectionNummer": "3.3",
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"3.3\",\n  \"sectionTitel\": \"Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die stressreduzierende Wirkung von Mensch-Hund-Interaktionen beschränkt sich nicht auf die HPA-Achse und das oxytocinergische System, sondern umfasst darüber hinaus monoaminerge Neurotransmittersysteme, die für Motivation, Belohnung und emotionale Regulation zentral sind. Odendaal und Meintjes dokumentierten, dass bereits fünf bis 24 Minuten Streicheln eines Hundes bei menschlichen Teilnehmenden signifikante Anstiege von Dopamin, Prolaktin sowie Phenylethylamin auslösten — und zwar simultan bei Mensch und Hund (zit. nach Beetz et al. 2012)[[CITE:Beetz et al. 2012:Andrea Beetz, Kerstin Uvnäs-Moberg, Henri Julius und Kurt Kotrschal, „Psychosocial and Psychophysiological Effects of Human-Animal Interactions: The Possible Role of Oxytocin\", in: Frontiers in Psychology 3 (2012), S. 1–15, hier S. 11.]]. Dopamin ist als zentraler Neurotransmitter des mesolimbischen Belohnungssystems bekannt: Seine Ausschüttung verstärkt Annäherungsverhalten, steigert Motivation und induziert positive Affekte — Effekte, die für das Erleben von Hundekontakt als angenehm und stressmindernd neurobiologisch grundlegend sind[[CITE:Beetz et al. 2012:Andrea Beetz, Kerstin Uvnäs-Moberg, Henri Julius und Kurt Kotrschal, „Psychosocial and Psychophysiological Effects of Human-Animal Interactions: The Possible Role of Oxytocin\", in: Frontiers in Psychology 3 (2012), S. 1–15.]]. Ergänzend weist Beetz et al. auf limitierte, aber vorhandene Evidenz für eine Reduktion von Epinephrin und Norepinephrin durch Mensch-Tier-Interaktionen hin, was auf eine breitere Dämpfung der sympathoadrenalen Stressantwort hindeutet[[CITE:Beetz et al. 2012:Andrea Beetz, Kerstin Uvnäs-Moberg, Henri Julius und Kurt Kotrschal, „Psychosocial and Psychophysiological Effects of Human-Animal Interactions: The Possible Role of Oxytocin\", in: Frontiers in Psychology 3 (2012), S. 1–15, hier S. 2.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Neurophysiologische Korrelate dieser multisystemischen Reaktion lassen sich durch Elektroenzephalographie (EEG) direkt auf Hirnebene nachweisen. Yoo et al. untersuchten die kortikale Aktivität während verschiedener Interaktionsformen mit Hunden und beobachteten dabei eine aktivitätstypabhängige Modulation der Gehirnwellenmuster: Insbesondere die Theta- und Alpha-Frequenzbänder, die mit entspannter Aufmerksamkeit und reduzierter kognitiver Anspannung assoziiert sind, zeigten charakteristische Veränderungen in Abhängigkeit von der jeweiligen Interaktionsform[[CITE:Yoo et al. 2024:Yoo, Gi Youn, et al., „EEG Human-Dog Interaction by Activity Type\", in: Frontiers in Veterinary Science 11 (2024), S. 1–10.]]. Diese Befunde belegen, dass die durch Hundekontakt ausgelösten neurobiologischen Effekte über peripherhormonelle Messgrößen hinausgehen und unmittelbar in der kortikalen Verarbeitungsdynamik ablesbar sind[[CITE:Yoo et al. 2024:Yoo, Gi Youn, et al., „EEG Human-Dog Interaction by Activity Type\", in: Frontiers in Veterinary Science 11 (2024), S. 1–10.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"In ihrer Gesamtschau verdeutlichen die Befunde zu Dopamin, Serotonin, Epinephrin und kortikaler Aktivierung, dass die stressreduzierende Wirkung von Hunden am Arbeitsplatz ein genuines multisystemisches neurobiologisches Phänomen darstellt. Die gleichzeitige Aktivierung von HPA-Achse, oxytocinergischem System und monoaminerger Neurotransmission erzeugt synergistische Effekte, die weder auf einzelne Hormone noch auf subjektive Wohlbefindensperzeptionen reduziert werden können[[CITE:Gee et al. 2021:Gee, Nancy R., Aubrey H. Fine und Zenithson Ng, „Dogs in Educational Settings\", in: Nancy R. Gee, Angela K. Fung und Zenithson Ng (Hrsg.), The Psychology of Human-Animal Bond (Cham: Springer, 2021), S. 1–20.]]. Gerade für Pflegefachpersonen, die chronisch hohen Arbeitsbelastungen ausgesetzt sind, eröffnet dieses Wirkprofil eine evidenzbasierte Grundlage für den gezielten Einsatz tiergestützter Interventionen als neurobiologisch ver"
+    }
+[2026-06-28T16:25:36.934Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.3",
+      "wordCount": 0,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:25:37.009Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "4",
+      "problems": "Zahlenkonsistenz: Das Fazit behauptet 'schon kurze Interaktionen mit Therapiehunden gehen mit signifikant reduzierten Co"
+    }
+[2026-06-28T16:25:37.009Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "4",
+      "sectionTitel": "Fazit und Ausblick"
+    }
+[2026-06-28T16:26:02.354Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "4",
+      "chars": 4422,
+      "preview": "```json\n{\n  \"sectionNummer\": \"4\",\n  \"sectionTitel\": \"Fazit und Ausblick\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die vorliegende Arbeit hat gezeigt, dass die stressreduzierende "
+    }
+[2026-06-28T16:26:02.355Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "4"
+    }
+[2026-06-28T16:26:02.355Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "4",
+      "wordCount": 253
+    }
+[2026-06-28T16:26:02.355Z] [INFO] writeSection done
+    {
+      "sectionNummer": "4",
+      "wordCount": 253,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:26:02.355Z] [INFO] reviewDocument start — iteration 2
+    {
+      "sectionCount": 10
+    }
+[2026-06-28T16:26:35.635Z] [INFO] reviewDocument done — iteration 2
+    {
+      "gesamtBewertung": "mangelhaft",
+      "kritikCount": 6,
+      "success": false
+    }
+[2026-06-28T16:26:35.722Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "2.3",
+      "problems": "Der Abschnitt ist vollständig leer (wordCount: 0, text: \"\"). Laut Blueprint sollte er die HPA-Achse, Cortisol, Oxytocin "
+    }
+[2026-06-28T16:26:35.722Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2.3",
+      "sectionTitel": "Neurobiologische Grundlagen der Stressregulation: Cortisol, Oxytocin und Dopamin"
+    }
+[2026-06-28T16:27:01.949Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2.3",
+      "chars": 3931,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.3\",\n  \"sectionTitel\": \"Neurobiologische Grundlagen der Stressregulation: Cortisol, Oxytocin und Dopamin\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \""
+    }
+[2026-06-28T16:27:01.949Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "2.3"
+    }
+[2026-06-28T16:27:01.950Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "2.3",
+      "wordCount": 263
+    }
+[2026-06-28T16:27:01.950Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2.3",
+      "wordCount": 263,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:27:02.032Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "3.1",
+      "problems": "Der Abschnitt ist vollständig leer (wordCount: 0, text: \"\"). Laut Blueprint das argumentative Herzstück: Cortisolmessung"
+    }
+[2026-06-28T16:27:02.035Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.1",
+      "sectionTitel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz"
+    }
+[2026-06-28T16:27:27.492Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.1",
+      "chars": 4187,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die"
+    }
+[2026-06-28T16:27:27.492Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.1"
+    }
+[2026-06-28T16:27:27.493Z] [WARN] writeSectionAttempt Pass 2 failed
+    {
+      "sectionNummer": "3.1"
+    }
+[2026-06-28T16:27:27.493Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
+    {
+      "sectionNummer": "3.1",
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die empirisch robusteste Evidenz für die stressreduzierende Wirkung von Mensch-Hund-Interaktionen liefert ein randomisiertes Kontrollgruppendesign von Pendry und Vandagriff, das 249 Studierende auf vier Bedingungen verteilte: aktives Streicheln von Hunden und Katzen, bloßes Beobachten der Interaktion, Betrachten von Tierbildern sowie passives Warten[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", in: AERA Open 5 (2), 2019, S. 1–12.]]. Unter Kontrolle individueller Cortisol-Aufwachkreuzwerte und zirkadianer Muster wiesen Teilnehmende der hands-on-Bedingung signifikant niedrigere Cortisolkonzentrationen im Speichel auf als jene in der Slideshow-Bedingung (β = .150, p = .046), in der Wartebedingung (β = .152, p = .033) und in der Beobachtungsbedingung (β = .164, p = .040)[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", in: AERA Open 5 (2), 2019, S. 1–12.]]. Bereits eine zehnminütige Interaktionsphase genügte, um diesen messbaren neuroendokrinen Effekt zu erzeugen — ein Befund von erheblicher praktischer Relevanz für die betriebliche Gesundheitsförderung, da kurze Unterbrechungen des Arbeitstages realistisch implementierbar sind[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", in: AERA Open 5 (2), 2019, S. 1–12.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Hinsichtlich des neuroendokrinen Mechanismus diskutieren Pendry und Vandagriff, dass taktile Interaktion — insbesondere physisches Streicheln — Oxytocinausschüttungen provoziert, die ihrerseits die HPA-Achsen-Aktivität dämpfen und so den beobachteten Cortisolabfall vermitteln[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", in: AERA Open 5 (2), 2019, S. 1–12.]]. Aufschlussreich ist dabei der Befund, dass auch die Beobachtungsgruppe niedrigere Cortisolwerte zeigte als die Slideshow- und Wartebedingungen, was auf zusätzliche wahrnehmungsbasierte und soziale Mechanismen hindeutet, die über den reinen Berührungsreiz hinausgehen[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", in: AERA Open 5 (2), 2019, S. 1–12.]]. Die Autoren betonen, dass kognitive Appraisalprozesse — etwa die Erwartungshaltung gegenüber der sozialen Unterstützungskapazität des Tieres — gleichfalls die HPA-Achsen-Regulation modulieren können und damit einen psychologischen Wirkmechanismus neben dem biochemischen konstituieren[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", in: AERA Open 5 (2), 2019, S. 1–12.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Diese Befunde konvergieren mit einer Pilotstudie von Barker und Kolleginnen, in der Beschäftigte im Gesundheitswesen nach der Interaktion mit einem Therapiehund am Arbeitsplatz signifikant reduzierte Cortisolwerte aufwiesen[[CITE:Barker et al. 2005:Sandra B. Barker, Janet S. Knisely, Nancy L. McCain und Allan M. Best, „Measuring Stress and Immune Response in Healthcare Professionals Following Interaction with a Therapy Dog: A Pilot Study\", in: Psychological Reports 96 (3), 2005, S. 713–729.]]. In einer Folgestudie dokumentierten Barker und Kolleginnen zusätzlich, dass ein Fünftel der Beschäftigten ohne eigenen Hund angab, die Hundeprä"
+    }
+[2026-06-28T16:27:27.494Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.1",
+      "wordCount": 0,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:27:27.580Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "3.2",
+      "problems": "Der Abschnitt ist vollständig leer (wordCount: 0, text: \"\"). Der Oxytocin-Blick-Rückkopplungskreis und seine Wirkung im "
+    }
+[2026-06-28T16:27:27.581Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.2",
+      "sectionTitel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld"
+    }
+[2026-06-28T16:27:57.776Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.2",
+      "chars": 4168,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": "
+    }
+[2026-06-28T16:27:57.776Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.2"
+    }
+[2026-06-28T16:27:57.776Z] [WARN] writeSectionAttempt Pass 2 failed
+    {
+      "sectionNummer": "3.2"
+    }
+[2026-06-28T16:27:57.777Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
+    {
+      "sectionNummer": "3.2",
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Oxytocin wird im Hypothalamus in den paraventrikulären und supraoptischen Kernen produziert und nicht allein durch reproduktive Vorgänge freigesetzt, sondern auch durch nicht-nozizeptive sensorische Stimulation wie sanftes Streicheln[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", in: Frontiers in Psychology 8 (2017), S. 1.]]. Dieser Mechanismus ist für den Arbeitskontext unmittelbar bedeutsam: Bereits eine kurze taktile Interaktion mit einem Hund — Streicheln, Kratzen oder ruhiges Halten — stimuliert das oxytocinergische System und setzt damit einen neurochemischen Prozess in Gang, der die Aktivität der HPA-Achse dämpft und die Cortisolausschüttung reduziert. Petersson et al. konnten in einer explorativen Studie zeigen, dass Oxytocin- und Cortisolspiegel bei Hundehalterinnen und ihren Hunden signifikant mit den während der Interaktion gezeigten Verhaltensweisen assoziiert waren: Besitzerinnen mit niedrigeren basalen Oxytocin-Werten berührten ihre Hunde häufiger, und je niedriger die Oxytocin-Werte der Hunde, desto mehr Streicheln erhielten sie[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", in: Frontiers in Psychology 8 (2017), S. 4.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Neben dem taktilen Kanal ist der visuelle Kanal neurobiologisch besonders relevant. Nagasawa et al. beschrieben den sogenannten „oxytocin-gaze positive loop\": Gegenseitiger Blickkontakt zwischen Mensch und Hund erhöht bei beiden Partnern die Oxytocin-Konzentration, was wiederum die Bereitschaft zu erneutem Blickkontakt steigert und so einen sich selbstverstärkenden Rückkopplungskreis erzeugt[[CITE:Nagasawa et al. 2015:Vgl. Miho Nagasawa, Shouhei Mitsui, Shiori En, Nobuyo Ohtani, Mitsuaki Ohta, Yasuo Sakuma, Tatsushi Onaka, Kazutaka Mogi und Takefumi Kikusui, „Oxytocin-Gaze Positive Loop and the Coevolution of Human-Dog Bonds\", in: Science 348 (2015), S. 333–336, zitiert nach: Maria Petersson et al., „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", in: Frontiers in Psychology 8 (2017), S. 2.]]. Dieser Mechanismus ist im Arbeitsumfeld von besonderer Bedeutung, da selbst flüchtige Interaktionen mit einem Bürohund — ein kurzer Blickkontakt, ein spontanes Streicheln zwischen Arbeitstätigkeiten — ausreichen können, um das oxytocinergische System zu aktivieren. Beetz et al. unterstreichen in ihrem Review, dass die Aktivierung des Oxytocin-Systems als gemeinsamer Wirkmechanismus für die Mehrzahl der dokumentierten psychophysiologischen Effekte von Mensch-Tier-Interaktionen gilt, darunter die Reduktion von Cortisol, Herzfrequenz und Blutdruck[[CITE:Beetz et al. 2012:Vgl. Andrea Beetz, Kerstin Uvnäs-Moberg, Henri Julius und Kurt Kotrschal, „Psychosocial and Psychophysiological Effects of Human-Animal Interactions: The Possible Role of Oxytocin\", in: Frontiers in Psychology 3 (2012), S. 1.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die Übertragbarkeit dieses Mechanismus auf professionelle Arbeitsumgebungen wird durch Befunde aus dem Pflegebereich gestützt. Die stressreduzierende Wirkung zeigt sich dabei nicht allein über Ablenkung oder psychologische Entspannung, sondern ist hormonell verankert: Oxytocin hemmt direkt die Reaktivität der HPA-Achse, was exogen zugeführtes Oxytocin als inhibitorisch auf den Plasma-Cortisol-Spiegel nachweisen lässt[[CITE:Beetz et al. 2012:Vgl. Andrea Beetz, Kerstin Uvnäs-Mo"
+    }
+[2026-06-28T16:27:57.777Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.2",
+      "wordCount": 0,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:27:57.868Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "3.3",
+      "problems": "Der Abschnitt ist vollständig leer (wordCount: 0, text: \"\"). Die Analyse dopaminerger/serotonerger Systeme und die EEG-S"
+    }
+[2026-06-28T16:27:57.868Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.3",
+      "sectionTitel": "Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem"
+    }
+[2026-06-28T16:28:27.085Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.3",
+      "chars": 4342,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.3\",\n  \"sectionTitel\": \"Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Neb"
+    }
+[2026-06-28T16:28:27.086Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.3"
+    }
+[2026-06-28T16:28:27.086Z] [WARN] writeSectionAttempt Pass 2 failed
+    {
+      "sectionNummer": "3.3"
+    }
+[2026-06-28T16:28:27.086Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
+    {
+      "sectionNummer": "3.3",
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"3.3\",\n  \"sectionTitel\": \"Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Neben den bereits beschriebenen Cortisol- und Oxytocin-Effekten aktivieren positive Mensch-Hund-Interaktionen auch monoaminerge Neurotransmittersysteme, die für Wohlbefinden, Motivationsregulation und emotionale Stabilität zentral sind. Odendaal und Meintjes dokumentierten einen signifikanten Anstieg von Dopamin und Phenylethylamin im Plasma sowohl bei Menschen als auch bei Hunden nach fünf bis vierundzwanzig Minuten des Streichelns[[CITE:Beetz et al. 2012:Vgl. Andrea Beetz, Kerstin Uvnäs-Moberg, Henri Julius und Kurt Kotrschal, „Psychosocial and Psychophysiological Effects of Human-Animal Interactions: The Possible Role of Oxytocin\", in: Frontiers in Psychology 3 (2012), Art. 234, S. 11.]]. Dopamin als zentraler Botenstoff des mesolimbischen Belohnungssystems vermittelt dabei Gefühle von Freude, Motivation und positiver Erwartung — seine Ausschüttung erklärt, warum der Hundekontakt subjektiv als angenehm und belohnend erlebt wird und damit wiederholtes Annäherungsverhalten fördert.\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Auch serotonerge Effekte wurden in Zusammenhang mit Mensch-Tier-Interaktionen berichtet. Serotonin reguliert Stimmung, Impulskontrolle und emotionale Resilienz; ein erhöhter Serotoninspiegel geht konsistent mit reduzierter Ängstlichkeit und verbesserter affektiver Regulation einher[[CITE:Pop et al. 2014:Vgl. Cosmin Pop, „Physiological Effects of Human-Animal Interaction: A Review\", in: Bulletin of University of Agricultural Sciences and Veterinary Medicine Cluj-Napoca 71 (1), 2014, S. 7–13.]]. Die simultane Aktivierung dopaminerger und serotonerger Systeme neben dem oxytocinergischen System macht deutlich, dass die stressreduzierende Wirkung des Hundekontakts kein isoliertes Hormonphänomen darstellt, sondern ein multisystemisches neurobiologisches Geschehen, das mehrere Transmitterkreisläufe gleichzeitig einbezieht[[CITE:Gee et al. 2021:Vgl. Nancy R. Gee, Ann Be Fine und Paul Schuck, „Dogs and Human Health/Mental Health: From the Perspective of Organisational and Community-Based Interventions\", in: The Psychology of Human-Animal Bond, hrsg. von Christopher Blazina und Lori Kogan (Cham: Springer, 2021), S. 175–193.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Besondere neurophysiologische Evidenz liefert die EEG-Studie von Yoo et al. (2024), die Hirnaktivierungsmuster während verschiedener Interaktionsformen mit Hunden untersuchte. Die Ergebnisse zeigten aktivitätsabhängige Veränderungen in Frequenzbändern, die mit Entspannung, Aufmerksamkeit und positiver emotionaler Verarbeitung assoziiert sind, und belegen damit erstmals auf neuronaler Ebene, dass Hundekontakt unmittelbare zentralnervöse Korrelate erzeugt[[CITE:Yoo et al. 2024:Vgl. Ga-Young Yoo, Jinsick Park, Seunghee Han und Boreom Lee, „EEG-Based Analysis of Brain Activity During Human-Dog Interaction by Activity Type\", in: Applied Sciences 14 (2024), S. 1–15.]]. Diese neurophysiologischen Befunde auf Hirnebene vertiefen das Verständnis erheblich: Die messbaren psychophysiologischen Effekte — Cortisolabfall, Oxytocinanstieg, Herzfrequenzreduktion — sind demnach Ausdruck einer umfassenden, zentralnervös koordinierten Reaktion.\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Ein systematisches Review von Acquadro Maran et al. (2022) bestätigt, dass tiergestützte Interventionen bei Gesundheitspersonal neben reduzierten Stressparametern auch Verbesserungen in Stimmung, Arbeitszufriedenheit und emotionaler Erschöpfung bewirken — Outcome-Dimensionen, die präzise dem Wirkprofil dopaminerger und serotonerger Aktivierung entsprechen[[CITE:Acquadro Maran et al. 2022:Vgl. Daniela Acquadro Maran, Ilaria Capitanelli, Fabrizio Crosetto und Cristina Gnemmi, „Animal-Assisted Interventions for Healthcare Workers: A Systematic Review\", in: Animals 12 (3), 2022, Art. 383, S. 6–8.]]. Die Konvergenz endokrinologischer, neurochemischer und neurophysiologischer Befunde zeigt: Die stressmindernde Wirkung von Hunden am Arbeitsplatz ist biologisch tief ver"
+    }
+[2026-06-28T16:28:27.088Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.3",
+      "wordCount": 0,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:28:27.161Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "4",
+      "problems": "Das Fazit behauptet Befunde (z. B. 'signifikante Reduktionen der Speichelcortisol-Konzentrationen bei Pflegepersonal'), "
+    }
+[2026-06-28T16:28:27.161Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "4",
+      "sectionTitel": "Fazit und Ausblick"
+    }
+[2026-06-28T16:28:52.563Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "4",
+      "chars": 4156,
+      "preview": "```json\n{\n  \"sectionNummer\": \"4\",\n  \"sectionTitel\": \"Fazit und Ausblick\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die stressreduzierende Wirkung von Hunden am Arbeitsplatz lässt "
+    }
+[2026-06-28T16:28:52.563Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "4"
+    }
+[2026-06-28T16:28:52.563Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "4",
+      "wordCount": 258
+    }
+[2026-06-28T16:28:52.564Z] [INFO] writeSection done
+    {
+      "sectionNummer": "4",
+      "wordCount": 258,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:28:52.631Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "1",
+      "problems": "Die CITE-Tags stehen nicht unmittelbar vor dem abschließenden Satzpunkt, sondern am Satzende ohne erkennbare Position re"
+    }
+[2026-06-28T16:28:52.632Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "1",
+      "sectionTitel": "Einleitung"
+    }
+[2026-06-28T16:29:08.046Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "1",
+      "chars": 2254,
+      "preview": "```json\n{\n  \"sectionNummer\": \"1\",\n  \"sectionTitel\": \"Einleitung\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingte psychosoziale Belastungen zählen zu den bedeutendsten Ge"
+    }
+[2026-06-28T16:29:08.046Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "1"
+    }
+[2026-06-28T16:29:08.046Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "1",
+      "wordCount": 211
+    }
+[2026-06-28T16:29:08.047Z] [INFO] writeSection done
+    {
+      "sectionNummer": "1",
+      "wordCount": 211,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:29:08.047Z] [INFO] reviewDocument start — iteration 3
+    {
+      "sectionCount": 10
+    }
+[2026-06-28T16:29:39.189Z] [INFO] reviewDocument done — iteration 3
+    {
+      "gesamtBewertung": "mangelhaft",
+      "kritikCount": 5,
+      "success": false
+    }
+[2026-06-28T16:29:39.271Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "3.1",
+      "problems": "Abschnitt 3.1 ist vollständig leer (wordCount: 0, text: \"\"). Damit fehlt der zentrale Hauptteil-Abschnitt zur Cortisolse"
+    }
+[2026-06-28T16:29:39.271Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.1",
+      "sectionTitel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz"
+    }
+[2026-06-28T16:30:05.079Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.1",
+      "chars": 4183,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Cor"
+    }
+[2026-06-28T16:30:05.079Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.1"
+    }
+[2026-06-28T16:30:05.080Z] [WARN] writeSectionAttempt Pass 2 failed
+    {
+      "sectionNummer": "3.1"
+    }
+[2026-06-28T16:30:05.080Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
+    {
+      "sectionNummer": "3.1",
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Cortisol gilt als zuverlässigster messbarer Biomarker für die Aktivität der HPA-Achse und damit als direkter Indikator arbeitsbedingter Stressbelastung. Barker et al. legten mit ihrer Pilotstudie zu Therapiehunden im Gesundheitswesen frühe empirische Evidenz vor, dass die Interaktion mit einem Therapiehund bei Beschäftigten in medizinischen Einrichtungen zu messbaren Cortisolreduktionen führt[[CITE:Barker et al. 2005:Sandra B. Barker, Janet S. Knisely, Nancy L. McCain und Alan M. Best, „Measuring Stress and Immune Response in Healthcare Professionals Following Interaction with a Therapy Dog: A Pilot Study\", in: Psychological Reports 96 (3), 2005, S. 713–729.]]. Barker et al. (2012) untersuchten in einer Folgestudie mit Angestellten in einem Büroumfeld, ob die Anwesenheit eines Hundes am Arbeitsplatz Stressparameter beeinflusst, und dokumentierten, dass Beschäftigte mit Hundebegleitung niedrigere Stressausprägungen berichteten als Mitarbeitende ohne tierliche Anwesenheit — zugleich stellten sie fest, dass ein Fünftel der Beschäftigten ohne eigenen Hund die Hundenanwesenheit anderer als produktivitätsmindernd wahrnahm[[CITE:Barker et al. 2012:R. T. Barker, Janet S. Knisely, Sandra B. Barker, R. K. Cobb und C. M. Schubert, „Preliminary Investigation of Employee's Dog Presence on Stress and Organizational Perceptions\", in: International Journal of Workplace Health Management 5 (1), 2012, S. 15–30.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Den methodisch stringentesten Nachweis einer Cortisolreduktion durch Tierinteraktion liefert die randomisierte Kontrollstudie von Pendry und Vandagriff (2019). Mit N = 249 Probanden wurden vier Bedingungen randomisiert zugeteilt: aktives Streicheln von Hunden und Katzen (hands-on, n = 73), Beobachten anderer Tierinteraktionen (observation, n = 62), Betrachtung von Tierbildern (slideshow, n = 57) und passives Warten (waitlist, n = 57)[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", in: AERA Open 5 (2), 2019, S. 1–12.]]. Die Salivacortisol-Probennahme erfolgte standardisiert zu drei Messzeitpunkten — unmittelbar nach dem Aufwachen sowie 15 und 25 Minuten nach Beginn der jeweiligen Bedingung — und wurde um zirkadiane Einflüsse und individuelle Diurnalmuster korrigiert[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", in: AERA Open 5 (2), 2019, S. 1–12.]]. Die Ergebnisse zeigen, dass Teilnehmende der hands-on-Bedingung signifikant niedrigere Postcortisol-Werte aufwiesen als alle Vergleichsgruppen: gegenüber der Slideshow-Gruppe (β = .150, p = .046), der Beobachtungsgruppe (β = .164, p = .040) und der Warteliste (β = .152, p = .033)[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", in: AERA Open 5 (2), 2019, S. 1–12.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Bemerkenswert ist, dass auch die reine Beobachtungsgruppe niedrigere Cortisolwerte erzielte als Slideshow- und Warteliste-Bedingung, was darauf hindeutet, dass auditive und visuelle Reize der Tieranwesenheit eigenständige stressdämpfende Effekte entfalten können — wenngleich mit geringerer Wirkstärke als die taktile Interaktion[[CITE:Pendry & Vandagriff 2019:Patricia Pendry und Jaymie L. Vandagriff, „Animal Visitation Program (AVP) Reduces Cortisol Levels of University Students: A Randomized Controlled Trial\", in: AERA Open 5 (2), 2019, S. 1–12.]]. Als neuroendokriner Mechanismus diskutieren Pendry und Vandagriff einen Oxytocinvermittelten Pfad, durch den haptische Stimulation durch Streicheln die Oxytocinaussch"
+    }
+[2026-06-28T16:30:05.081Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.1",
+      "wordCount": 0,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:30:05.165Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "3.2",
+      "problems": "Abschnitt 3.2 ist vollständig leer (wordCount: 0, text: \"\"). Die Analyse des Oxytocin-Gaze-Loops im Arbeitskontext, gest"
+    }
+[2026-06-28T16:30:05.166Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.2",
+      "sectionTitel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld"
+    }
+[2026-06-28T16:30:29.619Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.2",
+      "chars": 4105,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": "
+    }
+[2026-06-28T16:30:29.620Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.2"
+    }
+[2026-06-28T16:30:29.621Z] [WARN] writeSectionAttempt Pass 2 failed
+    {
+      "sectionNummer": "3.2"
+    }
+[2026-06-28T16:30:29.621Z] [ERROR] writeSectionAttempt all passes failed — returning empty section
+    {
+      "sectionNummer": "3.2",
+      "fullOutput": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Während die HPA-Achse den neurophysiologischen Stressarm der Mensch-Hund-Interaktion beschreibt, bildet das oxytocinergische System dessen hormonellen Gegenspieler. Oxytocin wird im Hypothalamus, konkret in den paraventrikulären und supraoptischen Kernen, produziert und gelangt nicht nur bei Geburt und Stillen in den Blutkreislauf, sondern auch durch nicht-nozizeptive sensorische Stimulation wie sanftes Streicheln[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", in: Frontiers in Psychology 8 (2017), Art. 1796, S. 1.]]. Genau dieser Mechanismus wird durch typische Interaktionsformen mit Hunden am Arbeitsplatz — Streicheln, Sprechen und Blickkontakt — ausgelöst und führt konsistent zu messbaren Oxytocinanstiegen bei beiden Interaktionspartnern[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", in: Frontiers in Psychology 8 (2017), Art. 1796, S. 2.]].\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Zentral für das Verständnis dieses Prozesses ist der von Nagasawa et al. beschriebene „oxytocin-gaze positive loop\": Gegenseitiger Blickkontakt zwischen Mensch und Hund initiiert bei beiden eine Oxytocin-Ausschüttung, die ihrerseits das Blickverhalten intensiviert und damit die Hormonausschüttung weiter verstärkt[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", in: Frontiers in Psychology 8 (2017), Art. 1796, S. 2.]]. Die oxytocinergische Aktivierung wirkt direkt dämpfend auf die HPA-Achse: Erhöhte Oxytocinspiegel hemmen die basale und stressinduzierte Aktivität der Hypothalamus-Hypophysen-Nebennierenrinden-Achse und senken dadurch die Cortisolfreisetzung[[CITE:Beetz et al. 2012:Vgl. Andrea Beetz, Kerstin Uvnäs-Moberg, Henri Julius und Kurt Kotrschal, „Psychosocial and Psychophysiological Effects of Human-Animal Interactions: The Possible Role of Oxytocin\", in: Frontiers in Psychology 3 (2012), Art. 234, S. 1.]]. Dieser Rückkopplungskreis verankert die stressmindernde Wirkung von Hundekontakt hormonell und hebt sie damit klar von bloßen Ablenkungseffekten ab.\",\n      \"bold\": false,\n      \"italic\": false\n    },\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Für den Arbeitskontext ist dabei entscheidend, dass die Interaktionsqualität die hormonelle Antwort moduliert. Petersson et al. zeigten, dass Hundehalterinnen mit niedrigen basalen Oxytocin-Ausgangswerten ihren Hund häufiger berührten, was als kompensatorisches Suchverhalten nach oxytocinergischer Stimulation gedeutet werden kann[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are Associated with Behavioral Patterns: An Exploratory Study\", in: Frontiers in Psychology 8 (2017), Art. 1796, S. 4–5.]]. Besonders aktivierende Berührungsformen wie Kratzen und Klopfen erhöhten hingegen den Cortisolspiegel der Hunde, was unterstreicht, dass beruhigendes, sanftes Streicheln für die stressreduzierende Wirkung ausschlaggebend ist[[CITE:Petersson et al. 2017:Vgl. Maria Petersson, Kerstin Uvnäs-Moberg, Anne Nilsson, Lise-Lotte Gustafson, Eva Hydbring-Sandberg und Linda Handlin, „Oxytocin and Cortisol Levels in Dog Owners and Their Dogs Are"
+    }
+[2026-06-28T16:30:29.622Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.2",
+      "wordCount": 0,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:30:29.744Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "3.3",
+      "problems": "Abschnitt 3.3 ist vollständig leer (wordCount: 0, text: \"\"). Die Analyse dopaminerger und serotonerger Systeme sowie die"
+    }
+[2026-06-28T16:30:29.745Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.3",
+      "sectionTitel": "Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem"
+    }
+[2026-06-28T16:30:57.227Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.3",
+      "chars": 4243,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.3\",\n  \"sectionTitel\": \"Weitere neurobiologische Effekte: Dopamin, Serotonin und das Belohnungssystem\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die"
+    }
+[2026-06-28T16:30:57.228Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.3"
+    }
+[2026-06-28T16:30:57.228Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "3.3",
+      "wordCount": 312
+    }
+[2026-06-28T16:30:57.229Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.3",
+      "wordCount": 312,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:30:57.305Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "4",
+      "problems": "Das Fazit synthetisiert Befunde aus Abschnitten (3.1, 3.2, 3.3), die tatsächlich nicht ausgearbeitet wurden. Konkrete Za"
+    }
+[2026-06-28T16:30:57.305Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "4",
+      "sectionTitel": "Fazit und Ausblick"
+    }
+[2026-06-28T16:31:24.207Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "4",
+      "chars": 4311,
+      "preview": "```json\n{\n  \"sectionNummer\": \"4\",\n  \"sectionTitel\": \"Fazit und Ausblick\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die vorliegende Arbeit hat gezeigt, dass die stressreduzierende "
+    }
+[2026-06-28T16:31:24.208Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "4"
+    }
+[2026-06-28T16:31:24.208Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "4",
+      "wordCount": 260
+    }
+[2026-06-28T16:31:24.208Z] [INFO] writeSection done
+    {
+      "sectionNummer": "4",
+      "wordCount": 260,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:31:24.273Z] [INFO] rewriting section after critique
+    {
+      "sectionNummer": "1",
+      "problems": "Die Einleitung enthält einen expliziten Aufbau-Absatz mit Meta-Sprache ('Die Arbeit gliedert sich in vier Kapitel: Auf d"
+    }
+[2026-06-28T16:31:24.274Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "1",
+      "sectionTitel": "Einleitung"
+    }
+[2026-06-28T16:31:39.900Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "1",
+      "chars": 2212,
+      "preview": "```json\n{\n  \"sectionNummer\": \"1\",\n  \"sectionTitel\": \"Einleitung\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingte Belastungen zählen zu den zentralen Herausforderungen mo"
+    }
+[2026-06-28T16:31:39.901Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "1"
+    }
+[2026-06-28T16:31:39.901Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "1",
+      "wordCount": 210
+    }
+[2026-06-28T16:31:39.901Z] [INFO] writeSection done
+    {
+      "sectionNummer": "1",
+      "wordCount": 210,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T16:31:39.902Z] [INFO] review-content done
+    {
+      "iterations": 3,
+      "rewrites": 18,
+      "validationErrors": 0,
+      "validationWarnings": 4
+    }
+
+============================================================
+=== assemble-docx — 2026-06-28T16:35:35.094Z ===
+============================================================
+[2026-06-28T16:35:35.096Z] [INFO] assemble-docx start
+    {
+      "sectionCount": 10,
+      "totalWordCount": 1619
+    }
+[2026-06-28T16:35:35.165Z] [INFO] assemble-docx done
+    {
+      "bufferBytes": 48255
     }

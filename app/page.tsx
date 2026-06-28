@@ -6,19 +6,7 @@ import { useRouter } from "next/navigation";
 import { Upload, X, Loader2 } from "lucide-react";
 import { HEADER, FORM_PAGE } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import type { SessionInput } from "@/lib/types";
-
-function fileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      resolve(result.split(",")[1]);
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
+import type { SessionInput, ParsedSource } from "@/lib/types";
 
 function UploadZone({
   multiple,
@@ -163,16 +151,20 @@ export default function HomePage() {
     if (!validate()) return;
     setIsSubmitting(true);
     try {
-      const quellenBase64 = await Promise.all(quellenFiles.map(fileToBase64));
+      const parsedSources: ParsedSource[] = [];
+      for (const file of quellenFiles) {
+        const fd = new FormData();
+        fd.append("file", file, file.name);
+        const res = await fetch("/api/parse-source", { method: "POST", body: fd });
+        if (!res.ok) throw new Error(`Fehler beim Lesen: ${file.name}`);
+        parsedSources.push(await res.json());
+      }
 
       const sessionInput: SessionInput = {
         forschungsfrage: forschungsfrage.trim(),
         gliederung: gliederung.trim(),
         zielWortanzahl: Number(zielWortanzahl),
-        quellenFiles: quellenFiles.map((f, i) => ({
-          name: f.name,
-          base64: quellenBase64[i],
-        })),
+        parsedSources,
       };
 
       sessionStorage.setItem("generatorInput", JSON.stringify(sessionInput));
@@ -180,8 +172,7 @@ export default function HomePage() {
     } catch (err) {
       console.error(err);
       setErrors({
-        submit:
-          "Fehler beim Vorbereiten der Dateien. Bitte versuche es erneut.",
+        submit: "Fehler beim Lesen der PDFs. Bitte versuche es erneut.",
       });
       setIsSubmitting(false);
     }
