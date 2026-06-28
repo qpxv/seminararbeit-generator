@@ -34,7 +34,7 @@ export async function POST(request: Request) {
         leitfadenRules,
         expandedOutline.gesamtWortanzahlZiel
       );
-      return Response.json({ finalDocument: currentDoc, reviewLog, reviewChanges, validationResult });
+      return Response.json({ finalDocument: currentDoc, reviewLog, reviewChanges, validationResult, reviewSkipped: true });
     }
 
     for (let iteration = 1; iteration <= 3; iteration++) {

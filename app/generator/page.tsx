@@ -65,12 +65,14 @@ function PipelineStatus({
   totalSections,
   currentSectionTitel,
   reviewLog,
+  reviewSkipped,
 }: {
   phase: GeneratorPhase;
   completedSections: number;
   totalSections: number;
   currentSectionTitel: string;
   reviewLog: ReviewResult[];
+  reviewSkipped: boolean;
 }) {
   const currentIndex = PHASE_ORDER.indexOf(phase);
 
@@ -95,9 +97,11 @@ function PipelineStatus({
                 <p
                   className={cn(
                     "text-sm",
-                    status === "pending"
-                      ? "text-fom-grey-400"
-                      : "text-fom-grey-800"
+                    reviewSkipped && step.id === "reviewing"
+                      ? "line-through text-fom-grey-400"
+                      : status === "pending"
+                        ? "text-fom-grey-400"
+                        : "text-fom-grey-800"
                   )}
                 >
                   {step.label}
@@ -320,6 +324,7 @@ export default function GeneratorPage() {
   const [reviewLog, setReviewLog] = useState<ReviewResult[]>([]);
   const [reviewChanges, setReviewChanges] = useState<ReviewChange[]>([]);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
+  const [reviewSkipped, setReviewSkipped] = useState(false);
   const [metaLanguageWarnings, setMetaLanguageWarnings] = useState<string[]>([]);
   const [wordCountWarnings, setWordCountWarnings] = useState<
     Array<{ sectionNummer: string; target: number; actual: number; deviation: number }>
@@ -427,16 +432,19 @@ export default function GeneratorPage() {
           reviewLog: log,
           reviewChanges: changes,
           validationResult: valResult,
+          reviewSkipped: skipped,
         } = (await reviewRes.json()) as {
           finalDocument: DocumentContent;
           reviewLog: ReviewResult[];
           reviewChanges: ReviewChange[];
           validationResult: ValidationResult;
+          reviewSkipped?: boolean;
         };
 
         setReviewLog(log);
         setReviewChanges(changes ?? []);
         setValidationResult(valResult ?? null);
+        if (skipped) setReviewSkipped(true);
 
         const result: SessionResult = {
           finalDocument: reviewedDoc,
@@ -712,6 +720,7 @@ export default function GeneratorPage() {
                 totalSections={totalSections}
                 currentSectionTitel={currentSectionTitel}
                 reviewLog={reviewLog}
+                reviewSkipped={reviewSkipped}
               />
             </div>
             <div className="flex-1 min-w-0">{rightContent()}</div>
