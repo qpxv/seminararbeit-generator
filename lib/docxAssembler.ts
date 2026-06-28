@@ -45,7 +45,7 @@ function parseCiteTags(
     lastIndex = match.index + match[0].length;
   }
 
-  const remaining = text.slice(lastIndex);
+  const remaining = text.slice(lastIndex).replace(/^ +(?=[.,;:!?])/, "");
   if (remaining) parts.push({ text: remaining });
 
   return parts;

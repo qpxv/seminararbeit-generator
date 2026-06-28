@@ -1,0 +1,1024 @@
+
+============================================================
+=== generate-outline — 2026-06-28T14:55:12.584Z ===
+============================================================
+[2026-06-28T14:55:12.586Z] [INFO] generate-outline POST received
+    {
+      "forschungsfrage": "Welche neurobiologischen Mechanismen erklären die stressreduzierende Wirkung von",
+      "zielWortanzahl": 1000
+    }
+[2026-06-28T14:55:12.587Z] [INFO] generateOutline start
+    {
+      "forschungsfrage": "Welche neurobiologischen Mechanismen erklären die stressreduzierende Wirkung von",
+      "zielWortanzahl": 1000,
+      "quellen": 6
+    }
+[2026-06-28T14:56:01.522Z] [INFO] generateOutline done
+    {
+      "sectionCount": 10,
+      "totalWordTarget": 1000
+    }
+[2026-06-28T14:56:01.524Z] [INFO] generate-outline POST done
+    {
+      "sections": [
+        {
+          "nummer": "1",
+          "titel": "Einleitung",
+          "words": 120,
+          "type": "einleitung"
+        },
+        {
+          "nummer": "2",
+          "titel": "Theoretische Grundlagen",
+          "words": 10,
+          "type": "kapitelkopf"
+        },
+        {
+          "nummer": "2.1",
+          "titel": "Arbeitsbedingter Stress",
+          "words": 130,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "2.2",
+          "titel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive",
+          "words": 130,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "2.3",
+          "titel": "Neurobiologische Grundlagen der Stressregulation",
+          "words": 130,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "3",
+          "titel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz",
+          "words": 10,
+          "type": "kapitelkopf"
+        },
+        {
+          "nummer": "3.1",
+          "titel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz",
+          "words": 160,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "3.2",
+          "titel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld",
+          "words": 160,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "3.3",
+          "titel": "Weitere neurobiologische Effekte",
+          "words": 130,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "4",
+          "titel": "Fazit und Ausblick",
+          "words": 120,
+          "type": "fazit"
+        }
+      ]
+    }
+
+============================================================
+=== generate-content — 2026-06-28T14:56:03.425Z ===
+============================================================
+[2026-06-28T14:56:03.425Z] [INFO] generate-content POST received
+    {
+      "sectionCount": 10
+    }
+[2026-06-28T14:56:03.426Z] [INFO] writing section 1/10
+    {
+      "nummer": "1",
+      "titel": "Einleitung",
+      "target": 120
+    }
+[2026-06-28T14:56:03.447Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "1",
+      "sectionTitel": "Einleitung"
+    }
+[2026-06-28T14:56:16.711Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "1",
+      "chars": 1636,
+      "preview": "```json\n{\n  \"sectionNummer\": \"1\",\n  \"sectionTitel\": \"Einleitung\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress zählt zu den drängendsten gesundheitspolitischen"
+    }
+[2026-06-28T14:56:16.711Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "1"
+    }
+[2026-06-28T14:56:16.711Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "1",
+      "wordCount": 130
+    }
+[2026-06-28T14:56:16.712Z] [INFO] writeSection done
+    {
+      "sectionNummer": "1",
+      "wordCount": 130,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T14:56:16.712Z] [INFO] word count result
+    {
+      "nummer": "1",
+      "actual": 109,
+      "target": 120,
+      "deviationPct": -9,
+      "extended": false
+    }
+[2026-06-28T14:56:23.748Z] [INFO] writing section 2/10
+    {
+      "nummer": "2",
+      "titel": "Theoretische Grundlagen",
+      "target": 10
+    }
+[2026-06-28T14:56:23.766Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2",
+      "sectionTitel": "Theoretische Grundlagen"
+    }
+[2026-06-28T14:56:26.769Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2",
+      "chars": 308,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2\",\n  \"sectionTitel\": \"Theoretische Grundlagen\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Stress, Mensch-Hund-Bindung und Oxytocinregulation bilden d"
+    }
+[2026-06-28T14:56:26.769Z] [INFO] writeSectionAttempt Pass 1 OK
+    {
+      "sectionNummer": "2",
+      "wordCount": 11
+    }
+[2026-06-28T14:56:26.769Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2",
+      "wordCount": 11,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T14:56:26.770Z] [INFO] word count result
+    {
+      "nummer": "2",
+      "actual": 8,
+      "target": 10,
+      "deviationPct": -20,
+      "extended": false
+    }
+[2026-06-28T14:56:29.562Z] [INFO] writing section 3/10
+    {
+      "nummer": "2.1",
+      "titel": "Arbeitsbedingter Stress",
+      "target": 130
+    }
+[2026-06-28T14:56:29.584Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2.1",
+      "sectionTitel": "Arbeitsbedingter Stress"
+    }
+[2026-06-28T14:56:43.911Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2.1",
+      "chars": 1995,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.1\",\n  \"sectionTitel\": \"Arbeitsbedingter Stress\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress entsteht, wenn die wahrgenommenen"
+    }
+[2026-06-28T14:56:43.912Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "2.1"
+    }
+[2026-06-28T14:56:43.912Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "2.1",
+      "wordCount": 134
+    }
+[2026-06-28T14:56:43.912Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2.1",
+      "wordCount": 134,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T14:56:43.912Z] [INFO] word count result
+    {
+      "nummer": "2.1",
+      "actual": 113,
+      "target": 130,
+      "deviationPct": -13,
+      "extended": false
+    }
+[2026-06-28T14:56:47.839Z] [INFO] writing section 4/10
+    {
+      "nummer": "2.2",
+      "titel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive",
+      "target": 130
+    }
+[2026-06-28T14:56:47.859Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2.2",
+      "sectionTitel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive"
+    }
+[2026-06-28T14:56:59.846Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2.2",
+      "chars": 1630,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.2\",\n  \"sectionTitel\": \"Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Mensch u"
+    }
+[2026-06-28T14:56:59.846Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "2.2"
+    }
+[2026-06-28T14:56:59.847Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "2.2",
+      "wordCount": 143
+    }
+[2026-06-28T14:56:59.847Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2.2",
+      "wordCount": 143,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T14:56:59.847Z] [INFO] word count result
+    {
+      "nummer": "2.2",
+      "actual": 123,
+      "target": 130,
+      "deviationPct": -5,
+      "extended": false
+    }
+[2026-06-28T14:57:03.368Z] [INFO] writing section 5/10
+    {
+      "nummer": "2.3",
+      "titel": "Neurobiologische Grundlagen der Stressregulation",
+      "target": 130
+    }
+[2026-06-28T14:57:03.387Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2.3",
+      "sectionTitel": "Neurobiologische Grundlagen der Stressregulation"
+    }
+[2026-06-28T14:57:18.772Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2.3",
+      "chars": 2170,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.3\",\n  \"sectionTitel\": \"Neurobiologische Grundlagen der Stressregulation\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Cortisol gilt als zentraler bioc"
+    }
+[2026-06-28T14:57:18.772Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "2.3"
+    }
+[2026-06-28T14:57:18.772Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "2.3",
+      "wordCount": 138
+    }
+[2026-06-28T14:57:18.773Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2.3",
+      "wordCount": 138,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T14:57:18.773Z] [INFO] word count result
+    {
+      "nummer": "2.3",
+      "actual": 112,
+      "target": 130,
+      "deviationPct": -14,
+      "extended": false
+    }
+[2026-06-28T14:57:23.122Z] [INFO] writing section 6/10
+    {
+      "nummer": "3",
+      "titel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz",
+      "target": 10
+    }
+[2026-06-28T14:57:23.140Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3",
+      "sectionTitel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz"
+    }
+[2026-06-28T14:57:26.860Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3",
+      "chars": 412,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3\",\n  \"sectionTitel\": \"Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Konvergierende Evid"
+    }
+[2026-06-28T14:57:26.861Z] [INFO] writeSectionAttempt Pass 1 OK
+    {
+      "sectionNummer": "3",
+      "wordCount": 11
+    }
+[2026-06-28T14:57:26.861Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3",
+      "wordCount": 11,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T14:57:26.861Z] [INFO] word count result
+    {
+      "nummer": "3",
+      "actual": 14,
+      "target": 10,
+      "deviationPct": 40,
+      "extended": false
+    }
+[2026-06-28T14:57:29.897Z] [INFO] writing section 7/10
+    {
+      "nummer": "3.1",
+      "titel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz",
+      "target": 160
+    }
+[2026-06-28T14:57:29.919Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.1",
+      "sectionTitel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz"
+    }
+[2026-06-28T14:57:47.491Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.1",
+      "chars": 2141,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Emp"
+    }
+[2026-06-28T14:57:47.491Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.1"
+    }
+[2026-06-28T14:57:47.492Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "3.1",
+      "wordCount": 162
+    }
+[2026-06-28T14:57:47.492Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.1",
+      "wordCount": 162,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T14:57:47.492Z] [INFO] word count result
+    {
+      "nummer": "3.1",
+      "actual": 135,
+      "target": 160,
+      "deviationPct": -16,
+      "extended": false
+    }
+[2026-06-28T14:57:50.986Z] [INFO] writing section 8/10
+    {
+      "nummer": "3.2",
+      "titel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld",
+      "target": 160
+    }
+[2026-06-28T14:57:51.008Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.2",
+      "sectionTitel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld"
+    }
+[2026-06-28T14:58:04.793Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.2",
+      "chars": 1735,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": "
+    }
+[2026-06-28T14:58:04.793Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.2"
+    }
+[2026-06-28T14:58:04.794Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "3.2",
+      "wordCount": 162
+    }
+[2026-06-28T14:58:04.794Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.2",
+      "wordCount": 162,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T14:58:04.794Z] [INFO] word count result
+    {
+      "nummer": "3.2",
+      "actual": 139,
+      "target": 160,
+      "deviationPct": -13,
+      "extended": false
+    }
+[2026-06-28T14:58:08.779Z] [INFO] writing section 9/10
+    {
+      "nummer": "3.3",
+      "titel": "Weitere neurobiologische Effekte",
+      "target": 130
+    }
+[2026-06-28T14:58:08.802Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.3",
+      "sectionTitel": "Weitere neurobiologische Effekte"
+    }
+[2026-06-28T14:58:21.361Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.3",
+      "chars": 1622,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.3\",\n  \"sectionTitel\": \"Weitere neurobiologische Effekte\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die stressreduzierende Wirkung von Hunden am Arb"
+    }
+[2026-06-28T14:58:21.361Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.3"
+    }
+[2026-06-28T14:58:21.361Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "3.3",
+      "wordCount": 138
+    }
+[2026-06-28T14:58:21.361Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.3",
+      "wordCount": 138,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T14:58:21.362Z] [INFO] word count result
+    {
+      "nummer": "3.3",
+      "actual": 116,
+      "target": 130,
+      "deviationPct": -11,
+      "extended": false
+    }
+[2026-06-28T14:58:25.958Z] [INFO] writing section 10/10
+    {
+      "nummer": "4",
+      "titel": "Fazit und Ausblick",
+      "target": 120
+    }
+[2026-06-28T14:58:25.981Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "4",
+      "sectionTitel": "Fazit und Ausblick"
+    }
+[2026-06-28T14:58:38.604Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "4",
+      "chars": 1568,
+      "preview": "```json\n{\n  \"sectionNummer\": \"4\",\n  \"sectionTitel\": \"Fazit und Ausblick\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die vorliegende Arbeit zeigt, dass die stressreduzierende Wirkun"
+    }
+[2026-06-28T14:58:38.604Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "4"
+    }
+[2026-06-28T14:58:38.605Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "4",
+      "wordCount": 127
+    }
+[2026-06-28T14:58:38.605Z] [INFO] writeSection done
+    {
+      "sectionNummer": "4",
+      "wordCount": 127,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T14:58:38.605Z] [INFO] word count result
+    {
+      "nummer": "4",
+      "actual": 119,
+      "target": 120,
+      "deviationPct": -1,
+      "extended": false
+    }
+[2026-06-28T14:58:42.068Z] [INFO] generate-content done
+    {
+      "totalSections": 10,
+      "totalWords": 1156
+    }
+
+============================================================
+=== review-content — 2026-06-28T14:58:42.112Z ===
+============================================================
+[2026-06-28T14:58:42.112Z] [INFO] review-content POST received
+    {
+      "REVIEW_STEP": "false",
+      "sectionCount": 10
+    }
+
+============================================================
+=== assemble-docx — 2026-06-28T14:58:45.958Z ===
+============================================================
+[2026-06-28T14:58:45.960Z] [INFO] assemble-docx start
+    {
+      "sectionCount": 10,
+      "totalWordCount": 1156
+    }
+[2026-06-28T14:58:46.038Z] [INFO] assemble-docx done
+    {
+      "bufferBytes": 44796
+    }
+
+============================================================
+=== generate-outline — 2026-06-28T15:17:30.649Z ===
+============================================================
+[2026-06-28T15:17:30.651Z] [INFO] generate-outline POST received
+    {
+      "forschungsfrage": "Welche neurobiologischen Mechanismen erklären die stressreduzierende Wirkung von",
+      "zielWortanzahl": 1000
+    }
+[2026-06-28T15:17:30.652Z] [INFO] generateOutline start
+    {
+      "forschungsfrage": "Welche neurobiologischen Mechanismen erklären die stressreduzierende Wirkung von",
+      "zielWortanzahl": 1000,
+      "quellen": 6
+    }
+[2026-06-28T15:18:16.887Z] [INFO] generateOutline done
+    {
+      "sectionCount": 10,
+      "totalWordTarget": 1000
+    }
+[2026-06-28T15:18:16.888Z] [INFO] generate-outline POST done
+    {
+      "sections": [
+        {
+          "nummer": "1",
+          "titel": "Einleitung",
+          "words": 100,
+          "type": "einleitung"
+        },
+        {
+          "nummer": "2",
+          "titel": "Theoretische Grundlagen",
+          "words": 30,
+          "type": "kapitelkopf"
+        },
+        {
+          "nummer": "2.1",
+          "titel": "Arbeitsbedingter Stress",
+          "words": 150,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "2.2",
+          "titel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive",
+          "words": 150,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "2.3",
+          "titel": "Neurobiologische Grundlagen der Stressregulation",
+          "words": 150,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "3",
+          "titel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz",
+          "words": 30,
+          "type": "kapitelkopf"
+        },
+        {
+          "nummer": "3.1",
+          "titel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz",
+          "words": 160,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "3.2",
+          "titel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld",
+          "words": 160,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "3.3",
+          "titel": "Weitere neurobiologische Effekte",
+          "words": 120,
+          "type": "hauptteil"
+        },
+        {
+          "nummer": "4",
+          "titel": "Fazit und Ausblick",
+          "words": 100,
+          "type": "fazit"
+        }
+      ]
+    }
+
+============================================================
+=== generate-content — 2026-06-28T15:18:57.032Z ===
+============================================================
+[2026-06-28T15:18:57.032Z] [INFO] generate-content POST received
+    {
+      "sectionCount": 10
+    }
+[2026-06-28T15:18:57.033Z] [INFO] writing section 1/10
+    {
+      "nummer": "1",
+      "titel": "Einleitung",
+      "target": 100
+    }
+[2026-06-28T15:18:57.050Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "1",
+      "sectionTitel": "Einleitung"
+    }
+[2026-06-28T15:19:08.121Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "1",
+      "chars": 1472,
+      "preview": "```json\n{\n  \"sectionNummer\": \"1\",\n  \"sectionTitel\": \"Einleitung\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress gehört zu den zentralen Gesundheitsrisiken moder"
+    }
+[2026-06-28T15:19:08.121Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "1"
+    }
+[2026-06-28T15:19:08.122Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "1",
+      "wordCount": 152
+    }
+[2026-06-28T15:19:08.122Z] [INFO] writeSection done
+    {
+      "sectionNummer": "1",
+      "wordCount": 152,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T15:19:08.122Z] [INFO] word count result
+    {
+      "nummer": "1",
+      "actual": 104,
+      "target": 100,
+      "deviationPct": 4,
+      "extended": false
+    }
+[2026-06-28T15:19:12.339Z] [INFO] writing section 2/10
+    {
+      "nummer": "2",
+      "titel": "Theoretische Grundlagen",
+      "target": 30
+    }
+[2026-06-28T15:19:12.358Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2",
+      "sectionTitel": "Theoretische Grundlagen"
+    }
+[2026-06-28T15:19:16.638Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2",
+      "chars": 486,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2\",\n  \"sectionTitel\": \"Theoretische Grundlagen\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress, die neurobiologische Stressregulat"
+    }
+[2026-06-28T15:19:16.639Z] [INFO] writeSectionAttempt Pass 1 OK
+    {
+      "sectionNummer": "2",
+      "wordCount": 33
+    }
+[2026-06-28T15:19:16.639Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2",
+      "wordCount": 33,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T15:19:16.639Z] [INFO] word count result
+    {
+      "nummer": "2",
+      "actual": 24,
+      "target": 30,
+      "deviationPct": -20,
+      "extended": false
+    }
+[2026-06-28T15:19:19.811Z] [INFO] writing section 3/10
+    {
+      "nummer": "2.1",
+      "titel": "Arbeitsbedingter Stress",
+      "target": 150
+    }
+[2026-06-28T15:19:19.831Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2.1",
+      "sectionTitel": "Arbeitsbedingter Stress"
+    }
+[2026-06-28T15:19:33.936Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2.1",
+      "chars": 2013,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.1\",\n  \"sectionTitel\": \"Arbeitsbedingter Stress\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Arbeitsbedingter Stress entsteht, wenn berufliche Anforde"
+    }
+[2026-06-28T15:19:33.936Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "2.1"
+    }
+[2026-06-28T15:19:33.936Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "2.1",
+      "wordCount": 156
+    }
+[2026-06-28T15:19:33.937Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2.1",
+      "wordCount": 156,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T15:19:33.937Z] [INFO] word count result
+    {
+      "nummer": "2.1",
+      "actual": 123,
+      "target": 150,
+      "deviationPct": -18,
+      "extended": false
+    }
+[2026-06-28T15:19:37.870Z] [INFO] writing section 4/10
+    {
+      "nummer": "2.2",
+      "titel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive",
+      "target": 150
+    }
+[2026-06-28T15:19:37.888Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2.2",
+      "sectionTitel": "Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive"
+    }
+[2026-06-28T15:19:52.465Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2.2",
+      "chars": 1930,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.2\",\n  \"sectionTitel\": \"Die Beziehung zwischen Mensch und Hund aus neurobiologischer Perspektive\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die Mens"
+    }
+[2026-06-28T15:19:52.465Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "2.2"
+    }
+[2026-06-28T15:19:52.466Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "2.2",
+      "wordCount": 193
+    }
+[2026-06-28T15:19:52.466Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2.2",
+      "wordCount": 193,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T15:19:52.466Z] [INFO] word count result
+    {
+      "nummer": "2.2",
+      "actual": 158,
+      "target": 150,
+      "deviationPct": 5,
+      "extended": false
+    }
+[2026-06-28T15:19:56.878Z] [INFO] writing section 5/10
+    {
+      "nummer": "2.3",
+      "titel": "Neurobiologische Grundlagen der Stressregulation",
+      "target": 150
+    }
+[2026-06-28T15:19:56.898Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "2.3",
+      "sectionTitel": "Neurobiologische Grundlagen der Stressregulation"
+    }
+[2026-06-28T15:20:16.596Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "2.3",
+      "chars": 2399,
+      "preview": "```json\n{\n  \"sectionNummer\": \"2.3\",\n  \"sectionTitel\": \"Neurobiologische Grundlagen der Stressregulation\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die physiologische Stressantwort"
+    }
+[2026-06-28T15:20:16.597Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "2.3"
+    }
+[2026-06-28T15:20:16.597Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "2.3",
+      "wordCount": 163
+    }
+[2026-06-28T15:20:16.597Z] [INFO] writeSection done
+    {
+      "sectionNummer": "2.3",
+      "wordCount": 163,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T15:20:16.598Z] [INFO] word count result
+    {
+      "nummer": "2.3",
+      "actual": 129,
+      "target": 150,
+      "deviationPct": -14,
+      "extended": false
+    }
+[2026-06-28T15:20:21.334Z] [INFO] writing section 6/10
+    {
+      "nummer": "3",
+      "titel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz",
+      "target": 30
+    }
+[2026-06-28T15:20:21.353Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3",
+      "sectionTitel": "Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz"
+    }
+[2026-06-28T15:20:25.703Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3",
+      "chars": 500,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3\",\n  \"sectionTitel\": \"Neurobiologische Wirkungsmechanismen von Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die Anwesenheit von"
+    }
+[2026-06-28T15:20:25.703Z] [INFO] writeSectionAttempt Pass 1 OK
+    {
+      "sectionNummer": "3",
+      "wordCount": 33
+    }
+[2026-06-28T15:20:25.703Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3",
+      "wordCount": 33,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T15:20:25.704Z] [INFO] word count result
+    {
+      "nummer": "3",
+      "actual": 28,
+      "target": 30,
+      "deviationPct": -7,
+      "extended": false
+    }
+[2026-06-28T15:20:30.655Z] [INFO] writing section 7/10
+    {
+      "nummer": "3.1",
+      "titel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz",
+      "target": 160
+    }
+[2026-06-28T15:20:30.680Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.1",
+      "sectionTitel": "Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz"
+    }
+[2026-06-28T15:20:49.436Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.1",
+      "chars": 2583,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.1\",\n  \"sectionTitel\": \"Senkung des Cortisolspiegels durch die Interaktion mit Hunden am Arbeitsplatz\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Emp"
+    }
+[2026-06-28T15:20:49.436Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.1"
+    }
+[2026-06-28T15:20:49.436Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "3.1",
+      "wordCount": 162
+    }
+[2026-06-28T15:20:49.437Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.1",
+      "wordCount": 162,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T15:20:49.437Z] [INFO] word count result
+    {
+      "nummer": "3.1",
+      "actual": 167,
+      "target": 160,
+      "deviationPct": 4,
+      "extended": false
+    }
+[2026-06-28T15:20:53.669Z] [INFO] writing section 8/10
+    {
+      "nummer": "3.2",
+      "titel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld",
+      "target": 160
+    }
+[2026-06-28T15:20:53.691Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.2",
+      "sectionTitel": "Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld"
+    }
+[2026-06-28T15:21:08.788Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.2",
+      "chars": 2183,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.2\",\n  \"sectionTitel\": \"Förderung der Oxytocin-Ausschüttung durch den Kontakt mit Hunden im Arbeitsumfeld\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": "
+    }
+[2026-06-28T15:21:08.788Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.2"
+    }
+[2026-06-28T15:21:08.788Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "3.2",
+      "wordCount": 164
+    }
+[2026-06-28T15:21:08.789Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.2",
+      "wordCount": 164,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T15:21:08.789Z] [INFO] word count result
+    {
+      "nummer": "3.2",
+      "actual": 144,
+      "target": 160,
+      "deviationPct": -10,
+      "extended": false
+    }
+[2026-06-28T15:21:12.761Z] [INFO] writing section 9/10
+    {
+      "nummer": "3.3",
+      "titel": "Weitere neurobiologische Effekte",
+      "target": 120
+    }
+[2026-06-28T15:21:12.781Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "3.3",
+      "sectionTitel": "Weitere neurobiologische Effekte"
+    }
+[2026-06-28T15:21:25.394Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "3.3",
+      "chars": 1427,
+      "preview": "```json\n{\n  \"sectionNummer\": \"3.3\",\n  \"sectionTitel\": \"Weitere neurobiologische Effekte\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Neben Cortisol und Oxytocin wirken bei der Mensc"
+    }
+[2026-06-28T15:21:25.395Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "3.3"
+    }
+[2026-06-28T15:21:25.395Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "3.3",
+      "wordCount": 128
+    }
+[2026-06-28T15:21:25.395Z] [INFO] writeSection done
+    {
+      "sectionNummer": "3.3",
+      "wordCount": 128,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T15:21:25.395Z] [INFO] word count result
+    {
+      "nummer": "3.3",
+      "actual": 108,
+      "target": 120,
+      "deviationPct": -10,
+      "extended": false
+    }
+[2026-06-28T15:21:28.907Z] [INFO] writing section 10/10
+    {
+      "nummer": "4",
+      "titel": "Fazit und Ausblick",
+      "target": 100
+    }
+[2026-06-28T15:21:28.928Z] [INFO] writeSection attempt 1/3
+    {
+      "sectionNummer": "4",
+      "sectionTitel": "Fazit und Ausblick"
+    }
+[2026-06-28T15:21:41.918Z] [INFO] writeSectionAttempt stream done
+    {
+      "sectionNummer": "4",
+      "chars": 1572,
+      "preview": "```json\n{\n  \"sectionNummer\": \"4\",\n  \"sectionTitel\": \"Fazit und Ausblick\",\n  \"blocks\": [\n    {\n      \"type\": \"paragraph\",\n      \"text\": \"Die vorliegenden Befunde belegen, dass die stressreduzierende Wi"
+    }
+[2026-06-28T15:21:41.918Z] [WARN] writeSectionAttempt Pass 1 failed
+    {
+      "sectionNummer": "4"
+    }
+[2026-06-28T15:21:41.918Z] [INFO] writeSectionAttempt Pass 2 OK (fixTextValues)
+    {
+      "sectionNummer": "4",
+      "wordCount": 152
+    }
+[2026-06-28T15:21:41.919Z] [INFO] writeSection done
+    {
+      "sectionNummer": "4",
+      "wordCount": 152,
+      "metaLanguageWarning": false
+    }
+[2026-06-28T15:21:41.919Z] [INFO] word count result
+    {
+      "nummer": "4",
+      "actual": 117,
+      "target": 100,
+      "deviationPct": 17,
+      "extended": false
+    }
+[2026-06-28T15:21:46.906Z] [INFO] generate-content done
+    {
+      "totalSections": 10,
+      "totalWords": 1336
+    }
+
+============================================================
+=== review-content — 2026-06-28T15:21:46.953Z ===
+============================================================
+[2026-06-28T15:21:46.953Z] [INFO] review-content POST received
+    {
+      "REVIEW_STEP": "false",
+      "sectionCount": 10
+    }
+
+============================================================
+=== assemble-docx — 2026-06-28T15:21:53.653Z ===
+============================================================
+[2026-06-28T15:21:53.654Z] [INFO] assemble-docx start
+    {
+      "sectionCount": 10,
+      "totalWordCount": 1336
+    }
+[2026-06-28T15:21:53.734Z] [INFO] assemble-docx done
+    {
+      "bufferBytes": 45534
+    }

@@ -275,12 +275,11 @@ Erstelle jetzt die Expanded Outline als JSON. Schema:
 export function getRelevantChunks(
   sources: ParsedSource[],
   section: OutlineSection,
-  maxChunks = 5
+  maxChunks = 8
 ): string {
-  const keywords = section.blueprint
-    .toLowerCase()
-    .split(/\s+/)
-    .filter((w) => w.length > 4);
+  const titleKeywords = section.titel.toLowerCase().split(/\s+/).filter((w) => w.length > 4);
+  const blueprintKeywords = section.blueprint.toLowerCase().split(/\s+/).filter((w) => w.length > 4);
+  const keywords = [...new Set([...titleKeywords, ...blueprintKeywords])];
 
   const scored = sources.flatMap((s) =>
     s.chunks.map((chunk) => ({
@@ -300,19 +299,27 @@ export function getRelevantChunks(
 }
 
 // ─── Section-Prompt Builder ────────────────────────────────────────────────────
-function buildSectionTypeInstruction(section: OutlineSection): string {
+const GERMAN_CHAPTER_NUMBERS = ["null", "einem", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn"];
+
+function buildSectionTypeInstruction(section: OutlineSection, topLevelChapterCount?: number): string {
   if (section.sectionType === "einleitung") {
+    const chapterWord = topLevelChapterCount !== undefined
+      ? (topLevelChapterCount < GERMAN_CHAPTER_NUMBERS.length
+          ? GERMAN_CHAPTER_NUMBERS[topLevelChapterCount]
+          : String(topLevelChapterCount))
+      : "N";
     return `
 PFLICHT-STRUKTUR FÜR EINLEITUNG:
 1. Beginne mit einem konkreten Beispiel, einer aktuellen Statistik oder der gesellschaftlichen Relevanz des Themas — echter akademischer Fließtext, KEINE Ankündigungen.
 2. Leite organisch zur Forschungsfrage über und formuliere sie explizit.
-3. Erkläre den Aufbau der Arbeit in 2–3 Sätzen als Fließtext (z.B. "Die Arbeit gliedert sich in fünf Kapitel...").
+3. Erkläre den Aufbau der Arbeit in 2–3 Sätzen als Fließtext: Die Arbeit gliedert sich in ${chapterWord} Kapitel — benenne die Hauptkapitel kurz.
 Alle drei Punkte als kontinuierlicher Fließtext — KEIN Aufzählungsformat.`;
   }
   if (section.sectionType === "fazit") {
     return `
 PFLICHT-STRUKTUR FÜR FAZIT:
 1. Beginne mit einer kompakten Zusammenfassung der wichtigsten Befunde — benenne KONKRETE Ergebnisse und Zahlen, niemals Formulierungen wie "diese Arbeit hat untersucht, ob...".
+KRITISCH — Zahlenkonsistenz: Alle im Fazit genannten statistischen Werte, Prozentzahlen und Messergebnisse MÜSSEN exakt mit den Werten im Hauptteil übereinstimmen. Niemals eigenmächtig runden, schätzen oder paraphrasieren.
 2. Diskutiere 1–2 wesentliche Limitationen der Arbeit ehrlich und präzise.
 3. Schließe mit einem konkreten Ausblick: offene Forschungsfragen oder praktische Implikationen.
 Alles als zusammenhängender akademischer Fließtext — KEIN Aufzählungsformat.
@@ -340,12 +347,13 @@ function buildSectionPrompt(input: {
   leitfadenRules: LeitfadenRules;
   critique?: string;
   previousSectionSummaries?: SectionSummary[];
+  topLevelChapterCount?: number;
 }): string {
   const critiqueText = input.critique
     ? `\n\nKRITIK AUS VORHERIGEM REVIEW (bitte beheben):\n${input.critique}`
     : "";
 
-  const sectionTypeInstruction = buildSectionTypeInstruction(input.section);
+  const sectionTypeInstruction = buildSectionTypeInstruction(input.section, input.topLevelChapterCount);
   const antiRedundancy = buildAntiRedundancyBlock(input.previousSectionSummaries ?? []);
 
   return `AKTUELLER ABSCHNITT:
@@ -382,16 +390,18 @@ ABSOLUTE PFLICHTREGELN:
 3. Zitiere ausschließlich aus den bereitgestellten Quellenausschnitten. Niemals aus dem Gedächtnis.
 4. Antworte NUR mit validem JSON, KEIN Text davor oder danach.
 5. KRITISCH FÜR JSON-GÜLTIGKEIT: Verwende im "text"-Feld NIEMALS gerade ASCII-Anführungszeichen " — weder für Zitate noch für Hervorhebungen noch für Fachbegriffe. Nutze ausschließlich „deutsches Format" (U+201E/U+201C). Gerade " im Text zerstören das JSON.
+6. Verwende für biochemische Marker und Neurotransmitter die international übliche wissenschaftliche Schreibweise: „Cortisol" (nicht „Kortisol"), „Oxytocin" (nicht „Oxytozin"), „Dopamin" etc.
 
 ZITIERFORMAT — Chicago Notes-Bibliography (17. Aufl., eingedeutscht):
 Füge Zitate als [[CITE:...]]-Tags direkt am Ende des zitierten Satzes ein (vor dem Satzpunkt):
   Format: [[CITE:KurzRef:VollständigerErstnachweis]]
 
+Korrekte Position: Das Tag steht unmittelbar VOR dem abschließenden Satzpunkt, ohne Leerzeichen dazwischen: ...Aussage[[CITE:...]].
 KRITISCH: Verwende im fullRef AUSSCHLIESSLICH deutsche Anführungszeichen „..." für Titelnennungen — NIEMALS gerade Anführungszeichen " — sonst ist das JSON ungültig.
 
 Beispiele:
-  Sinngemäß: "Hunde senken den Kortisolspiegel nachweislich.[[CITE:Barker et al. 2012:Vgl. Barker, Sandra C., Randolph, Janet K. und Fondacaro, Mark R., „Dog Presence, Workplace Stress, and Organizational Perceptions", in: International Journal of Workplace Health Management 5 (1), 2012, S. 13.]]"
-  Wörtlich:   "„Dogs have a unique calming effect on humans in office settings"[[CITE:Allen 2003:Allen, Karen, „Multiple Roles of Pets in Human Health", in: Handbook on Animal-Assisted Therapy, 2003, S. 47.]]"
+  Sinngemäß: "Stress am Arbeitsplatz beeinträchtigt die Produktivität nachweislich[[CITE:Müller et al. 2018:Vgl. Müller, Thomas, Fischer, Anna und Weber, Klaus, „Stressoren im modernen Büroumfeld", in: Zeitschrift für Arbeitspsychologie 12 (2), 2018, S. 45.]]."
+  Wörtlich:   "„Chronic stress leads to measurable cognitive impairment"[[CITE:Schmidt 2020:Schmidt, Julia, Arbeitsstress und Kognition (Berlin: Springer, 2020), S. 112.]]."
 
 KurzRef-Format: Nachname (et al.) Jahr — z.B. "Barker et al. 2012", "Allen 2003"
 KRITISCH: Im fullRef IMMER alle Autorennamen vollständig ausschreiben — NIEMALS „u. a." oder „et al." im fullRef verwenden. Nur der KurzRef darf „et al." enthalten.
@@ -416,6 +426,7 @@ async function writeSectionAttempt(
     leitfadenRules: LeitfadenRules;
     critique?: string;
     previousSectionSummaries?: SectionSummary[];
+    topLevelChapterCount?: number;
   },
   retryNote: string
 ): Promise<SectionContent> {
@@ -501,6 +512,7 @@ export async function writeSection(input: {
   leitfadenRules: LeitfadenRules;
   critique?: string;
   previousSectionSummaries?: SectionSummary[];
+  topLevelChapterCount?: number;
 }): Promise<WriteSectionResult> {
   const MAX_RETRIES = 2;
   let lastSection: SectionContent | null = null;
@@ -619,8 +631,8 @@ export async function extractSectionSummary(
   try {
     const response = await client.messages.create({
       model: MODEL,
-      max_tokens: 200,
-      system: `Antworte ausschließlich mit einem JSON-Array von 3–5 deutschen Kernaussagen (kurze Strings, je max. 20 Wörter). Kein Text davor oder danach.`,
+      max_tokens: 300,
+      system: `Antworte ausschließlich mit einem JSON-Array von 3–5 deutschen Kernaussagen (kurze Strings, je max. 25 Wörter). Bewahre dabei alle numerischen Werte, Prozentzahlen und Messergebnisse EXAKT (z.B. „19,6 Punkte", „27,01 %"). Kein Text davor oder danach.`,
       messages: [
         {
           role: "user",
