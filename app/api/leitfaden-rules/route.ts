@@ -31,7 +31,7 @@ export async function GET() {
       ].filter(Boolean) as string[],
     };
 
-    return Response.json(rules);
+    return Response.json({ ...rules, reviewStepEnabled: process.env.REVIEW_STEP !== "false" });
   } catch (error) {
     console.error("leitfaden-rules error:", error);
     return Response.json(

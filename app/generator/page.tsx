@@ -432,19 +432,16 @@ export default function GeneratorPage() {
           reviewLog: log,
           reviewChanges: changes,
           validationResult: valResult,
-          reviewSkipped: skipped,
         } = (await reviewRes.json()) as {
           finalDocument: DocumentContent;
           reviewLog: ReviewResult[];
           reviewChanges: ReviewChange[];
           validationResult: ValidationResult;
-          reviewSkipped?: boolean;
         };
 
         setReviewLog(log);
         setReviewChanges(changes ?? []);
         setValidationResult(valResult ?? null);
-        if (skipped) setReviewSkipped(true);
 
         const result: SessionResult = {
           finalDocument: reviewedDoc,
@@ -487,7 +484,9 @@ export default function GeneratorPage() {
         setPhase("parsing_leitfaden");
         const rulesRes = await fetch("/api/leitfaden-rules");
         if (!rulesRes.ok) throw new Error("Fehler beim Laden der Leitfaden-Regeln");
-        const rules = (await rulesRes.json()) as LeitfadenRules;
+        const rulesData = (await rulesRes.json()) as LeitfadenRules & { reviewStepEnabled?: boolean };
+        if (rulesData.reviewStepEnabled === false) setReviewSkipped(true);
+        const rules: LeitfadenRules = rulesData;
         setLeitfadenRules(rules);
 
         setPhase("parsing_sources");
