@@ -24,17 +24,17 @@ A fully automated German academic paper generator. User enters a research questi
 | Route | File | Description |
 |-------|------|-------------|
 | `/` | `app/page.tsx` | Form: Forschungsfrage, Gliederung, Ziel-Wortanzahl (number input), source PDFs (optional locally, required in production). Text fields persist to `localStorage`. Converts files to base64, stores everything in `sessionStorage`, navigates to `/generator`. |
-| `/generator` | `app/generator/page.tsx` | `h-screen` two-column dashboard (no page-level scroll). Left: sticky pipeline status with step indicators and progress bar. Right: outline confirmation accordion → live section preview → review diff panel (yellow critique / green revision) after review completes. |
+| `/generator` | `app/generator/page.tsx` | `h-screen` two-column dashboard (no page-level scroll). Left: sticky pipeline status with step indicators and progress bar — "Qualitätsprüfung" step shows with strikethrough + muted grey from the first API call onward when `REVIEW_STEP=false`. Right: outline confirmation accordion → live section preview → review diff panel (yellow critique / green revision) after review completes. |
 | `/output` | `app/output/page.tsx` | Success card, DOCX download button, file structure display, collapsible Review-Protokoll with per-section yellow/green diff visualization. |
 
 ### API Routes
 | Route | File | Description |
 |-------|------|-------------|
-| `GET /api/leitfaden-rules` | `app/api/leitfaden-rules/route.ts` | Reads `lib/leitfaden-format.json`, maps to `LeitfadenRules`, returns JSON. Replaces the old PDF-upload-based parse flow. |
+| `GET /api/leitfaden-rules` | `app/api/leitfaden-rules/route.ts` | Reads `lib/leitfaden-format.json`, maps to `LeitfadenRules`, returns JSON. Also returns `reviewStepEnabled: boolean` (derived from `REVIEW_STEP` env) so the generator page can show the strikethrough immediately on load without a second env var. |
 | `POST /api/parse-source` | `app/api/parse-source/route.ts` | Receives source PDF as `FormData`, extracts text with pdf-parse v2, chunks into ~1000-word segments, returns `ParsedSource` JSON. |
 | `POST /api/generate-outline` | `app/api/generate-outline/route.ts` | Calls Agent 1a (Claude) with Forschungsfrage, Gliederung, `zielWortanzahl`, source filenames, and Leitfaden rules. Returns `ExpandedOutline` with per-section blueprints and word targets summing to `zielWortanzahl`. Post-processes each section through `inferSectionType()` before returning. |
 | `POST /api/generate-content` | `app/api/generate-content/route.ts` | **SSE streaming.** Writes each section via Agent 1b (streaming Claude call). Sends `phase`, `section_done`, `all_sections_done`, `keepalive`, `meta_language_warning`, `word_count_warning` events. Client reads via `fetch` + `body.getReader()`. Auto-extends sections >20% below target via `extendSection`. |
-| `POST /api/review-content` | `app/api/review-content/route.ts` | Runs Agent 2 review loop (max 3 iterations). Skipped entirely if `REVIEW_STEP=false`. Captures original section before each rewrite and returns `{ finalDocument, reviewLog, reviewChanges, validationResult }`. |
+| `POST /api/review-content` | `app/api/review-content/route.ts` | Runs Agent 2 review loop (max 3 iterations). Skipped entirely if `REVIEW_STEP=false`. Captures original section before each rewrite and returns `{ finalDocument, reviewLog, reviewChanges, validationResult, reviewSkipped? }`. |
 | `POST /api/assemble-docx` | `app/api/assemble-docx/route.ts` | Builds A4 Word document: cover page (FOM logo + env vars), manual TOC with dot leaders, content sections, bibliography, footnotes, page numbers. Returns `.docx` as `application/octet-stream`. |
 
 ### Library Files
@@ -46,7 +46,7 @@ A fully automated German academic paper generator. User enters a research questi
 | `lib/docxAssembler.ts` | `buildDocument()`: A4 page with margins from `LeitfadenRules`, cover page from env vars, manual TOC (TOC1/2/3 styles with dot leaders + estimated page numbers), heading injection from section metadata (AI heading blocks skipped), body with 1.5× line spacing, page numbers in footer (suppressed on cover via `titlePage: true`), bibliography with hanging indent. Internally creates a `CitationManager` and processes all `[[CITE:shortRef:fullRef]]` tags in document order. |
 | `lib/leitfaden-format.json` | FOM-specific formatting rules: 4/2/4/2 cm margins, Times New Roman 12pt, 1.5× spacing, footnote citations, bibliography titled "Literatur". Loaded by `/api/leitfaden-rules`. |
 | `lib/pdfParser.ts` | `extractTextFromPDF(buffer)` using pdf-parse v2 class API, `chunkText(text, chunkSize=1000)` |
-| `lib/utils.ts` | `cn(...classes)` — class merger. `detectMetaLanguage(text)` — 9 regex patterns for self-referential academic prose. `countWords(text)` — word count. `inferSectionType(titel)` — keyword match returning `"einleitung" \| "fazit" \| "hauptteil"`. |
+| `lib/utils.ts` | `cn(...classes)` — class merger. `detectMetaLanguage(text)` — 9 regex patterns for self-referential academic prose. `countWords(text)` — word count. `inferSectionType(titel)` — keyword match returning `"einleitung" \| "fazit" \| "hauptteil"`. `sanitizeHeadingTitle(titel)` — strips parenthetical content from section titles (e.g. `"Stress (Definition, Ursachen)"` → `"Stress"`). |
 | `lib/logger.ts` | `log(level, message, data?)` — appends timestamped JSON lines to `debug.log` in project root AND mirrors to console. `logRun(label)` — writes a `===` separator to distinguish runs. Never crashes the pipeline on write failure. |
 | `lib/validation.ts` | `validateDocument(doc, rules, zielWortanzahl)` — returns `ValidationResult` with `errors` (Einleitung/Fazit missing or <100 words) and `warnings` (sections without citations, meta-language detected, total word count outside ±20% of target). |
 
@@ -97,12 +97,12 @@ The AI embeds citations inline in paragraph text using a tag format:
 [[CITE:Allen 2003:Allen, Karen, „Pets in Human Health", in: Journal, 2003, S. 47.]]
 ```
 
-- **`shortRef`**: `Nachname (et al.) Jahr` — used for ibid detection and bibliography sort key
-- **`fullRef`**: Full Chicago Notes-Bibliography first-occurrence footnote text. **Must use German angle quotes `„…"` for titles, never ASCII `"`.** ASCII `"` inside a JSON string value breaks `JSON.parse`.
+- **`shortRef`**: `Nachname (et al.) Jahr` — used as the bibliography sort key. May use `et al.` for multi-author sources.
+- **`fullRef`**: Full Chicago Notes-Bibliography first-occurrence footnote text. **Must use German angle quotes `„…"` for titles, never ASCII `"`.** ASCII `"` inside a JSON string value breaks `JSON.parse`. **Must list ALL authors in full — never `u. a.` or `et al.` in the fullRef** (only the shortRef may abbreviate). This ensures the bibliography, which derives from fullRef, always shows complete author lists.
 - Tags survive unchanged through generate-content → review-content → sessionStorage.
 - At DOCX assembly time, `buildDocument()` creates a fresh `CitationManager` instance, scans all blocks in document order, and for each `[[CITE:]]` tag:
   - Calls `citationManager.addCitation(shortRef, fullRef)` → returns a globally sequential footnote `id`
-  - Formats the footnote text: first occurrence = fullRef, ibid (same shortRef as previous) = "Ebd.", repeat = short note (Nachname, Kurztitel, S. XX.)
+  - Formats the footnote text: first occurrence = fullRef, any repeat of the same shortRef = short note (Nachname, Kurztitel, S. XX.) — **no "Ebd." anywhere** (removed: collapsed different studies under one Ebd. chain, causing attribution errors)
   - Splits the paragraph text around the tag and inserts a `FootnoteReferenceRun(id)` inline
 - After all sections: builds `footnotes` record from all occurrences, builds bibliography by sorting `seenSources` alphabetically by extracted family name.
 - **Backward compat**: old `footnote_ref` block type is still handled in `blockToParagraphs` for sessions stored in `sessionStorage` before the tag system was introduced.
@@ -172,6 +172,7 @@ Fixed: `Math.min(8192, Math.max(1500, Math.ceil(words * 4)))`
 - Floor of **1500** ensures even tiny sections get enough tokens for structure + content
 - `× 4` multiplier accounts for German word tokenization overhead (German compound words tokenize to more tokens than words) and Chicago citation fullRef strings
 - Same fix applied to `extendSection`: `Math.min(4096, Math.max(1000, Math.ceil(delta * 4)))`
+- **Exception — `"kapitelkopf"` sections**: `Math.max(300, Math.ceil(words * 6))` — physically caps the output so Claude cannot write long paragraphs even if it ignores the prompt instruction
 
 ---
 
@@ -190,12 +191,16 @@ Fixed: `Math.min(8192, Math.max(1500, Math.ceil(words * 4)))`
 - Rule 3: Cite only from provided source chunks, never from memory
 - Rule 4: Output only valid JSON
 - Rule 5 (KRITISCH): Never use ASCII `"` in `"text"` fields — use `„German quotes"` only
+- Rule 6 (KRITISCH): In `fullRef`, always write ALL author names in full — never `u. a.` or `et al.`
 - Citation format: `[[CITE:shortRef:fullRef]]` with Chicago examples
 - Full JSON schema
 
+`buildSectionPrompt` word target line enforces a **two-sided strict range**: `"Schreibe zwischen ${min} und ${max} Wörtern. Weder kürzer noch länger."` (90%–115% of target). Previously only the lower bound was enforced, causing 15–600% overproduction.
+
 `buildSectionPrompt` branches by `section.sectionType`:
 - `"einleitung"`: injected instruction for concrete Einstieg → Forschungsfrage → Aufbau structure
-- `"fazit"`: injected instruction for Kernbefunde → Limitationen → Ausblick, no announcements
+- `"fazit"`: injected instruction for Kernbefunde → Limitationen → Ausblick + explicit `WORTLIMIT: maximal N Wörtern` to prevent the three-part structure from inflating past the target
+- `"kapitelkopf"`: injected instruction to write only 1–2 transitional sentences (the subsections carry all content); max_tokens capped at `Math.max(300, ceil(words * 6))` instead of the normal 1500 floor
 - `"hauptteil"`: no additional instruction
 
 ---
@@ -212,14 +217,20 @@ If a written section is >20% below its word target, `generate-content/route.ts` 
 
 ---
 
-## `sectionType` Inference
+## `sectionType` Inference + Heading Sanitization
 
-After `generateOutline` returns, `generate-outline/route.ts` maps each section through `inferSectionType(titel)` from `lib/utils.ts`. Keyword match:
+`generate-outline/route.ts` runs three post-processing passes after `generateOutline` returns:
+
+**Pass 1 — Title sanitization** via `sanitizeHeadingTitle(titel)` from `lib/utils.ts`: strips parenthetical content (e.g. `"Stress (Definition, Ursachen, Relevanz)"` → `"Stress"`). Claude frequently adds parenthetical context in headings; strict FOM style forbids parentheses in section titles.
+
+**Pass 2 — sectionType keyword match** via `inferSectionType(titel)`:
 - `"einleitung"` / `"einführung"` → `"einleitung"`
 - `"fazit"` / `"schluss"` / `"zusammenfassung"` / `"schlussbetrachtung"` / `"schlussfolgerung"` / `"ausblick und"` → `"fazit"`
 - anything else → `"hauptteil"`
 
-More reliable than asking Claude to self-classify. The `sectionType` field on `OutlineSection` is then available to `buildSectionPrompt` for type-specific instructions.
+**Pass 3 — Kapitelkopf detection**: among sections typed `"hauptteil"`, any section where `ebene === 1 && geschaetzteWorte <= 60 && nextSection.nummer.startsWith(s.nummer + ".")` is reclassified as `"kapitelkopf"`. These are chapter-heading sections whose real content lives entirely in their subsections. Without this detection, Claude wrote 170–220 words for 30-word targets (463–627% over). With it, they get a tight token budget and a prompt to write 1–2 sentences only.
+
+All four types are in the `OutlineSection.sectionType` union: `"einleitung" | "fazit" | "hauptteil" | "kapitelkopf"`.
 
 ---
 
