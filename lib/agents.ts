@@ -629,7 +629,8 @@ Antworte NUR mit einem JSON-Array:
       log("WARN", "extendSection: no JSON array found in response", { sectionNummer: section.sectionNummer });
       return section;
     }
-    const newBlocks = JSON.parse(fullText.slice(start, end + 1)) as ContentBlock[];
+    const rawSlice = fullText.slice(start, end + 1);
+    const newBlocks = JSON.parse(fixTextValues(rawSlice)) as ContentBlock[];
     const extended = { ...section, blocks: [...section.blocks, ...newBlocks] };
     log("INFO", "extendSection done", { sectionNummer: section.sectionNummer, addedBlocks: newBlocks.length });
     return extended;

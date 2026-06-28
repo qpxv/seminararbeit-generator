@@ -25,14 +25,20 @@ export async function POST(request: Request) {
       sectionType: s.sectionType ?? inferSectionType(s.titel),
     }));
 
-    // Second pass: detect chapter-header sections (ebene 1 with small target and subsections)
-    // These should write only a 1-2 sentence intro, not full content.
+    // Second pass: detect chapter-header sections (ebene 1 with subsections).
+    // Any top-level chapter that has subsections is a kapitelkopf — it should
+    // write only 1-2 introductory sentences, never full content. The word-count
+    // gate (<= 60) is intentionally removed: the outline agent assigns large word
+    // targets to parent chapters (e.g. 523w for "Theoretische Grundlagen"), which
+    // caused them to miss detection and write 500w intros duplicating their
+    // subsections — triggering 10 review rewrites per run. Forcing geschaetzteWorte
+    // to 40 here lets Pass 4 scaling redistribute those words to the subsections.
     outline.abschnitte = outline.abschnitte.map((s, idx, arr) => {
       if (s.sectionType !== "hauptteil") return s;
       const nextSection = arr[idx + 1];
       const hasSubsections = nextSection?.nummer.startsWith(s.nummer + ".");
-      if (s.ebene === 1 && s.geschaetzteWorte <= 60 && hasSubsections) {
-        return { ...s, sectionType: "kapitelkopf" as const };
+      if (s.ebene === 1 && hasSubsections) {
+        return { ...s, sectionType: "kapitelkopf" as const, geschaetzteWorte: 40 };
       }
       return s;
     });
