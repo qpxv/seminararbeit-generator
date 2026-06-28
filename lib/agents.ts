@@ -321,6 +321,7 @@ PFLICHT-STRUKTUR FÜR FAZIT:
 1. Beginne mit einer kompakten Zusammenfassung der wichtigsten Befunde — benenne KONKRETE Ergebnisse und Zahlen, niemals Formulierungen wie "diese Arbeit hat untersucht, ob...".
 KRITISCH — Zahlenkonsistenz: Alle im Fazit genannten statistischen Werte, Prozentzahlen und Messergebnisse MÜSSEN exakt mit den Werten im Hauptteil übereinstimmen. Niemals eigenmächtig runden, schätzen oder paraphrasieren.
 2. Diskutiere 1–2 wesentliche Limitationen der Arbeit ehrlich und präzise.
+KRITISCH — Studiendesign-Begriffe: Beschreibe Limitationen des Studiendesigns ausschließlich anhand der tatsächlichen Designs der zitierten Studien. Verwende KEINE generischen Methodenbegriffe (z.B. „Querschnittsdesign"), wenn die Studien im Hauptteil als Feldstudien, Interventionsstudien oder mit Längsschnittcharakter beschrieben wurden.
 3. Schließe mit einem konkreten Ausblick: offene Forschungsfragen oder praktische Implikationen.
 Alles als zusammenhängender akademischer Fließtext — KEIN Aufzählungsformat.
 WORTLIMIT: Alle drei Punkte zusammen in maximal ${section.geschaetzteWorte} Wörtern. Sei prägnant.`;
@@ -355,11 +356,14 @@ function buildSectionPrompt(input: {
 
   const sectionTypeInstruction = buildSectionTypeInstruction(input.section, input.topLevelChapterCount);
   const antiRedundancy = buildAntiRedundancyBlock(input.previousSectionSummaries ?? []);
+  const assignedSources = input.section.verwendeteQuellen.length > 0
+    ? `\nZUGEWIESENE QUELLEN FÜR DIESEN ABSCHNITT: ${input.section.verwendeteQuellen.join(", ")}\nStelle sicher, dass relevante Erkenntnisse aus diesen Quellen mit [[CITE:]]-Tags belegt sind.`
+    : "";
 
   return `AKTUELLER ABSCHNITT:
 Nummer: ${input.section.nummer}
 Titel: ${input.section.titel}
-Blueprint: ${input.section.blueprint}
+Blueprint: ${input.section.blueprint}${assignedSources}
 Ziel-Wortanzahl: ${input.section.geschaetzteWorte} Wörter — STRIKT EINHALTEN. Schreibe zwischen ${Math.round(input.section.geschaetzteWorte * 0.9)} und ${Math.round(input.section.geschaetzteWorte * 1.15)} Wörtern. Weder kürzer noch länger. Nutze jeden Satz für inhaltlichen Mehrwert — keine Füllsätze.${sectionTypeInstruction}
 
 BISHERIGE ARBEIT — KONTEXT:
@@ -388,6 +392,7 @@ ABSOLUTE PFLICHTREGELN:
    "Das Fazit fasst..." / "Er stellt sicher, dass..." / "Ziel dieses Abschnitts ist es..." /
    "Die folgende Analyse..." — jeder Satz der den eigenen Text ankündigt statt Inhalt zu liefern ist ein FEHLER.
 3. Zitiere ausschließlich aus den bereitgestellten Quellenausschnitten. Niemals aus dem Gedächtnis.
+3b. PFLICHT-BELEGUNG: Jede benannte Studie, jedes konkrete Forschungsergebnis und jede spezifische Zahl MUSS mit einem [[CITE:]]-Tag belegt sein. Schreibe KEINE Fakten ohne direkten Quellenbeleg — lieber allgemeiner formulieren als unbelegt behaupten.
 4. Antworte NUR mit validem JSON, KEIN Text davor oder danach.
 5. KRITISCH FÜR JSON-GÜLTIGKEIT: Verwende im "text"-Feld NIEMALS gerade ASCII-Anführungszeichen " — weder für Zitate noch für Hervorhebungen noch für Fachbegriffe. Nutze ausschließlich „deutsches Format" (U+201E/U+201C). Gerade " im Text zerstören das JSON.
 6. Verwende für biochemische Marker und Neurotransmitter die international übliche wissenschaftliche Schreibweise: „Cortisol" (nicht „Kortisol"), „Oxytocin" (nicht „Oxytozin"), „Dopamin" etc.

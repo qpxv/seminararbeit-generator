@@ -42,7 +42,7 @@ A fully automated German academic paper generator. User enters a research questi
 |------|-------------|
 | `lib/types.ts` | All shared TypeScript interfaces: `LeitfadenRules` (incl. `bibliographieTitel?`), `ExpandedOutline`, `OutlineSection` (incl. `sectionType`), `ContentBlock`, `SectionContent`, `DocumentContent`, `ReviewResult`, `ReviewChange`, `GeneratorPhase`, `SessionInput` (incl. `zielWortanzahl`), `SessionResult`, `ParsedSource`, `SectionSummary`, `WriteSectionResult`, `ValidationResult`, `CitationRegistry`, `CitationEntry`, `LiteraturEintrag` (incl. `formattedRef?`) |
 | `lib/data.ts` | All German UI strings — `HEADER`, `FORM_PAGE`, `PIPELINE_STEPS`, `GENERATOR_PAGE`, `OUTPUT_PAGE` |
-| `lib/agents.ts` | Claude API calls: `generateOutline`, `writeSection` (streaming, 3-pass JSON parse, meta-language retry, returns `WriteSectionResult`), `extendSection`, `extractSectionSummary`, `reviewDocument`, `getRelevantChunks`. Also exports `CitationManager` class used by `docxAssembler`. |
+| `lib/agents.ts` | Claude API calls: `generateOutline`, `writeSection` (streaming, 3-pass JSON parse, meta-language retry, returns `WriteSectionResult`), `extendSection`, `extractSectionSummary` (max_tokens: 300, preserves exact numbers), `reviewDocument`, `getRelevantChunks` (uses section title + blueprint keywords, returns top 8 chunks). Also exports `CitationManager` class used by `docxAssembler`. |
 | `lib/docxAssembler.ts` | `buildDocument()`: A4 page with margins from `LeitfadenRules`, cover page from env vars, manual TOC (TOC1/2/3 styles with dot leaders + estimated page numbers), heading injection from section metadata (AI heading blocks skipped), body with 1.5× line spacing, page numbers in footer (suppressed on cover via `titlePage: true`), bibliography with hanging indent. Internally creates a `CitationManager` and processes all `[[CITE:shortRef:fullRef]]` tags in document order. |
 | `lib/leitfaden-format.json` | FOM-specific formatting rules: 4/2/4/2 cm margins, Times New Roman 12pt, 1.5× spacing, footnote citations, bibliography titled "Literatur". Loaded by `/api/leitfaden-rules`. |
 | `lib/pdfParser.ts` | `extractTextFromPDF(buffer)` using pdf-parse v2 class API, `chunkText(text, chunkSize=1000)` |
@@ -189,17 +189,22 @@ Fixed: `Math.min(8192, Math.max(1500, Math.ceil(words * 4)))`
 - Rule 1: Academic German
 - Rule 2: **VERBOTEN** — no meta-language (explicit list of banned openers)
 - Rule 3: Cite only from provided source chunks, never from memory
+- Rule 3b: **PFLICHT-BELEGUNG** — every named study, concrete research finding, or specific number MUST have a `[[CITE:]]` tag; prefer general phrasing over an uncited specific claim
 - Rule 4: Output only valid JSON
 - Rule 5 (KRITISCH): Never use ASCII `"` in `"text"` fields — use `„German quotes"` only
-- Rule 6 (KRITISCH): In `fullRef`, always write ALL author names in full — never `u. a.` or `et al.`
-- Citation format: `[[CITE:shortRef:fullRef]]` with Chicago examples
+- Rule 6: Scientific terminology — always use `"Cortisol"` (not `"Kortisol"`), `"Oxytocin"` (not `"Oxytozin"`), etc.
+- Citation format: `[[CITE:shortRef:fullRef]]` with Chicago examples — **examples use fictional sources** (prevents the model from copying wrong real-world author data from the example into generated text)
+- Citation position: tag goes immediately **before** the closing period, no space: `...Aussage[[CITE:...]].`
+- KRITISCH in fullRef: always write ALL author names in full — never `u. a.` or `et al.`
 - Full JSON schema
 
 `buildSectionPrompt` word target line enforces a **two-sided strict range**: `"Schreibe zwischen ${min} und ${max} Wörtern. Weder kürzer noch länger."` (90%–115% of target). Previously only the lower bound was enforced, causing 15–600% overproduction.
 
+`buildSectionPrompt` injects a **ZUGEWIESENE QUELLEN** block listing `section.verwendeteQuellen` (the source filenames assigned by the outline agent to this section). This ensures every uploaded PDF gets cited in at least one section rather than concentrating citations on only the highest-scoring chunks.
+
 `buildSectionPrompt` branches by `section.sectionType`:
-- `"einleitung"`: injected instruction for concrete Einstieg → Forschungsfrage → Aufbau structure
-- `"fazit"`: injected instruction for Kernbefunde → Limitationen → Ausblick + explicit `WORTLIMIT: maximal N Wörtern` to prevent the three-part structure from inflating past the target
+- `"einleitung"`: injected instruction for concrete Einstieg → Forschungsfrage → Aufbau structure. The chapter count is dynamically computed (`topLevelChapterCount = abschnitte.filter(s => !s.nummer.includes(".")).length`) in `generate-content/route.ts` and threaded through `writeSection` → `buildSectionPrompt` → `buildSectionTypeInstruction` so the Einleitung always states the correct number of chapters (e.g. "vier Kapitel", never a hardcoded "fünf").
+- `"fazit"`: injected instruction for Kernbefunde → Limitationen → Ausblick + explicit `WORTLIMIT: maximal N Wörtern`. Two additional guards: **Zahlenkonsistenz** (all statistics in the Fazit must exactly match the values written in the Hauptteil — no rounding or paraphrasing); **Studiendesign-Begriffe** (methodological terms like "Querschnittsdesign" are forbidden unless those exact terms were used to describe the studies in the Hauptteil — prevents the model from applying generic limitation templates to studies actually described as field studies or RCTs).
 - `"kapitelkopf"`: injected instruction to write only 1–2 transitional sentences (the subsections carry all content), **explicitly forbidden from inserting any `[[CITE:...]]` tags** (transitional sentences don't need citations, and citations in a tiny section were blowing the JSON budget at old token limits); max_tokens raised to `Math.max(500, ceil(words * 8))` as safety net
 - `"hauptteil"`: no additional instruction
 
@@ -238,19 +243,28 @@ const allParaText = sectionContent.blocks
 
 ### Trailing Whitespace Before Punctuation in DOCX
 
-`parseCiteTags` (in `lib/docxAssembler.ts`) splits paragraph text on `[[CITE:...]]` boundaries. When the AI writes `"Stressintervention [[CITE:...]]."`, the segment before the citation is `"Stressintervention "` (with trailing space). Word renders this as `Stressintervention ¹.` — a visible space between the word and the footnote superscript.
+`parseCiteTags` (in `lib/docxAssembler.ts`) splits paragraph text on `[[CITE:...]]` boundaries. Two whitespace issues can occur:
+
+**Before the citation tag:** When the AI writes `"Stressintervention [[CITE:...]]."`, the segment before the citation is `"Stressintervention "` (with trailing space). Word renders this as `Stressintervention ¹.` — a visible space between the word and the footnote superscript.
 
 Fix: `trimEnd()` the before-segment:
 ```typescript
 const before = text.slice(lastIndex, match.index).trimEnd();
 ```
-This is correct Chicago style — the footnote superscript appears directly after the last character, no space.
+
+**After the citation tag:** When the AI writes `"...Werte [[CITE:...]] ."` (space after the tag), the `remaining` segment is `" ."` (space then period). This renders as a visible space between the footnote superscript and the following punctuation.
+
+Fix: strip leading spaces from the remaining segment only when they appear immediately before punctuation:
+```typescript
+const remaining = text.slice(lastIndex).replace(/^ +(?=[.,;:!?])/, "");
+```
+This is safe — it only removes leading space(s) followed by punctuation, never before a word (new sentence).
 
 ---
 
 ## Anti-Redundancy System
 
-After each section is written, `generate-content/route.ts` calls `extractSectionSummary(section, sectionId)` (unless `REDUNDANCY_CHECK=false`). This is a non-streaming Claude call (max_tokens: 150) that returns a `SectionSummary` with 3-5 key findings as German bullet points. These are accumulated in `previousSectionSummaries` and injected into every subsequent `writeSection` call as an anti-repetition block in the prompt.
+After each section is written, `generate-content/route.ts` calls `extractSectionSummary(section, sectionId)` (unless `REDUNDANCY_CHECK=false`). This is a non-streaming Claude call (max_tokens: 300) that returns a `SectionSummary` with 3-5 key findings as German bullet points. The prompt explicitly instructs: **preserve all numerical values, percentages, and measurements exactly** (e.g. "19,6 Punkte", "27,01 %") — without this, short summaries paraphrase numbers and the Fazit then regenerates different values. These summaries are accumulated in `previousSectionSummaries` and injected into every subsequent `writeSection` call as an anti-repetition block in the prompt.
 
 ---
 
